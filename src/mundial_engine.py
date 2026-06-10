@@ -108,6 +108,7 @@ def correr(nacion_local: str, nacion_visit: str,
     res = SimuladorMontecarlo().simular_partido(parametros, n_simulaciones=n_sims)
 
     _reporte(nacion_local, nacion_visit, xi_l, xi_v, pred, parametros, msg_arb, msg_cal, res)
+    return res  # para que el validador pueda registrar la prediccion
 
 
 def _reporte(loc, vis, xi_l, xi_v, pred, params, msg_arb, msg_cal, res) -> None:
