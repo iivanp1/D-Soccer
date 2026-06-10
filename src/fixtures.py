@@ -154,6 +154,14 @@ PAIS_API_A_CODIGO = {
     "england": "ENG", "spain": "ESP", "germany": "GER", "italy": "ITA", "netherlands": "NED",
     "belgium": "BEL", "croatia": "CRO", "uruguay": "URU", "colombia": "COL", "japan": "JPN",
     "senegal": "SEN", "ghana": "GHA", "egypt": "EGY", "cameroon": "CMR", "ecuador": "ECU",
+    # Resto de UEFA (Eurocopa) para validacion historica
+    "hungary": "HUN", "albania": "ALB", "slovenia": "SVN", "slovakia": "SVK",
+    "romania": "ROU", "georgia": "GEO", "serbia": "SRB", "denmark": "DEN",
+    "poland": "POL", "austria": "AUT", "ukraine": "UKR", "turkey": "TUR",
+    "turkiye": "TUR", "wales": "WAL", "sweden": "SWE", "norway": "NOR", "slovakia ": "SVK",
+    # Resto de CONMEBOL / CONCACAF (Copa America)
+    "peru": "PER", "chile": "CHI", "venezuela": "VEN", "bolivia": "BOL",
+    "panama": "PAN", "costa rica": "CRC",
 }
 
 

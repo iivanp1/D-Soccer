@@ -171,6 +171,8 @@ NACION_CONFED = {
     "POR": "UEFA", "NED": "UEFA", "BEL": "UEFA", "CRO": "UEFA", "SUI": "UEFA",
     "DEN": "UEFA", "POL": "UEFA", "SRB": "UEFA", "WAL": "UEFA", "SCO": "UEFA",
     "AUT": "UEFA", "UKR": "UEFA", "SWE": "UEFA", "NOR": "UEFA", "TUR": "UEFA",
+    "CZE": "UEFA", "HUN": "UEFA", "ALB": "UEFA", "SVN": "UEFA", "SVK": "UEFA",
+    "ROU": "UEFA", "GEO": "UEFA",
     # AFC
     "JPN": "AFC", "KOR": "AFC", "KSA": "AFC", "IRN": "AFC", "AUS": "AFC",
     "QAT": "AFC", "IRQ": "AFC", "UAE": "AFC", "UZB": "AFC",
