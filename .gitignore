@@ -1,0 +1,32 @@
+# Datos crudos descargados (se regeneran con ingest.py)
+data/raw/*.csv
+# NOTA: data/processed/ (jugadores.csv, partidos.csv, calibracion.json) SI se commitea
+# a proposito, para que un colaborador corra el motor sin re-scrapear FBref (~2MB).
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+
+# Notebooks
+.ipynb_checkpoints/
+
+# Modelos entrenados
+models/*.pkl
+
+# Artefactos de scraping (seleniumbase / chromedriver)
+downloaded_files/
+*.lock
+
+# Config local de Claude Code (personal, no compartir)
+.claude/settings.local.json
+
+# Entornos / IDE
+.vscode/
+.idea/
+
+# Sistema
+.DS_Store
+Thumbs.db

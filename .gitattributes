@@ -1,0 +1,5 @@
+# Normaliza finales de linea para colaboracion cross-OS (Windows/Linux/Mac)
+* text=auto
+
+# Los CSV son datos: tratarlos como texto pero sin forzar conversiones agresivas
+*.csv text
