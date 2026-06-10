@@ -2,6 +2,8 @@
 data/raw/*.csv
 # NOTA: data/processed/ (jugadores.csv, partidos.csv, calibracion.json) SI se commitea
 # a proposito, para que un colaborador corra el motor sin re-scrapear FBref (~2MB).
+# Pero el log de predicciones NO (cada uno acumula el suyo; evita conflictos de merge).
+data/processed/predicciones_log.csv
 
 # Python
 __pycache__/
@@ -22,6 +24,11 @@ downloaded_files/
 
 # Config local de Claude Code (personal, no compartir)
 .claude/settings.local.json
+
+# Secretos / API keys -- NUNCA commitear (la key de API-Football va por variable de entorno)
+.env
+*.key
+secrets.*
 
 # Entornos / IDE
 .vscode/
