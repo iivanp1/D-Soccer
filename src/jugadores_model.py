@@ -98,6 +98,10 @@ class JugadoresModel:
     def_ref: float = 1.0             # defensa agregada promedio de las selecciones
     compresion: float = 0.5          # cuanto se separan los equipos fuertes de la media
 
+    # --- Hibrido con Elo de selecciones (columna vertebral; arregla sub-diferenciacion) ---
+    elo: dict = field(default_factory=dict)   # {codigo: {overall, off, def}}
+    w_elo: float = 0.5                         # peso del Elo: lam = w*lam_elo + (1-w)*lam_player
+
     _entrenado: bool = False
 
     # ------------------------------------------------------------------ #
@@ -303,29 +307,41 @@ class JugadoresModel:
         fv = self.construir_fuerza_seleccion(lineup_visitante, nacion_visitante)
 
         if self.base_real is not None:
-            # Mapeo CALIBRADO con COMPRESION DINAMICA por brecha de calidad.
-            # Centrado en el promedio de las selecciones (arregla el desajuste de escala)
-            # y nivel anclado a la media real del Mundial. La compresion 'c' crece con la
-            # brecha de fuerza: parejo -> c_base (ARG-FRA realista); asimetrico -> c sube y
-            # estira la ventaja del favorito (corrige la sub-diferenciacion). El nivel base
-            # se preserva: en gap=0, c=c_base y los ratios valen 1, asi que lambda=base_real.
+            # --- 1) Lambda del modelo de JUGADORES (forma actual + alineacion real) ---
+            # Centrado en el promedio de selecciones + compresion dinamica por brecha.
             fuerza_l = fl["ataque"] + fl["defensa"]
             fuerza_v = fv["ataque"] + fv["defensa"]
             gap = abs(fuerza_l - fuerza_v) / (self.atk_ref + self.def_ref)
             c = min(self.compresion + GAP_AMP * gap ** GAP_POW, C_MAX)
-            lam_l = self.base_real * (fl["ataque"] / self.atk_ref) ** c * (self.def_ref / fv["defensa"]) ** c
-            lam_v = self.base_real * (fv["ataque"] / self.atk_ref) ** c * (self.def_ref / fl["defensa"]) ** c
+            lam_l_player = self.base_real * (fl["ataque"] / self.atk_ref) ** c * (self.def_ref / fv["defensa"]) ** c
+            lam_v_player = self.base_real * (fv["ataque"] / self.atk_ref) ** c * (self.def_ref / fl["defensa"]) ** c
+
+            # --- 2) HIBRIDO: lam = w*lam_elo + (1-w)*lam_player ---
+            # El Elo de selecciones diferencia bien (aplasta la sub-diferenciacion); el
+            # modelo de jugadores aporta el ajuste por quien juega de verdad. Si no hay Elo
+            # para alguna seleccion, cae limpio al modelo de jugadores puro.
+            if self.elo and nacion_local in self.elo and nacion_visitante in self.elo:
+                lam_l_elo, lam_v_elo = self._calcular_lambda_elo(
+                    self.elo[nacion_local]["overall"], self.elo[nacion_visitante]["overall"], self.base_real)
+                w = self.w_elo
+                lam_l = w * lam_l_elo + (1 - w) * lam_l_player
+                lam_v = w * lam_v_elo + (1 - w) * lam_v_player
+                hibrido = {"w": w, "elo": (lam_l_elo, lam_v_elo), "player": (lam_l_player, lam_v_player)}
+            else:
+                lam_l, lam_v = lam_l_player, lam_v_player
+                hibrido = {"w": 0.0, "elo": None, "player": (lam_l_player, lam_v_player)}
         else:
             # Mapeo legacy (sin calibrar): infla los goles con XIs de alto rating.
             lam_l = BASE_GOLES * (fl["ataque"] / fv["defensa"]) ** DAMP
             lam_v = BASE_GOLES * (fv["ataque"] / fl["defensa"]) ** DAMP
+            hibrido = {"w": 0.0, "elo": None, "player": (lam_l, lam_v)}
 
         g = np.arange(max_goles + 1)
         m = np.outer(poisson.pmf(g, lam_l), poisson.pmf(g, lam_v))
         m /= m.sum()
 
         return {
-            "fuerza_local": fl, "fuerza_visitante": fv,
+            "fuerza_local": fl, "fuerza_visitante": fv, "hibrido": hibrido,
             "goles_esp_local": float(lam_l), "goles_esp_visitante": float(lam_v),
             "prob_local": float(np.tril(m, -1).sum()),
             "prob_empate": float(np.trace(m)),
@@ -370,6 +386,30 @@ class JugadoresModel:
         self.def_ref = params["def_ref"]
         self.compresion = params["compresion"]
         return self
+
+    def cargar_elo(self, elo: dict, w: float | None = None) -> "JugadoresModel":
+        """Inyecta los ratings Elo de selecciones (columna vertebral del hibrido).
+
+        Se recibe el dict ya cargado (lo carga mundial_engine via src.elo) para no acoplar
+        este modulo con el scraper y evitar imports circulares.
+        """
+        self.elo = elo or {}
+        if w is not None:
+            self.w_elo = float(w)
+        return self
+
+    @staticmethod
+    def _calcular_lambda_elo(elo_local: float, elo_visitante: float,
+                             base_real: float) -> tuple[float, float]:
+        """Goles esperados segun el Elo de selecciones (la historia, que diferencia bien).
+
+        E = score esperado del local por la formula Elo estandar (400 puntos de diferencia
+        = factor 10 en la probabilidad). Lo convertimos en un multiplicador 2E sobre el
+        base_real: partido parejo (E=0.5) -> base_real cada uno; un favorito historico marca
+        mas y concede menos. El total se conserva en ~2*base_real.
+        """
+        e = 1.0 / (1.0 + 10 ** (-(elo_local - elo_visitante) / 400.0))
+        return base_real * 2.0 * e, base_real * 2.0 * (1.0 - e)
 
     def ranking_jugadores(self, perfil: str = "ofensivo", top: int = 15,
                           min_n90: float = 10) -> pd.DataFrame:

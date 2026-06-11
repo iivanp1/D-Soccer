@@ -78,6 +78,11 @@ def actualizar_resultados() -> None:
     from src.fixtures import _api_get
 
     log = _cargar()
+    # Columnas de texto/resultado: forzar a object para poder asignarles strings ('H'/'D'/'A')
+    # aunque pandas las haya leido como float (cuando estaban vacias en el CSV).
+    for c in ("resultado_real", "arbitro", "gl_real", "gv_real"):
+        if c in log.columns:
+            log[c] = log[c].astype("object")
     pendientes = log[log["resultado_real"].isna() | (log["resultado_real"].astype(str) == "")]
     if pendientes.empty:
         print("No hay predicciones pendientes de resultado.")

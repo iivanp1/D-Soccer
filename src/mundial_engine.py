@@ -77,6 +77,13 @@ def correr(nacion_local: str, nacion_visit: str,
     else:
         msg_cal = "SIN calibrar (corre: python -m src.calibrar_internacional)"
 
+    # Elo de selecciones (columna vertebral del hibrido). Si falla, sigue con jugadores solo.
+    try:
+        from src.elo import cargar_elo as _cargar_elo
+        jm.cargar_elo(_cargar_elo())
+    except Exception as e:
+        print(f"  (sin Elo: {type(e).__name__} -> solo modelo de jugadores)")
+
     # Con imputacion por niveles, una seleccion con pocos (o cero) jugadores en el
     # dataset igual se completa con ratings sombra de su federacion. El motor corre
     # cualquier cruce del planeta.
@@ -124,6 +131,10 @@ def _reporte(loc, vis, xi_l, xi_v, pred, params, msg_arb, msg_cal, res) -> None:
           f"(ataque {fv['ataque']:.2f} / defensa {fv['defensa']:.2f})")
     print(f"  Arbitro: {msg_arb}")
     print(f"  Mapeo a goles: {msg_cal}")
+    h = pred.get("hibrido", {})
+    if h.get("elo"):
+        print(f"  Hibrido (w={h['w']}): Elo {h['elo'][0]:.2f}-{h['elo'][1]:.2f}  |  "
+              f"jugadores {h['player'][0]:.2f}-{h['player'][1]:.2f}")
     print(f"  Tasas base -> goles {tuple(round(x,2) for x in params['goles'])} | "
           f"faltas {tuple(round(x,1) for x in params['faltas'])} | "
           f"tarjetas {tuple(round(x,2) for x in params['tarjetas'])}")
@@ -142,8 +153,11 @@ def _reporte(loc, vis, xi_l, xi_v, pred, params, msg_arb, msg_cal, res) -> None:
     filas = [
         ("Goles 1.5", res["over_1_5_goles"]), ("Goles 2.5", res["over_2_5_goles"]),
         ("Goles 3.5", res["over_3_5_goles"]),
+        ("Faltas 18.5", res["over_18_5_faltas"]), ("Faltas 20.5", res["over_20_5_faltas"]),
+        ("Faltas 22.5", res["over_22_5_faltas"]),
         ("Tarjetas 3.5", res["over_3_5_tarjetas"]), ("Tarjetas 4.5", res["over_4_5_tarjetas"]),
-        ("Corners 9.5", res["over_9_5_corners"]),
+        ("Corners 8.5", res["over_8_5_corners"]), ("Corners 9.5", res["over_9_5_corners"]),
+        ("Corners 10.5", res["over_10_5_corners"]),
     ]
     for nombre, p in filas:
         print(f"     {nombre:<14} over {p*100:5.1f}%  (cuota {_formato_cuota(p)}) | "

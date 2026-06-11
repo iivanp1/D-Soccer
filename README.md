@@ -147,6 +147,13 @@ data/
       (cuota 1.27, nivel casas). Preserva el nivel base (en gap=0, c=c_base, ratios=1 → 1.39).
       Es un prior tuneado al consenso de las casas, no validado con datos.
       Nota: persiste sub-diferenciación LEVE en brechas medias (ESP-USA ~39/33); el extremo está resuelto.
+- [x] **13b. Híbrido Elo + jugadores** (`src/elo.py` + `jugadores_model`): arregla la
+      sub-diferenciación de RAÍZ. Elo de selecciones (eloratings.net, gratis) como columna
+      vertebral + modelo de jugadores como ajuste. `λ = w·λ_elo + (1−w)·λ_player` (w=0.5 provisional).
+      RESULTADO: MEX-RSA 47%→67% (=mercado 66%, real 2-0), POR-NGA 38%→56%; parejos se mantienen
+      (ARG-FRA 37/36). El reporte muestra el desglose Elo vs jugadores.
+- [ ] Pendiente: TUNEAR `w` empíricamente en el harvest 2024 (Brier, train/test); comparar
+      híbrido vs bottom-up; usar Elo ofensivo/defensivo por separado.
 
 ## Fuente de datos
 
