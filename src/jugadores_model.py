@@ -78,6 +78,11 @@ GAP_AMP = 4.0   # cuanto amplifica la brecha de calidad a la compresion
 GAP_POW = 2.0   # no-linealidad: brechas grandes amplifican mucho mas que las chicas
 C_MAX = 1.7     # techo de seguridad de la compresion efectiva
 
+# Mapeo Elo->goles AJUSTADO con datos reales (11k internacionales >=2015, ver elo_history.py):
+# +400 puntos de Elo = +2.09 goles de ventaja. Reemplaza el multiplicador 2E inicial, que
+# sobre-diferenciaba (~3.2 goles/400).
+ELO_GOLES_POR_400 = 2.09
+
 
 def _norm(nombre: str) -> str:
     """Normaliza un nombre para emparejar (sin acentos, minusculas)."""
@@ -100,7 +105,9 @@ class JugadoresModel:
 
     # --- Hibrido con Elo de selecciones (columna vertebral; arregla sub-diferenciacion) ---
     elo: dict = field(default_factory=dict)   # {codigo: {overall, off, def}}
-    w_elo: float = 0.5                         # peso del Elo: lam = w*lam_elo + (1-w)*lam_player
+    # Peso del Elo en el hibrido: lam = w*lam_elo + (1-w)*lam_player. 0.65 PROVISIONAL
+    # (recentra al mercado con el Elo ya calibrado); el valor final sale del tuneo con datos.
+    w_elo: float = 0.65
 
     _entrenado: bool = False
 
@@ -401,15 +408,16 @@ class JugadoresModel:
     @staticmethod
     def _calcular_lambda_elo(elo_local: float, elo_visitante: float,
                              base_real: float) -> tuple[float, float]:
-        """Goles esperados segun el Elo de selecciones (la historia, que diferencia bien).
+        """Goles esperados segun el Elo, con el mapeo CALIBRADO a datos reales.
 
-        E = score esperado del local por la formula Elo estandar (400 puntos de diferencia
-        = factor 10 en la probabilidad). Lo convertimos en un multiplicador 2E sobre el
-        base_real: partido parejo (E=0.5) -> base_real cada uno; un favorito historico marca
-        mas y concede menos. El total se conserva en ~2*base_real.
+        Ajustado con 11k internacionales (>=2015, elo_history.py): cada 400 puntos de Elo
+        valen +2.09 goles de ventaja, con un total de ~2*base_real. Repartimos ese total
+        segun la supremacia (lineal en Elo). Es mas fiel que el 2E inicial, que
+        sobre-diferenciaba. Clamp a 0.15 para no dar goles negativos en goleadas extremas.
+        Partido parejo (mismo Elo) -> base_real cada uno.
         """
-        e = 1.0 / (1.0 + 10 ** (-(elo_local - elo_visitante) / 400.0))
-        return base_real * 2.0 * e, base_real * 2.0 * (1.0 - e)
+        supremacia = (ELO_GOLES_POR_400 / 400.0) * (elo_local - elo_visitante)
+        return max(0.15, base_real + supremacia / 2.0), max(0.15, base_real - supremacia / 2.0)
 
     def ranking_jugadores(self, perfil: str = "ofensivo", top: int = 15,
                           min_n90: float = 10) -> pd.DataFrame:

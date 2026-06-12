@@ -29,6 +29,8 @@ from src.jugadores_model import _norm
 
 RESULTS = config.RAIZ / "data" / "raw" / "results.csv"
 SALIDA_ELO = config.DATA_PROC / "elo_propio.json"
+# Fuente publica (se genera el dataset de Kaggle desde aca): sin login ni token.
+RESULTS_URL = "https://raw.githubusercontent.com/martj42/international_results/master/results.csv"
 
 # --- Parametros del Elo (estilo World Football Elo) ---
 ELO_INICIAL = 1500.0
@@ -54,11 +56,19 @@ def _mult_goles(gd: int) -> float:
     return (11 + gd) / 8.0
 
 
-def cargar_resultados() -> pd.DataFrame:
-    if not RESULTS.exists():
-        raise FileNotFoundError(
-            f"No encuentro {RESULTS}. Baja el CSV de Kaggle 'International football results "
-            f"1872-2026' (martj42) y dejalo ahi como results.csv.")
+def _descargar_resultados() -> None:
+    """Baja el CSV de resultados desde GitHub (martj42), publico y sin login."""
+    import requests
+    RESULTS.parent.mkdir(parents=True, exist_ok=True)
+    print("Bajando resultados historicos (martj42/international_results)...")
+    r = requests.get(RESULTS_URL, timeout=60)
+    r.raise_for_status()
+    RESULTS.write_text(r.text, encoding="utf-8")
+
+
+def cargar_resultados(refrescar: bool = False) -> pd.DataFrame:
+    if refrescar or not RESULTS.exists():
+        _descargar_resultados()
     df = pd.read_csv(RESULTS)
     # Deteccion robusta de columnas (el dataset estandar usa estos nombres)
     ren = {}
@@ -127,7 +137,8 @@ def analizar(df: pd.DataFrame) -> None:
 
 
 def main() -> None:
-    df = cargar_resultados()
+    import sys
+    df = cargar_resultados(refrescar="--refrescar" in sys.argv)
     print(f"Resultados cargados: {len(df)} partidos, {df['fecha'].min().date()} a {df['fecha'].max().date()}\n")
     df_elo, ratings = computar_elo(df)
 

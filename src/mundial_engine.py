@@ -79,8 +79,12 @@ def correr(nacion_local: str, nacion_visit: str,
 
     # Elo de selecciones (columna vertebral del hibrido). Si falla, sigue con jugadores solo.
     try:
-        from src.elo import cargar_elo as _cargar_elo
-        jm.cargar_elo(_cargar_elo())
+        propio = config.DATA_PROC / "elo_propio.json"
+        if propio.exists():  # nuestro Elo computado de la historia (preferido, refrescable)
+            jm.cargar_elo(json.loads(propio.read_text(encoding="utf-8")))
+        else:                # respaldo: Elo scrapeado de eloratings.net
+            from src.elo import cargar_elo as _cargar_elo
+            jm.cargar_elo(_cargar_elo())
     except Exception as e:
         print(f"  (sin Elo: {type(e).__name__} -> solo modelo de jugadores)")
 
