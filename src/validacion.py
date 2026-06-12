@@ -28,7 +28,8 @@ LOG = config.DATA_PROC / "predicciones_log.csv"
 COLUMNAS = [
     "fixture_id", "fecha", "local", "visitante", "cod_l", "cod_v", "arbitro",
     "prob_local", "prob_empate", "prob_visitante", "goles_esp_l", "goles_esp_v", "over_2_5",
-    "gl_real", "gv_real", "resultado_real", "brier_modelo", "brier_bench",
+    "cuota_l", "cuota_e", "cuota_v",  # mejores cuotas 1X2 del mercado al registrar
+    "gl_real", "gv_real", "resultado_real", "brier_modelo", "brier_bench", "brier_mercado",
 ]
 # Benchmark naive para internacionales (referencia, no sofisticado). Ligero sesgo al local.
 BENCH = (0.40, 0.27, 0.33)
@@ -66,8 +67,19 @@ def registrar(fixture_id: int) -> None:
         "prob_visitante": round(r["prob_visitante"], 4),
         "goles_esp_l": round(r["goles_esp"][0], 3), "goles_esp_v": round(r["goles_esp"][1], 3),
         "over_2_5": round(r["over_2_5_goles"], 4),
-        "gl_real": "", "gv_real": "", "resultado_real": "", "brier_modelo": "", "brier_bench": "",
+        "gl_real": "", "gv_real": "", "resultado_real": "",
+        "brier_modelo": "", "brier_bench": "", "brier_mercado": "",
     }
+    # Capturar las mejores cuotas 1X2 del mercado al momento de registrar
+    try:
+        from src.valor import cuotas_mercado
+        mkt = cuotas_mercado(fixture_id)
+        fila["cuota_l"] = round(mkt["Home"]["mejor"], 2) if mkt and mkt.get("Home") else ""
+        fila["cuota_e"] = round(mkt["Draw"]["mejor"], 2) if mkt and mkt.get("Draw") else ""
+        fila["cuota_v"] = round(mkt["Away"]["mejor"], 2) if mkt and mkt.get("Away") else ""
+    except Exception:
+        fila["cuota_l"] = fila["cuota_e"] = fila["cuota_v"] = ""
+
     log = pd.concat([log, pd.DataFrame([fila])], ignore_index=True)
     _guardar(log)
     print(f"\n-> Prediccion registrada en {LOG.name} (fixture {fixture_id}).")
@@ -105,6 +117,15 @@ def actualizar_resultados() -> None:
         log.at[idx, "brier_modelo"] = round(brier_score(
             fila["prob_local"], fila["prob_empate"], fila["prob_visitante"], real), 4)
         log.at[idx, "brier_bench"] = round(brier_score(*BENCH, real), 4)
+        # Brier del MERCADO: de-margina las cuotas 1X2 guardadas (la vara que importa)
+        try:
+            cl, ce, cv = float(fila["cuota_l"]), float(fila["cuota_e"]), float(fila["cuota_v"])
+            if cl > 0 and ce > 0 and cv > 0:  # 'nan > 0' es False -> saltea filas sin cuota
+                imp = [1 / cl, 1 / ce, 1 / cv]; s = sum(imp)
+                log.at[idx, "brier_mercado"] = round(
+                    brier_score(imp[0] / s, imp[1] / s, imp[2] / s, real), 4)
+        except (ValueError, TypeError, ZeroDivisionError):
+            pass
         actualizados += 1
         print(f"  {fila['local']} {gl}-{gv} {fila['visitante']}  ({real})")
 
@@ -137,6 +158,19 @@ def reporte() -> None:
     veredicto = "el modelo aporta" if bs_mod < bs_ben else "el modelo NO supera al benchmark"
     print(f"  -> {veredicto}")
     print(f"  Acierto del favorito del modelo: {acierto*100:.0f}% ({n} partidos)")
+
+    # La comparacion que IMPORTA: modelo vs MERCADO (sobre los partidos con cuota guardada)
+    con_mkt = hechos[hechos["brier_mercado"].notna()]
+    if len(con_mkt):
+        bm_mod = con_mkt["brier_modelo"].mean()
+        bm_mkt = con_mkt["brier_mercado"].mean()
+        print(f"\n  --- vs MERCADO ({len(con_mkt)} partidos con cuota) ---")
+        print(f"  Brier modelo : {bm_mod:.4f}")
+        print(f"  Brier mercado: {bm_mkt:.4f}")
+        if bm_mod < bm_mkt:
+            print(f"  -> el modelo LE GANA al mercado (edge!). Confirmar con mas muestra.")
+        else:
+            print(f"  -> el mercado es mejor (lo esperable). El edge esta en mercados 2rios.")
     print(f"\n  (Muestra chica: con <15-20 partidos esto es ruido. Seguir acumulando.)")
 
 
