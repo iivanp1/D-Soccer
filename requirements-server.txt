@@ -1,0 +1,11 @@
+# Dependencias MINIMAS para el loop de acumulacion en el servidor (autorun.py).
+# NO incluye soccerdata/Chrome ni lightgbm/scikit-learn: el server usa la API-Football
+# + los datos ya commiteados (jugadores.csv, elo.json, calibracion.json), no scrapea.
+# Para el pipeline completo (re-scrapear jugadores, entrenar ML) usar requirements.txt.
+pandas>=2.0
+numpy>=1.24
+scipy>=1.11
+requests>=2.31
+tabulate>=0.9
+rapidfuzz>=3.0
+unidecode>=1.3
