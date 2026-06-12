@@ -71,6 +71,7 @@ def registrar(fixture_id: int) -> None:
         "brier_modelo": "", "brier_bench": "", "brier_mercado": "",
     }
     # Capturar las mejores cuotas 1X2 del mercado al momento de registrar
+    mkt = None
     try:
         from src.valor import cuotas_mercado
         mkt = cuotas_mercado(fixture_id)
@@ -83,6 +84,7 @@ def registrar(fixture_id: int) -> None:
     log = pd.concat([log, pd.DataFrame([fila])], ignore_index=True)
     _guardar(log)
     print(f"\n-> Prediccion registrada en {LOG.name} (fixture {fixture_id}).")
+    return {"info": info, "cuotas": mkt}  # para que autorun pueda notificar a Telegram
 
 
 def actualizar_resultados() -> None:

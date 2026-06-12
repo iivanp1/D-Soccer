@@ -57,6 +57,24 @@ COLUMNAS = {
 
 URL_BASE = "https://www.football-data.co.uk/mmz4281"
 
+
+def cargar_env() -> None:
+    """Carga variables de un archivo .env en la raiz hacia os.environ.
+
+    No pisa las que ya esten seteadas (asi el cron puede traer la API key inline y el
+    .env aporta el resto: TELEGRAM_TOKEN, TELEGRAM_CHAT_ID, etc.). Sin dependencias.
+    """
+    import os
+    env = RAIZ / ".env"
+    if not env.exists():
+        return
+    for linea in env.read_text(encoding="utf-8").splitlines():
+        linea = linea.strip()
+        if not linea or linea.startswith("#") or "=" not in linea:
+            continue
+        clave, valor = linea.split("=", 1)
+        os.environ.setdefault(clave.strip(), valor.strip().strip('"').strip("'"))
+
 # =========================================================================== #
 #  DATOS A NIVEL JUGADOR (FBref via soccerdata) -- para el Motor Mundialista
 # =========================================================================== #

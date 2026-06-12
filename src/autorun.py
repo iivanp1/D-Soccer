@@ -57,12 +57,17 @@ def registrar_proximos(horas: float = HORAS_ANTES) -> None:
           f"{len(ids)} partidos por registrar (proximas {horas}h)")
     for fid in ids:
         try:
-            registrar(fid)  # se auto-saltea si ya estaba logueado
+            datos = registrar(fid)  # se auto-saltea si ya estaba logueado (devuelve None)
+            if datos:  # se registro por primera vez -> reporte completo a Telegram
+                from src.telegram_alert import enviar_reporte_partido
+                enviar_reporte_partido(datos["info"], datos["cuotas"])
         except Exception as e:
-            print(f"[autorun] error registrando fixture {fid}: {type(e).__name__}: {e}")
+            print(f"[autorun] error con fixture {fid}: {type(e).__name__}: {e}")
 
 
 def main() -> None:
+    from src import config
+    config.cargar_env()  # carga TELEGRAM_TOKEN/CHAT_ID (y API key si esta en .env)
     cmd = sys.argv[1] if len(sys.argv) > 1 else "todo"
     if cmd in ("todo", "actualizar"):
         try:
