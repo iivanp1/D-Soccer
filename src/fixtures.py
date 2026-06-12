@@ -166,7 +166,9 @@ PAIS_API_A_CODIGO = {
 
 
 def _codigo_nacion(nombre_api: str) -> str | None:
-    return PAIS_API_A_CODIGO.get(_norm(nombre_api))
+    # La API usa '&' (ej. "Bosnia & Herzegovina"); nuestro mapeo usa "and". Normalizamos.
+    n = _norm(nombre_api).replace(" & ", " and ").replace("&", "and")
+    return PAIS_API_A_CODIGO.get(n)
 
 
 def correr_partido_auto(fixture_id: int, n_sims: int = 10000) -> None:
