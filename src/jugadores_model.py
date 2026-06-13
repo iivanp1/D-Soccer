@@ -112,7 +112,8 @@ class JugadoresModel:
     _entrenado: bool = False
 
     # ------------------------------------------------------------------ #
-    def entrenar_jugadores(self, df: pd.DataFrame) -> "JugadoresModel":
+    def entrenar_jugadores(self, df: pd.DataFrame,
+                           ajuste_xg: dict | None = None) -> "JugadoresModel":
         d = df[df["minutos"] > 0].copy()
 
         # Posicion primaria (FW de "FW,MF") y recencia de temporada
@@ -155,6 +156,12 @@ class JugadoresModel:
         # Perfil ofensivo (tipo-xG): 0.7*npg_90 + 0.3*ast_90, ajustado por calidad de liga.
         npg_90 = agg["npg"] / agg["n90"]   # goles sin penal por 90 (xG realizado)
         ast_90 = agg["ast"] / agg["n90"]   # asistencias por 90
+        # Correccion por xG real (enriquecer_xg.py): regresa los goles realizados hacia el nivel
+        # que sugiere el xG internacional. Castiga al suertudo, premia al generador. Sin ajuste
+        # (None) -> factor 1.0 -> identico al comportamiento original (backward-compatible).
+        if ajuste_xg:
+            factores = pd.Series([ajuste_xg.get(_norm(p), 1.0) for p in agg.index], index=agg.index)
+            npg_90 = npg_90 * factores
         agg["of_raw"] = (W_NPG * npg_90 + W_AST_OF * ast_90) * agg["coef_eff"]
         agg["def_raw"] = ((agg["intc"] + agg["tkl"]) / agg["n90"]) * agg["coef_eff"]
 

@@ -65,7 +65,8 @@ def correr(nacion_local: str, nacion_visit: str,
            arbitro: str | None, n_sims: int = 10000) -> None:
     # --- 1. Motor Mundialista: ratings de jugadores -> tasas base ---
     df_j = pd.read_csv(config.DATA_PROC / "jugadores.csv")
-    jm = JugadoresModel().entrenar_jugadores(df_j)
+    from src.enriquecer_xg import cargar_ajuste  # correccion por xG real (si xg_ajuste.csv existe)
+    jm = JugadoresModel().entrenar_jugadores(df_j, ajuste_xg=cargar_ajuste())
 
     # Calibracion internacional (si existe): ancla los goles a la media real del Mundial
     import json
