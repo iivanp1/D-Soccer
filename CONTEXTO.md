@@ -63,7 +63,8 @@ API-Football ────────▶ fixtures.py (XI, árbitro, cuotas) ─�
 | `valor.py` | **Detector de valor**: EV = prob·cuota−1, rankea +EV (1X2 + O/U) | ✅ |
 | `ev_calculator.py` | Función pura `calcular_ev(prob, cuota)` | ✅ |
 | `telegram_alert.py` | Notificaciones push (solo `requests`, lee `.env`): reporte completo del partido | ✅ |
-| `validacion.py` | Log de predicciones forward + cuotas + resultados + Brier modelo vs **mercado** | ✅ |
+| `validacion.py` | Log de predicciones forward + cuotas + resultados + Brier vs **mercado**. Log **canónico (server) vs -dev (local)** por `D_SOCCER_CANONICAL` + comando `consolidar` (dedup por `fixture_id`) | ✅ |
+| `tunear_w.py` | Tunea **`w`** (Elo vs jugadores) sobre el harvest minimizando Brier + LOO. Carga el Elo (que `harvest.py` no hacía). Cero gasto de API | ✅ |
 | `harvest.py` | Validación histórica (internacionales 2024 con alineaciones, ratings período-correctos) | ✅ |
 | `autorun.py` | **Punto de entrada del cron**: registra partidos 20-45 min antes (alineación real) + Telegram + actualiza resultados | ✅ |
 | `demo.py` | Demo del modelo de clubes | ✅ |
@@ -155,6 +156,8 @@ MLS (Messi), Saudí (Cristiano), Brasileirão.
 API_FOOTBALL_KEY=...        # api-football.com, plan gratis (100 req/día, solo 2022-2024 por liga)
 TELEGRAM_TOKEN=...          # @BotFather
 TELEGRAM_CHAT_ID=...        # de getUpdates tras escribirle al bot
+D_SOCCER_CANONICAL=1        # ⚠️ SOLO en el server: lo declara escritor del log canónico.
+                            #    En local NO ponerla (escribe a predicciones_log_dev.csv).
 ```
 
 ---
@@ -176,9 +179,11 @@ python -m src.valor <id>                         # detector de valor (vs cuotas)
 python -m src.autorun registrar                  # registra próximos + Telegram
 python -m src.autorun actualizar                 # baja resultados
 python -m src.validacion reporte                 # métricas (modelo vs mercado)
-# Validar:
+python -m src.validacion consolidar [logs...]    # une logs SIN duplicar (clave fixture_id)
+# Validar / pulir:
 python -m src.backtest                           # goles de clubes
 python -m src.harvest 4 2024 46                  # histórico (4=Euro, 9=Copa, 10=amistosos)
+python -m src.tunear_w [ligas...]                # tunea w (Elo vs jugadores) sobre el harvest
 ```
 
 ---

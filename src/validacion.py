@@ -17,32 +17,53 @@ Necesita API_FOOTBALL_KEY (variable de entorno) para registrar y actualizar.
 
 from __future__ import annotations
 
+import os
 import sys
+from datetime import datetime, timezone
+from pathlib import Path
 
 import pandas as pd
 
 from src import config
 from src.backtest import brier_score, resultado_real
 
-LOG = config.DATA_PROC / "predicciones_log.csv"
+# FUENTE DE VERDAD: el log canonico vive SOLO en el server. Para que un run LOCAL (dev) no
+# contamine ese archivo con filas divergentes (timing/cuotas/codigo distintos -> duplicados
+# al juntar), por defecto se escribe a un sandbox '-dev'. El server se declara escritor
+# canonico con D_SOCCER_CANONICAL=1 en su .env. Asi local es SEGURO por defecto.
+CANONICO = "predicciones_log.csv"
+DEV = "predicciones_log_dev.csv"
 COLUMNAS = [
     "fixture_id", "fecha", "local", "visitante", "cod_l", "cod_v", "arbitro",
     "prob_local", "prob_empate", "prob_visitante", "goles_esp_l", "goles_esp_v", "over_2_5",
     "cuota_l", "cuota_e", "cuota_v",  # mejores cuotas 1X2 del mercado al registrar
     "gl_real", "gv_real", "resultado_real", "brier_modelo", "brier_bench", "brier_mercado",
+    "registrado_en", "fuente",  # metadata: permite consolidar logs sin duplicar (clave fixture_id)
 ]
 # Benchmark naive para internacionales (referencia, no sofisticado). Ligero sesgo al local.
 BENCH = (0.40, 0.27, 0.33)
 
 
-def _cargar() -> pd.DataFrame:
-    if LOG.exists():
-        return pd.read_csv(LOG)
+def _es_canonico() -> bool:
+    """True solo donde el server lo declara (D_SOCCER_CANONICAL=1 en .env)."""
+    config.cargar_env()
+    return os.environ.get("D_SOCCER_CANONICAL", "").strip().lower() in ("1", "true", "yes", "si")
+
+
+def _log_path() -> Path:
+    return config.DATA_PROC / (CANONICO if _es_canonico() else DEV)
+
+
+def _cargar(path: Path | None = None) -> pd.DataFrame:
+    p = path or _log_path()
+    if p.exists():
+        # reindex asegura el esquema actual aunque el CSV sea viejo (sin columnas nuevas).
+        return pd.read_csv(p).reindex(columns=COLUMNAS)
     return pd.DataFrame(columns=COLUMNAS)
 
 
-def _guardar(df: pd.DataFrame) -> None:
-    df.to_csv(LOG, index=False, encoding="utf-8")
+def _guardar(df: pd.DataFrame, path: Path | None = None) -> None:
+    df.to_csv(path or _log_path(), index=False, encoding="utf-8")
 
 
 # --------------------------------------------------------------------------- #
@@ -69,6 +90,8 @@ def registrar(fixture_id: int) -> None:
         "over_2_5": round(r["over_2_5_goles"], 4),
         "gl_real": "", "gv_real": "", "resultado_real": "",
         "brier_modelo": "", "brier_bench": "", "brier_mercado": "",
+        "registrado_en": datetime.now(timezone.utc).isoformat(timespec="seconds"),
+        "fuente": "canonico" if _es_canonico() else "dev",
     }
     # Capturar las mejores cuotas 1X2 del mercado al momento de registrar
     mkt = None
@@ -83,7 +106,8 @@ def registrar(fixture_id: int) -> None:
 
     log = pd.concat([log, pd.DataFrame([fila])], ignore_index=True)
     _guardar(log)
-    print(f"\n-> Prediccion registrada en {LOG.name} (fixture {fixture_id}).")
+    destino = _log_path().name
+    print(f"\n-> Prediccion registrada en {destino} (fixture {fixture_id}) [fuente: {fila['fuente']}].")
     return {"info": info, "cuotas": mkt}  # para que autorun pueda notificar a Telegram
 
 
@@ -176,9 +200,49 @@ def reporte() -> None:
     print(f"\n  (Muestra chica: con <15-20 partidos esto es ruido. Seguir acumulando.)")
 
 
+def consolidar(archivos: list[str], salida: str = "predicciones_consolidado.csv") -> None:
+    """Une varios logs en UNO SOLO sin duplicar (clave: fixture_id).
+
+    Resuelve el problema de tener el log canonico del server y respaldos/sandbox -dev por
+    separado: al juntarlos, un mismo partido aparece varias veces y en conflicto. Aca, ante
+    duplicados del mismo fixture_id, nos quedamos con la MEJOR fila en este orden:
+      1) la 'canonico' (el server) le gana a la 'dev' (registro local ad-hoc),
+      2) la registrada mas temprano (pre-match > post-FT),
+      3) la que ya tiene resultado cargado (no perder el dato).
+    Los archivos se resuelven relativos a data/processed/ (o ruta absoluta). Default: junta
+    el canonico + el -dev locales.
+    """
+    frames = []
+    for a in archivos:
+        p = Path(a)
+        if not p.is_absolute():
+            p = config.DATA_PROC / a
+        if not p.exists():
+            print(f"  (no existe, se saltea: {p.name})")
+            continue
+        frames.append(pd.read_csv(p).reindex(columns=COLUMNAS))
+        print(f"  + {p.name}: {len(frames[-1])} filas")
+    if not frames:
+        print("No hay archivos validos para consolidar.")
+        return
+
+    todo = pd.concat(frames, ignore_index=True)
+    # Claves de prioridad (menor = se prefiere). Legacy sin 'fuente' -> tratado como 'dev'.
+    todo["_f"] = (todo["fuente"].fillna("dev") != "canonico").astype(int)
+    todo["_r"] = todo["resultado_real"].isna().astype(int)
+    todo = todo.sort_values(["_f", "_r", "registrado_en"], na_position="last")
+    out = (todo.drop_duplicates("fixture_id", keep="first")
+               .drop(columns=["_f", "_r"])[COLUMNAS]
+               .sort_values("fecha"))
+    sp = config.DATA_PROC / salida
+    _guardar(out, sp)
+    print(f"\nConsolidado: {len(todo)} filas -> {len(out)} unicas por fixture_id -> {sp.name}")
+
+
 def main() -> None:
     if len(sys.argv) < 2:
-        print("Uso: python -m src.validacion [registrar <id> | actualizar | reporte]")
+        print("Uso: python -m src.validacion [registrar <id> | actualizar | reporte | "
+              "consolidar [logs...]]")
         return
     cmd = sys.argv[1]
     if cmd == "registrar" and len(sys.argv) >= 3:
@@ -187,8 +251,11 @@ def main() -> None:
         actualizar_resultados()
     elif cmd == "reporte":
         reporte()
+    elif cmd == "consolidar":
+        consolidar(sys.argv[2:] or [CANONICO, DEV])
     else:
-        print("Comando no reconocido. Uso: registrar <id> | actualizar | reporte")
+        print("Comando no reconocido. Uso: registrar <id> | actualizar | reporte | "
+              "consolidar [logs...]")
 
 
 if __name__ == "__main__":
