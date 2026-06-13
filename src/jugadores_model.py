@@ -224,14 +224,19 @@ class JugadoresModel:
             n = completar_a - n_real
             faltas += [config.SHADOW_FALTAS_90] * n
             tarj += [config.SHADOW_TARJETAS_90] * n
-            return {"faltas": float(np.nansum(faltas)), "tarjetas": float(np.nansum(tarj))}
+            faltas_tot, tarj_tot = float(np.nansum(faltas)), float(np.nansum(tarj))
+        elif not faltas:
+            faltas_tot, tarj_tot = 11.0, 2.0  # respaldo
+        else:
+            # Sin nacion (legacy): escalamos a un XI completo segun los encontrados
+            escala = completar_a / n_real
+            faltas_tot = float(np.nansum(faltas)) * escala
+            tarj_tot = float(np.nansum(tarj)) * escala
 
-        if not faltas:
-            return {"faltas": 11.0, "tarjetas": 2.0}  # respaldo
-        # Sin nacion (legacy): escalamos a un XI completo segun los encontrados
-        escala = completar_a / n_real
-        return {"faltas": float(np.nansum(faltas)) * escala,
-                "tarjetas": float(np.nansum(tarj)) * escala}
+        # Calibracion club->internacional de FALTAS (las selecciones cometen mas que el promedio
+        # de club): factor data-driven validado en StatsBomb (ver config.ESCALA_FALTAS_SELECCION).
+        # Las tarjetas NO se escalan (su media ya coincidia y no tienen senal predecible).
+        return {"faltas": faltas_tot * config.ESCALA_FALTAS_SELECCION, "tarjetas": tarj_tot}
 
     # ------------------------------------------------------------------ #
     def seleccion_probable(self, nacion: str, formacion=(1, 4, 3, 3),

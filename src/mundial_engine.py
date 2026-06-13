@@ -158,8 +158,8 @@ def _reporte(loc, vis, xi_l, xi_v, pred, params, msg_arb, msg_cal, res) -> None:
     filas = [
         ("Goles 1.5", res["over_1_5_goles"]), ("Goles 2.5", res["over_2_5_goles"]),
         ("Goles 3.5", res["over_3_5_goles"]),
-        ("Faltas 18.5", res["over_18_5_faltas"]), ("Faltas 20.5", res["over_20_5_faltas"]),
-        ("Faltas 22.5", res["over_22_5_faltas"]),
+        ("Faltas 24.5", res["over_24_5_faltas"]), ("Faltas 27.5", res["over_27_5_faltas"]),
+        ("Faltas 30.5", res["over_30_5_faltas"]),
         ("Tarjetas 3.5", res["over_3_5_tarjetas"]), ("Tarjetas 4.5", res["over_4_5_tarjetas"]),
         ("Corners 8.5", res["over_8_5_corners"]), ("Corners 9.5", res["over_9_5_corners"]),
         ("Corners 10.5", res["over_10_5_corners"]),

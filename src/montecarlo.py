@@ -160,9 +160,10 @@ class SimuladorMontecarlo:
             "over_4_5_tarjetas": over(tarj_tot, 4.5),
             "prob_alguna_roja": float(((rl + rv) > 0).mean()),
             "faltas_esp": float(faltas_tot.mean()),
-            "over_18_5_faltas": over(faltas_tot, 18.5),
-            "over_20_5_faltas": over(faltas_tot, 20.5),
-            "over_22_5_faltas": over(faltas_tot, 22.5),
+            # Umbrales centrados en el nivel internacional (~28 faltas/partido tras calibrar)
+            "over_24_5_faltas": over(faltas_tot, 24.5),
+            "over_27_5_faltas": over(faltas_tot, 27.5),
+            "over_30_5_faltas": over(faltas_tot, 30.5),
             "corners_esp": float(corner_tot.mean()),
             "over_8_5_corners": over(corner_tot, 8.5),
             "over_9_5_corners": over(corner_tot, 9.5),

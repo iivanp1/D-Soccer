@@ -209,3 +209,10 @@ NACION_CONFED = {
 # 11 x 1.1 = ~12 faltas/equipo, 11 x 0.18 = ~2 tarjetas/equipo.
 SHADOW_FALTAS_90 = 1.10
 SHADOW_TARJETAS_90 = 0.18
+
+# Calibracion club->internacional de FALTAS (DATA-DRIVEN, src/validar_estilos_statsbomb.py):
+# las selecciones cometen mas faltas que el promedio de club. Sobre 244 equipos-partido de
+# StatsBomb, el modelo predecia 11.9 y la realidad internacional era 14.4 -> factor ~1.21.
+# Recalibrado, el modelo le gana al baseline en faltas (MAE 3.50 vs 3.67, +4.8%). Se aplica en
+# disciplina_seleccion. Las tarjetas NO se escalan (su media ya coincidia; ademas no hay senal).
+ESCALA_FALTAS_SELECCION = 1.21
