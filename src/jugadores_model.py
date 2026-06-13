@@ -105,9 +105,13 @@ class JugadoresModel:
 
     # --- Hibrido con Elo de selecciones (columna vertebral; arregla sub-diferenciacion) ---
     elo: dict = field(default_factory=dict)   # {codigo: {overall, off, def}}
-    # Peso del Elo en el hibrido: lam = w*lam_elo + (1-w)*lam_player. 0.65 PROVISIONAL
-    # (recentra al mercado con el Elo ya calibrado); el valor final sale del tuneo con datos.
-    w_elo: float = 0.65
+    # Peso del Elo en el hibrido: lam = w*lam_elo + (1-w)*lam_player. 0.85 DATA-DRIVEN:
+    # validar_statsbomb (83-110 partidos reales) mostro que el Elo le gana al modelo de
+    # jugadores en 1X2 (acierto 82% vs 74%; optimo de Brier en w=1.0). Se deja 0.85 (no 1.0)
+    # para conservar ~15% del modelo de jugadores como senal para alineaciones rotadas, que
+    # la muestra de torneo (XI full) no mide. El player model sigue 100% activo para los
+    # mercados secundarios (tarjetas/faltas/corners via Montecarlo), donde el Elo no llega.
+    w_elo: float = 0.85
 
     _entrenado: bool = False
 
