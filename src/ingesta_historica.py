@@ -176,6 +176,41 @@ def _stats_jugador(events: list) -> dict:
     return acc
 
 
+def _stats_equipo(events: list) -> dict:
+    """Por equipo (para mercados secundarios): faltas (Foul Committed), tarjetas (cards de
+    Foul Committed + Bad Behaviour; Second Yellow cuenta como roja) y corners (Pass tipo Corner)."""
+    acc: dict[str, dict] = {}
+
+    def fila(t):
+        f = acc.get(t)
+        if f is None:
+            f = {"faltas": 0, "amarillas": 0, "rojas": 0, "tarjetas": 0, "corners": 0}
+            acc[t] = f
+        return f
+
+    for ev in events:
+        equipo = ev.get("team", {}).get("name")
+        if not equipo:
+            continue
+        tipo = ev.get("type", {}).get("name")
+        f = fila(equipo)
+        card = None
+        if tipo == "Foul Committed":
+            f["faltas"] += 1
+            card = (ev.get("foul_committed", {}).get("card") or {}).get("name")
+        elif tipo == "Bad Behaviour":
+            card = (ev.get("bad_behaviour", {}).get("card") or {}).get("name")
+        if card:
+            f["tarjetas"] += 1
+            if "Red" in card or "Second Yellow" in card:
+                f["rojas"] += 1
+            else:
+                f["amarillas"] += 1
+        if (ev.get("pass", {}).get("type") or {}).get("name") == "Corner":
+            f["corners"] += 1
+    return acc
+
+
 # --------------------------------------------------------------------------- #
 #  SQLite (idempotente por PRIMARY KEY)
 # --------------------------------------------------------------------------- #
@@ -194,6 +229,10 @@ def _crear_tablas(con: sqlite3.Connection) -> None:
         pases INTEGER, pases_completados INTEGER, remates INTEGER, goles INTEGER,
         xg REAL, recuperaciones INTEGER, intercepciones INTEGER,
         PRIMARY KEY (match_id, player_id));
+    CREATE TABLE IF NOT EXISTS equipo_partido_stats (
+        match_id INTEGER, equipo TEXT, es_local INTEGER,
+        faltas INTEGER, amarillas INTEGER, rojas INTEGER, tarjetas INTEGER, corners INTEGER,
+        PRIMARY KEY (match_id, equipo));
     """)
     con.commit()
 
@@ -241,6 +280,12 @@ def _procesar_partido(con: sqlite3.Connection, m: dict, comp: dict) -> None:
             (mid, pid, f["player"], _normalizar(f["player"] or ""), jug_equipo.get(pid),
              f["pases"], f["pases_completados"], f["remates"], f["goles"],
              round(f["xg"], 4), f["recuperaciones"], f["intercepciones"]))
+
+    for equipo, s in _stats_equipo(events).items():
+        con.execute(
+            "INSERT OR REPLACE INTO equipo_partido_stats VALUES (?,?,?,?,?,?,?,?)",
+            (mid, equipo, 1 if equipo == local else 0,
+             s["faltas"], s["amarillas"], s["rojas"], s["tarjetas"], s["corners"]))
     con.commit()
 
 
