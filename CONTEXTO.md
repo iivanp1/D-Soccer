@@ -167,12 +167,18 @@ MLS (Messi), Saudí (Cristiano), Brasileirão.
 - **Servidor Debian** (homelab Proxmox, Tailscale), proyecto en `/root/D-Soccer`, rama
   `feature/api-football`, venv en `venv/`.
 - **Bot de Telegram**: `@D_SoccerBot`. Credenciales en `.env` (NO en git).
-- **Cron (3 tareas)**:
+- **Cron (3 tareas)** — ⚠️ **CADA línea DEBE empezar con `cd /root/D-Soccer &&`**. Sin el `cd`,
+  cron corre desde `/root` y `python -m src.autorun` falla con `ModuleNotFoundError: No module named
+  'src'` (cron NO se para en el dir del proyecto). Este bug tuvo el aviso de Telegram caído un tiempo.
+  Instalá el crontab completo de una con `crontab - <<'EOF' ... EOF`:
+  ```cron
+  */15 * * * * cd /root/D-Soccer && /root/D-Soccer/venv/bin/python -m src.autorun registrar  >> /root/D-Soccer/autorun.log 2>&1
+  0 * * * *    cd /root/D-Soccer && /root/D-Soccer/venv/bin/python -m src.autorun actualizar >> /root/D-Soccer/autorun.log 2>&1
+  0 5 * * 0    cd /root/D-Soccer && /root/D-Soccer/venv/bin/python -m src.elo_history --refrescar >> /root/D-Soccer/elo_refresh.log 2>&1
   ```
-  */15 * * * *  python -m src.autorun registrar    # cada 15 min: registra 20-45 min antes + Telegram
-  0 * * * *     python -m src.autorun actualizar   # cada hora: baja resultados
-  0 5 * * 0     python -m src.elo_history --refrescar  # domingos: recalibra el Elo
-  ```
+  Verificar: `crontab -l` (las 3 con `cd`) + correr `registrar` a mano → debe imprimir
+  `[autorun] ... | 0 partidos en ventana` SIN `No module named src`. El crontab vive en el sistema,
+  NO en git → un `git pull` no lo toca (igual que el `.env`, que es gitignored).
 - **Flujo automático**: ~30-40 min antes de cada partido del Mundial, el server predice con la
   alineación confirmada, compara con las cuotas reales, detecta valor, y manda el **reporte
   completo a Telegram**. Después del partido baja el resultado → el log crece para validar.
