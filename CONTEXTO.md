@@ -65,6 +65,7 @@ API-Football ────────▶ fixtures.py (XI, árbitro, cuotas) ─�
 | `telegram_alert.py` | Notificaciones push (solo `requests`, lee `.env`): reporte completo del partido | ✅ |
 | `validacion.py` | Log de predicciones forward + cuotas + resultados + Brier vs **mercado**. Log **canónico (server) vs -dev (local)** por `D_SOCCER_CANONICAL` + comando `consolidar` (dedup por `fixture_id`) | ✅ |
 | `tunear_w.py` | Tunea **`w`** (Elo vs jugadores) sobre el harvest minimizando Brier + LOO. Carga el Elo (que `harvest.py` no hacía). Cero gasto de API | ✅ |
+| `ingesta_historica.py` | **Cosechador StatsBomb Open Data** (gratis, sin cuota): ~314 partidos de selecciones 2018-24 con XI real + **xG real** → SQLite `dsoccer_historico.db`. Aislado, idempotente por `match_id` | ✅ |
 | `harvest.py` | Validación histórica (internacionales 2024 con alineaciones, ratings período-correctos) | ✅ |
 | `autorun.py` | **Punto de entrada del cron**: registra partidos 20-45 min antes (alineación real) + Telegram + actualiza resultados | ✅ |
 | `demo.py` | Demo del modelo de clubes | ✅ |
@@ -184,6 +185,7 @@ python -m src.validacion consolidar [logs...]    # une logs SIN duplicar (clave 
 python -m src.backtest                           # goles de clubes
 python -m src.harvest 4 2024 46                  # histórico (4=Euro, 9=Copa, 10=amistosos)
 python -m src.tunear_w [ligas...]                # tunea w (Elo vs jugadores) sobre el harvest
+python -m src.ingesta_historica --desde 2018 --export-csv   # cosecha StatsBomb -> SQLite (gratis)
 ```
 
 ---
