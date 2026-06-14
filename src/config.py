@@ -190,13 +190,14 @@ NACION_CONFED = {
     "DEN": "UEFA", "POL": "UEFA", "SRB": "UEFA", "WAL": "UEFA", "SCO": "UEFA",
     "AUT": "UEFA", "UKR": "UEFA", "SWE": "UEFA", "NOR": "UEFA", "TUR": "UEFA",
     "CZE": "UEFA", "HUN": "UEFA", "ALB": "UEFA", "SVN": "UEFA", "SVK": "UEFA",
-    "ROU": "UEFA", "GEO": "UEFA",
+    "ROU": "UEFA", "GEO": "UEFA", "BIH": "UEFA",
     # AFC
     "JPN": "AFC", "KOR": "AFC", "KSA": "AFC", "IRN": "AFC", "AUS": "AFC",
     "QAT": "AFC", "IRQ": "AFC", "UAE": "AFC", "UZB": "AFC", "JOR": "AFC",
     # CONCACAF
     "USA": "CONCACAF", "MEX": "CONCACAF", "CAN": "CONCACAF", "CRC": "CONCACAF",
     "PAN": "CONCACAF", "JAM": "CONCACAF", "HON": "CONCACAF", "CUW": "CONCACAF",
+    "HAI": "CONCACAF",
     # CAF
     "MAR": "CAF", "SEN": "CAF", "NGA": "CAF", "EGY": "CAF", "GHA": "CAF",
     "CMR": "CAF", "CIV": "CAF", "TUN": "CAF", "ALG": "CAF", "MLI": "CAF",
