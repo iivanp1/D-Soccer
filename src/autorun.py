@@ -73,10 +73,14 @@ def registrar_proximos() -> None:
                 continue
             min_faltan = (ko - ahora).total_seconds() / 60.0
             if MIN_ANTES <= min_faltan <= MAX_ANTES:
-                cl = _codigo_nacion(f["teams"]["home"]["name"])
-                cv = _codigo_nacion(f["teams"]["away"]["name"])
+                nl, nv = f["teams"]["home"]["name"], f["teams"]["away"]["name"]
+                cl, cv = _codigo_nacion(nl), _codigo_nacion(nv)
                 if cl and cv:  # solo si sabemos mapear ambas selecciones
                     ids.append(f["fixture"]["id"])
+                else:  # esta en ventana pero falta mapear -> avisar (si no, se saltea en silencio)
+                    falta = nl if not cl else nv
+                    print(f"[autorun] OJO: {nl} vs {nv} en ventana pero '{falta}' SIN MAPEAR "
+                          f"-> no se registra. Agregar a fixtures.PAIS_API_A_CODIGO.")
 
     print(f"[autorun] {ahora:%Y-%m-%d %H:%M} UTC | {len(ids)} partidos en ventana "
           f"({MIN_ANTES:.0f}-{MAX_ANTES:.0f} min al inicio)")

@@ -162,6 +162,18 @@ PAIS_API_A_CODIGO = {
     # Resto de CONMEBOL / CONCACAF (Copa America)
     "peru": "PER", "chile": "CHI", "venezuela": "VEN", "bolivia": "BOL",
     "panama": "PAN", "costa rica": "CRC",
+    # --- Mundial 2026: resto de selecciones de TODAS las confederaciones ---
+    # AFC
+    "australia": "AUS", "saudi arabia": "KSA", "iran": "IRN", "ir iran": "IRN",
+    "uzbekistan": "UZB", "jordan": "JOR", "iraq": "IRQ", "united arab emirates": "UAE",
+    # CAF
+    "ivory coast": "CIV", "cote d'ivoire": "CIV", "tunisia": "TUN", "algeria": "ALG",
+    "cape verde islands": "CPV", "cape verde": "CPV", "dr congo": "COD", "congo dr": "COD",
+    "mali": "MLI",
+    # CONCACAF
+    "jamaica": "JAM", "honduras": "HON", "curacao": "CUW",
+    # OFC
+    "new zealand": "NZL",
 }
 
 

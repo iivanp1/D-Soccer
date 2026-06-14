@@ -193,14 +193,14 @@ NACION_CONFED = {
     "ROU": "UEFA", "GEO": "UEFA",
     # AFC
     "JPN": "AFC", "KOR": "AFC", "KSA": "AFC", "IRN": "AFC", "AUS": "AFC",
-    "QAT": "AFC", "IRQ": "AFC", "UAE": "AFC", "UZB": "AFC",
+    "QAT": "AFC", "IRQ": "AFC", "UAE": "AFC", "UZB": "AFC", "JOR": "AFC",
     # CONCACAF
     "USA": "CONCACAF", "MEX": "CONCACAF", "CAN": "CONCACAF", "CRC": "CONCACAF",
-    "PAN": "CONCACAF", "JAM": "CONCACAF", "HON": "CONCACAF",
+    "PAN": "CONCACAF", "JAM": "CONCACAF", "HON": "CONCACAF", "CUW": "CONCACAF",
     # CAF
     "MAR": "CAF", "SEN": "CAF", "NGA": "CAF", "EGY": "CAF", "GHA": "CAF",
     "CMR": "CAF", "CIV": "CAF", "TUN": "CAF", "ALG": "CAF", "MLI": "CAF",
-    "RSA": "CAF",
+    "RSA": "CAF", "CPV": "CAF", "COD": "CAF",
     # OFC
     "NZL": "OFC",
 }

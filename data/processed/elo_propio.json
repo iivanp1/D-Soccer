@@ -1,6 +1,6 @@
 {
   "SCO": {
-    "overall": 1874.7
+    "overall": 1891.6
   },
   "ENG": {
     "overall": 2099.4
@@ -9,10 +9,10 @@
     "overall": 1758.0
   },
   "USA": {
-    "overall": 1852.8
+    "overall": 1906.2
   },
   "CAN": {
-    "overall": 1908.1
+    "overall": 1886.5
   },
   "URU": {
     "overall": 1970.0
@@ -33,13 +33,13 @@
     "overall": 2135.8
   },
   "SUI": {
-    "overall": 1949.3
+    "overall": 1925.3
   },
   "NED": {
     "overall": 2018.2
   },
   "RSA": {
-    "overall": 1666.8
+    "overall": 1657.5
   },
   "GER": {
     "overall": 2015.4
@@ -60,13 +60,13 @@
     "overall": 1795.4
   },
   "BRA": {
-    "overall": 2058.8
+    "overall": 2054.1
   },
   "JPN": {
     "overall": 2018.4
   },
   "PAR": {
-    "overall": 1929.1
+    "overall": 1875.6
   },
   "ROU": {
     "overall": 1698.2
@@ -86,20 +86,35 @@
   "POL": {
     "overall": 1782.1
   },
+  "NZL": {
+    "overall": 1735.8
+  },
+  "AUS": {
+    "overall": 1973.4
+  },
   "MEX": {
-    "overall": 1972.1
+    "overall": 1981.4
   },
   "TUR": {
-    "overall": 1979.4
+    "overall": 1926.9
+  },
+  "CUW": {
+    "overall": 1615.7
   },
   "HAI": {
-    "overall": 1712.2
+    "overall": 1695.3
+  },
+  "JAM": {
+    "overall": 1666.0
   },
   "BOL": {
     "overall": 1726.7
   },
   "PER": {
     "overall": 1767.8
+  },
+  "HON": {
+    "overall": 1708.9
   },
   "UKR": {
     "overall": 1833.0
@@ -122,11 +137,17 @@
   "CRO": {
     "overall": 1986.2
   },
+  "IRN": {
+    "overall": 1904.3
+  },
   "ALB": {
     "overall": 1686.2
   },
+  "COD": {
+    "overall": 1767.8
+  },
   "KOR": {
-    "overall": 1896.8
+    "overall": 1920.0
   },
   "NGA": {
     "overall": 1879.8
@@ -140,14 +161,41 @@
   "CMR": {
     "overall": 1724.7
   },
+  "TUN": {
+    "overall": 1743.3
+  },
   "MAR": {
-    "overall": 2003.7
+    "overall": 2008.4
+  },
+  "CPV": {
+    "overall": 1650.1
+  },
+  "CIV": {
+    "overall": 1816.5
+  },
+  "MLI": {
+    "overall": 1710.7
+  },
+  "IRQ": {
+    "overall": 1745.6
   },
   "SEN": {
     "overall": 1909.0
   },
+  "ALG": {
+    "overall": 1892.5
+  },
+  "JOR": {
+    "overall": 1786.4
+  },
+  "KSA": {
+    "overall": 1707.5
+  },
   "QAT": {
-    "overall": 1569.9
+    "overall": 1593.9
+  },
+  "UAE": {
+    "overall": 1677.2
   },
   "GEO": {
     "overall": 1711.9
@@ -155,10 +203,13 @@
   "SVN": {
     "overall": 1732.3
   },
+  "UZB": {
+    "overall": 1837.9
+  },
   "CZE": {
-    "overall": 1815.8
+    "overall": 1792.7
   },
   "BIH": {
-    "overall": 1662.9
+    "overall": 1684.5
   }
 }
