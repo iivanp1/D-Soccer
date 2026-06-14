@@ -36,6 +36,8 @@ downloaded_files/
 .env
 *.key
 secrets.*
+# Lista de chat_ids de Telegram (datos personales de los suscriptores)
+suscriptores.txt
 
 # Entornos / IDE
 .vscode/

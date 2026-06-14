@@ -17,6 +17,7 @@ Funciones:
 from __future__ import annotations
 
 import os
+import sys
 from datetime import datetime, timezone
 
 import requests
@@ -24,31 +25,51 @@ import requests
 from src import config
 from src.ev_calculator import calcular_ev
 
+SUSCRIPTORES = config.RAIZ / "suscriptores.txt"
 
-def _credenciales() -> tuple[str | None, str | None]:
-    config.cargar_env()  # asegura que el .env este cargado en os.environ
-    return os.environ.get("TELEGRAM_TOKEN"), os.environ.get("TELEGRAM_CHAT_ID")
+
+def _recipientes() -> list[str]:
+    """Chat_ids a los que mandar: el/los del .env (TELEGRAM_CHAT_ID, o TELEGRAM_CHAT_IDS separados
+    por coma) MAS los de suscriptores.txt (en la raiz, gitignored). Asi sumas amigos sin tocar
+    codigo: cada uno le escribe al bot, sacas su chat_id con 'python -m src.telegram_alert --quien'
+    y lo agregas a suscriptores.txt (una linea por persona; 'chat_id  # Nombre' permitido)."""
+    config.cargar_env()
+    ids: list[str] = []
+    for var in ("TELEGRAM_CHAT_ID", "TELEGRAM_CHAT_IDS"):
+        ids += [x.strip() for x in os.environ.get(var, "").split(",") if x.strip()]
+    if SUSCRIPTORES.exists():
+        for linea in SUSCRIPTORES.read_text(encoding="utf-8").splitlines():
+            cid = linea.split("#", 1)[0].strip()  # corta el comentario/nombre
+            if cid:
+                ids.append(cid)
+    return list(dict.fromkeys(ids))  # dedupe preservando orden
 
 
 def enviar_mensaje(texto: str) -> bool:
-    """Envia un mensaje a Telegram. Devuelve True si salio bien."""
-    token, chat = _credenciales()
-    if not (token and chat):
-        print("[telegram] faltan TELEGRAM_TOKEN / TELEGRAM_CHAT_ID (ver .env)")
+    """Envia un mensaje a TODOS los destinatarios. True si llego al menos a uno."""
+    config.cargar_env()
+    token = os.environ.get("TELEGRAM_TOKEN")
+    chats = _recipientes()
+    if not token or not chats:
+        print("[telegram] falta TELEGRAM_TOKEN o no hay destinatarios (.env / suscriptores.txt)")
         return False
-    try:
-        r = requests.post(
-            f"https://api.telegram.org/bot{token}/sendMessage",
-            json={"chat_id": chat, "text": texto, "parse_mode": "Markdown",
-                  "disable_web_page_preview": True},
-            timeout=20,
-        )
-        if r.status_code != 200:
-            print(f"[telegram] error {r.status_code}: {r.text[:120]}")
-        return r.status_code == 200
-    except requests.RequestException as e:
-        print(f"[telegram] fallo de red: {e}")
-        return False
+    ok = 0
+    for chat in chats:
+        try:
+            r = requests.post(
+                f"https://api.telegram.org/bot{token}/sendMessage",
+                json={"chat_id": chat, "text": texto, "parse_mode": "Markdown",
+                      "disable_web_page_preview": True},
+                timeout=20,
+            )
+            if r.status_code == 200:
+                ok += 1
+            else:
+                print(f"[telegram] error chat {chat}: {r.status_code} {r.text[:100]}")
+        except requests.RequestException as e:
+            print(f"[telegram] fallo de red chat {chat}: {e}")
+    print(f"[telegram] enviado a {ok}/{len(chats)} destinatarios")
+    return ok > 0
 
 
 def enviar_alerta(partido: str, pick: str, probabilidad: float, cuota: float, ev: float) -> bool:
@@ -82,51 +103,80 @@ def enviar_reporte_partido(info: dict, cuotas: dict | None) -> bool:
     pl, pe, pv = r["prob_local"], r["prob_empate"], r["prob_visitante"]
     gl, gv = r["goles_esp"]
     marc = r["marcadores_top"][0][0] if r.get("marcadores_top") else (0, 0)
+    o245, o275, o305 = (r.get("over_24_5_faltas", 0), r.get("over_27_5_faltas", 0),
+                        r.get("over_30_5_faltas", 0))
 
     msg = [
         f"⚽ *{loc} vs {vis}*",
         f"🕐 {_horas_para(info.get('fecha',''))}  |  Arbitro: {info.get('arbitro') or 's/d'}",
         "",
-        "📊 *Modelo (1X2)*",
-        f"🏠 {loc}: *{pl*100:.0f}%*   🤝 Empate: *{pe*100:.0f}%*   ✈️ {vis}: *{pv*100:.0f}%*",
-        f"Goles esp: *{gl:.2f} - {gv:.2f}*   |   Marcador prob: *{marc[0]}-{marc[1]}*",
+        # FALTAS primero: el UNICO mercado con edge validado (+4.8% vs baseline).
+        "⭐ *FALTAS — nuestro edge (+4.8% validado)*",
+        f"Total esperado: *{r.get('faltas_esp', 0):.0f}*   (prob. over)",
+        f"   24.5: *{o245*100:.0f}%*    ·    27.5: *{o275*100:.0f}%*    ·    30.5: *{o305*100:.0f}%*",
+        "_Compara con la linea de faltas de tu casa de apuestas._",
         "",
-        "📋 *Otros mercados (esperado)*",
-        f"⚽ Over 2.5: *{r['over_2_5_goles']*100:.0f}%*   "
-        f"🟨 Tarjetas: *{r['tarjetas_esp']:.1f}*   "
-        f"🚩 Faltas: *{r['faltas_esp']:.0f}*   ⛳ Corners: *{r['corners_esp']:.0f}*",
+        # 1X2: el Elo ~= mercado. Soporte de decision, pero NO le ganamos al mercado aca.
+        "📊 *1X2*  _(≈ mercado: soporte, sin edge propio)_",
+        f"🏠 {loc}: *{pl*100:.0f}%*   🤝 *{pe*100:.0f}%*   ✈️ {vis}: *{pv*100:.0f}%*",
+        f"Goles {gl:.2f}-{gv:.2f}  ·  Marcador {marc[0]}-{marc[1]}  ·  Over 2.5: {r['over_2_5_goles']*100:.0f}%",
+        "",
+        # Tarjetas/corners: sin senal predecible (validado). Solo informativo.
+        "⚠️ *Tarjetas / Corners — sin senal, NO apostar*",
+        f"Tarjetas ~{r.get('tarjetas_esp', 0):.1f}   ·   Corners ~{r.get('corners_esp', 0):.0f}   _(informativo)_",
     ]
 
-    valor = []
     if cuotas:
-        msg += ["", "💰 *vs Mercado (cuota | EV)*"]
-        mercados = [
-            (f"{loc}", pl, cuotas.get("Home")),
-            ("Empate", pe, cuotas.get("Draw")),
-            (f"{vis}", pv, cuotas.get("Away")),
-            ("Over 2.5", r["over_2_5_goles"], cuotas.get("Over")),
-        ]
-        for nombre, prob, mkt in mercados:
+        msg += ["", "💰 *vs Mercado (1X2 + O/U goles) — referencia*"]
+        for nombre, prob, mkt in [(loc, pl, cuotas.get("Home")), ("Empate", pe, cuotas.get("Draw")),
+                                  (vis, pv, cuotas.get("Away")),
+                                  ("Over 2.5", r["over_2_5_goles"], cuotas.get("Over"))]:
             if not mkt:
                 continue
-            ev, es_valor = calcular_ev(prob, mkt["mejor"])
-            flag = "  ✅" if es_valor else ""
-            msg.append(f"{nombre}: @ {mkt['mejor']:.2f}  ->  EV *{ev:+.0f}%*{flag}")
-            if es_valor:
-                valor.append((nombre, ev, mkt["mejor"]))
-
-    if valor:
-        valor.sort(key=lambda x: -x[1])
-        msg += ["", "📈 *VALOR detectado:*"]
-        msg += [f"   • *{n}* (EV {ev:+.0f}% @ {c:.2f})" for n, ev, c in valor]
-        msg += ["", "⚠️ _El valor es tan confiable como el modelo (selecciones aun en validacion)._"]
-    elif cuotas:
-        msg += ["", "📈 Sin valor claro segun el modelo. _(igual decidi vos)_"]
+            ev, _ = calcular_ev(prob, mkt["mejor"])
+            msg.append(f"{nombre}: @ {mkt['mejor']:.2f}  ->  EV {ev:+.0f}%")
+        msg += ["_El 1X2 ≈ mercado: EV cerca de 0 es lo esperado, no busques ganarle aca._"]
 
     return enviar_mensaje("\n".join(msg))
 
 
+def listar_chats() -> None:
+    """Muestra los chat_ids de quienes le escribieron al bot (getUpdates) para agregarlos a
+    suscriptores.txt. Cada persona primero tiene que mandarle /start a @D_SoccerBot."""
+    config.cargar_env()
+    token = os.environ.get("TELEGRAM_TOKEN")
+    if not token:
+        print("Falta TELEGRAM_TOKEN en el .env.")
+        return
+    try:
+        data = requests.get(f"https://api.telegram.org/bot{token}/getUpdates", timeout=20).json()
+    except requests.RequestException as e:
+        print(f"fallo de red: {e}")
+        return
+    vistos = {}
+    for upd in data.get("result", []):
+        chat = (upd.get("message") or upd.get("channel_post") or {}).get("chat", {})
+        if chat.get("id"):
+            vistos[chat["id"]] = (chat.get("first_name") or chat.get("title")
+                                  or chat.get("username") or "")
+    if not vistos:
+        print("Nadie le escribio al bot ultimamente (o ya expiraron los updates de Telegram).")
+        print("Pedile a la persona que le mande /start a @D_SoccerBot y volve a correr esto.")
+        return
+    print("Chats que le escribieron al bot (copialos a suscriptores.txt, uno por linea):\n")
+    for cid, nom in vistos.items():
+        print(f"  {cid}  # {nom}")
+    print(f"\nDestinatarios actuales configurados: {len(_recipientes())}")
+
+
+def main() -> None:
+    if "--quien" in sys.argv:
+        listar_chats()
+        return
+    # Sin args: ping de prueba a TODOS los destinatarios.
+    ok = enviar_mensaje("✅ *D-Soccer* conectado. Listo para avisarte del Mundial.")
+    print("Ping enviado." if ok else "No se pudo enviar (revisa .env / suscriptores.txt).")
+
+
 if __name__ == "__main__":
-    # Prueba rapida de credenciales/envio
-    ok = enviar_mensaje("✅ *D-Soccer* conectado a Telegram. Listo para avisarte del Mundial.")
-    print("Mensaje enviado OK" if ok else "No se pudo enviar (revisa .env / credenciales)")
+    main()
