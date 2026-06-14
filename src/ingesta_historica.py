@@ -219,7 +219,8 @@ def _crear_tablas(con: sqlite3.Connection) -> None:
     CREATE TABLE IF NOT EXISTS partidos (
         match_id INTEGER PRIMARY KEY, comp_id INTEGER, competicion TEXT, season TEXT,
         fecha TEXT, etapa TEXT, equipo_local TEXT, equipo_visitante TEXT,
-        goles_local INTEGER, goles_visitante INTEGER, resultado TEXT, ingestado_en TEXT);
+        goles_local INTEGER, goles_visitante INTEGER, resultado TEXT, ingestado_en TEXT,
+        arbitro TEXT);
     CREATE TABLE IF NOT EXISTS alineaciones (
         match_id INTEGER, equipo TEXT, es_local INTEGER, player_id INTEGER,
         player TEXT, player_norm TEXT, posicion TEXT, es_titular INTEGER,
@@ -234,6 +235,11 @@ def _crear_tablas(con: sqlite3.Connection) -> None:
         faltas INTEGER, amarillas INTEGER, rojas INTEGER, tarjetas INTEGER, corners INTEGER,
         PRIMARY KEY (match_id, equipo));
     """)
+    # Migracion: CREATE IF NOT EXISTS no altera tablas viejas -> agregamos 'arbitro' si falta.
+    try:
+        con.execute("ALTER TABLE partidos ADD COLUMN arbitro TEXT")
+    except sqlite3.OperationalError:
+        pass  # la columna ya existe
     con.commit()
 
 
@@ -260,11 +266,12 @@ def _procesar_partido(con: sqlite3.Connection, m: dict, comp: dict) -> None:
     stats = _stats_jugador(events)
 
     con.execute(
-        "INSERT OR REPLACE INTO partidos VALUES (?,?,?,?,?,?,?,?,?,?,?,?)",
+        "INSERT OR REPLACE INTO partidos VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)",
         (mid, comp["competition_id"], comp["competition_name"], str(comp["season_name"]),
          m.get("match_date"), m.get("competition_stage", {}).get("name"),
          local, visit, gl, gv, _resultado(gl, gv),
-         datetime.now(timezone.utc).isoformat(timespec="seconds")))
+         datetime.now(timezone.utc).isoformat(timespec="seconds"),
+         (m.get("referee") or {}).get("name")))
 
     for equipo, pid, nombre, pos in plantel:
         if pid is None:
