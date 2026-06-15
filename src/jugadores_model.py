@@ -207,7 +207,7 @@ class JugadoresModel:
         return self
 
     def disciplina_seleccion(self, lista_jugadores: list[str], nacion: str | None = None,
-                             completar_a: int = 11) -> dict:
+                             completar_a: int = 11, factor_faltas: float | None = None) -> dict:
         """Faltas y tarjetas esperadas de una seleccion, sumando la disciplina del XI.
 
         Cada jugador aporta sus faltas/tarjetas por 90; el equipo es la suma sobre los 11.
@@ -233,10 +233,12 @@ class JugadoresModel:
             faltas_tot = float(np.nansum(faltas)) * escala
             tarj_tot = float(np.nansum(tarj)) * escala
 
-        # Calibracion club->internacional de FALTAS (las selecciones cometen mas que el promedio
-        # de club): factor data-driven validado en StatsBomb (ver config.ESCALA_FALTAS_SELECCION).
-        # Las tarjetas NO se escalan (su media ya coincidia y no tienen senal predecible).
-        return {"faltas": faltas_tot * config.ESCALA_FALTAS_SELECCION, "tarjetas": tarj_tot}
+        # Calibracion club->internacional de FALTAS: factor data-driven (config.ESCALA_FALTAS_SELECCION
+        # = 1.21 base global). Si se pasa factor_faltas (de arbitros_faltas.py, con shrinkage
+        # bayesiano por historial del arbitro) se usa ese en su lugar. Backward-compatible:
+        # sin factor_faltas -> identico al comportamiento anterior.
+        escala = factor_faltas if factor_faltas is not None else config.ESCALA_FALTAS_SELECCION
+        return {"faltas": faltas_tot * escala, "tarjetas": tarj_tot}
 
     # ------------------------------------------------------------------ #
     def seleccion_probable(self, nacion: str, formacion=(1, 4, 3, 3),

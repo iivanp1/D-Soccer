@@ -96,10 +96,18 @@ def correr(nacion_local: str, nacion_visit: str,
     xi_v = xi_visit or jm.seleccion_probable(nacion_visit)
 
     pred = jm.predecir_partido_mundial(xi_l, xi_v, nacion_local, nacion_visit)
-    disc_l = jm.disciplina_seleccion(xi_l, nacion_local)
-    disc_v = jm.disciplina_seleccion(xi_v, nacion_visit)
 
-    # --- 2. Arbitro -> escala las tarjetas (no las faltas) ---
+    # --- 2. Arbitro: factor para FALTAS (StatsBomb intl, shrinkage bayesiano) ---
+    #        + factor para TARJETAS (EstilosModel, datos de club -> siempre neutro para intl)
+    from src.arbitros_faltas import cargar as _cargar_arb, factor_faltas as _get_factor_faltas
+    _datos_arb = _cargar_arb()
+    f_faltas, msg_faltas = _get_factor_faltas(arbitro, _datos_arb)
+
+    disc_l = jm.disciplina_seleccion(xi_l, nacion_local, factor_faltas=f_faltas)
+    disc_v = jm.disciplina_seleccion(xi_v, nacion_visit, factor_faltas=f_faltas)
+
+    # Tarjetas: factor de rigurosidad del arbitro via EstilosModel (clubes).
+    # Los arbitros internacionales casi nunca estan en datos de club -> retorna 1.0 (neutro).
     f_arb, msg_arb = _factor_arbitro(arbitro)
     tarj_l = disc_l["tarjetas"] * f_arb
     tarj_v = disc_v["tarjetas"] * f_arb
@@ -119,11 +127,12 @@ def correr(nacion_local: str, nacion_visit: str,
     # --- 3. Montecarlo: 10.000 universos minuto a minuto ---
     res = SimuladorMontecarlo().simular_partido(parametros, n_simulaciones=n_sims)
 
-    _reporte(nacion_local, nacion_visit, xi_l, xi_v, pred, parametros, msg_arb, msg_cal, res)
+    res["msg_faltas_arbitro"] = msg_faltas  # para Telegram y log
+    _reporte(nacion_local, nacion_visit, xi_l, xi_v, pred, parametros, msg_arb, msg_cal, msg_faltas, res)
     return res  # para que el validador pueda registrar la prediccion
 
 
-def _reporte(loc, vis, xi_l, xi_v, pred, params, msg_arb, msg_cal, res) -> None:
+def _reporte(loc, vis, xi_l, xi_v, pred, params, msg_arb, msg_cal, msg_faltas, res) -> None:
     L = f"{loc}"; V = f"{vis}"
     print("=" * 60)
     print(f"  D-SOCCER | MOTOR MUNDIALISTA + MONTECARLO ({res['n']:,} sims)")
@@ -134,7 +143,8 @@ def _reporte(loc, vis, xi_l, xi_v, pred, params, msg_arb, msg_cal, res) -> None:
           f"(ataque {fl['ataque']:.2f} / defensa {fl['defensa']:.2f})")
     print(f"  XI {V}: {fv['reales']} reales + {fv['sombra']} sombra  "
           f"(ataque {fv['ataque']:.2f} / defensa {fv['defensa']:.2f})")
-    print(f"  Arbitro: {msg_arb}")
+    print(f"  Arbitro (tarjetas): {msg_arb}")
+    print(f"  Arbitro (faltas):   {msg_faltas}")
     print(f"  Mapeo a goles: {msg_cal}")
     h = pred.get("hibrido", {})
     if h.get("elo"):

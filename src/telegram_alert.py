@@ -106,6 +106,7 @@ def enviar_reporte_partido(info: dict, cuotas: dict | None) -> bool:
     o245, o275, o305 = (r.get("over_24_5_faltas", 0), r.get("over_27_5_faltas", 0),
                         r.get("over_30_5_faltas", 0))
 
+    msg_arb_faltas = r.get("msg_faltas_arbitro", "")
     msg = [
         f"⚽ *{loc} vs {vis}*",
         f"🕐 {_horas_para(info.get('fecha',''))}  |  Arbitro: {info.get('arbitro') or 's/d'}",
@@ -114,6 +115,7 @@ def enviar_reporte_partido(info: dict, cuotas: dict | None) -> bool:
         "⭐ *FALTAS — nuestro edge (+4.8% validado)*",
         f"Total esperado: *{r.get('faltas_esp', 0):.0f}*   (prob. over)",
         f"   24.5: *{o245*100:.0f}%*    ·    27.5: *{o275*100:.0f}%*    ·    30.5: *{o305*100:.0f}%*",
+        f"_Arbitro: {msg_arb_faltas}_" if msg_arb_faltas else "",
         "_Compara con la linea de faltas de tu casa de apuestas._",
         "",
         # 1X2: el Elo ~= mercado. Soporte de decision, pero NO le ganamos al mercado aca.
