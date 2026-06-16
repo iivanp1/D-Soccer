@@ -142,6 +142,45 @@ def enviar_reporte_partido(info: dict, cuotas: dict | None) -> bool:
     return enviar_mensaje("\n".join(msg))
 
 
+def enviar_reporte_props(info: dict, props: dict, top: list) -> bool:
+    """Alerta de Player Props: tiros esperados por jugador, con ranking y aviso de calibracion.
+
+    Se envia ~70-80 min antes del KO, cuando el XI ya esta confirmado.
+    Solo incluye jugadores con historial real (fuente != shadow) y lam >= 1.0.
+    """
+    loc, vis = info.get("local", "?"), info.get("visitante", "?")
+    meta = props.get("meta", {})
+    lam_l = meta.get("lam_goles_l", 0)
+    lam_v = meta.get("lam_goles_v", 0)
+
+    msg = [
+        f"🎯 *PLAYER PROPS — {loc} vs {vis}*",
+        f"_XI confirmados. Tiros totales esp.: {loc} ~{lam_l/meta.get('conv_rate',0.091):.0f}"
+        f"  |  {vis} ~{lam_v/meta.get('conv_rate',0.091):.0f}_",
+        "",
+        "*Mas de 1.5 tiros — ranking por λ esperado:*",
+    ]
+
+    for j in top:
+        bar = "█" * int(j["lam"] + 0.5)
+        fuente_icon = "🌍" if j["fuente"] == "intl" else "🏟️"
+        msg.append(
+            f"{fuente_icon} *{j['nombre']}* ({j['nacion']}) "
+            f"λ={j['lam']:.1f}  P(>1.5)={j['p_over_1_5']*100:.0f}%  "
+            f"P(SOT≥1)={j['p_sot_1']*100:.0f}%"
+        )
+
+    msg += [
+        "",
+        "🌍=historial intl  🏟️=datos club escalados",
+        "⚠️ _Prob. ORIENTATIVAS: el modelo sobreestima en valores altos (~20pp)._",
+        "_Usar λ como ranking de quien disparara mas, no como probabilidad exacta._",
+        "_Comparar siempre con la linea real de tu casa antes de apostar._",
+    ]
+
+    return enviar_mensaje("\n".join(m for m in msg if m is not None))
+
+
 def listar_chats() -> None:
     """Muestra los chat_ids de quienes le escribieron al bot (getUpdates) para agregarlos a
     suscriptores.txt. Cada persona primero tiene que mandarle /start a @D_SoccerBot."""

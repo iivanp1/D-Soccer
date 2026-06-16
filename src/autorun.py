@@ -163,6 +163,106 @@ def registrar_proximos() -> None:
             print(f"[autorun] error con fixture {fid}: {type(e).__name__}: {e}")
 
 
+def registrar_props() -> None:
+    """Ventana 20-120 min: detecta WC matches, intenta confirmar XI y calcula Player Props.
+
+    Mas ancha que la ventana de registro (20-45 min) para capturar los lineups en cuanto
+    salen (~75 min antes). Budget: max 3 API calls por fixture, cero si ya CONFIRMED.
+    Solo envia el alerta de props UNA VEZ por fixture (estado PROPS_SENT en disco).
+    """
+    from src.props_lineups import get_estado, poll_y_cachear, marcar_props_sent
+    from src.props_data import cargar as cargar_tiros
+    from src.props_model import calcular_props_partido, top_props
+    from src.telegram_alert import enviar_reporte_props
+
+    log = logging.getLogger("dsoccer.props")
+    ahora = datetime.now(timezone.utc)
+    fechas = [(ahora + timedelta(days=d)).strftime("%Y-%m-%d") for d in (0, 1)]
+
+    datos_tiros = cargar_tiros()
+    if not datos_tiros:
+        log.warning("props: tiros_intl.json no encontrado -> corre python -m src.props_data")
+        return
+
+    import pandas as pd
+    dfj = pd.read_csv(config.DATA_PROC / "jugadores.csv")
+
+    for fecha in fechas:
+        for f in _fixtures_dia(fecha):
+            if not _es_wc(f["league"]["name"]):
+                continue
+            try:
+                ko = datetime.fromisoformat(f["fixture"]["date"])
+            except (ValueError, KeyError):
+                continue
+
+            min_faltan = (ko - ahora).total_seconds() / 60.0
+            if not (20.0 <= min_faltan <= 120.0):
+                continue
+
+            fid = f["fixture"]["id"]
+            nom_l, nom_v = f["teams"]["home"]["name"], f["teams"]["away"]["name"]
+            cod_l, cod_v = _codigo_nacion(nom_l), _codigo_nacion(nom_v)
+            if not cod_l or not cod_v:
+                continue
+
+            est = get_estado(fid)
+            if est["status"] in ("props_sent", "error"):
+                log.info("props fid=%d %s vs %s: status=%s -> skip",
+                         fid, nom_l, nom_v, est["status"])
+                continue
+
+            log.info("props fid=%d %s vs %s | min=%.0f | status=%s -> poll",
+                     fid, nom_l, nom_v, min_faltan, est["status"])
+
+            nuevo_status = poll_y_cachear(fid, nom_l, nom_v, cod_l, cod_v)
+            if nuevo_status != "confirmed":
+                continue
+
+            # XI confirmado -> calcular props y enviar
+            try:
+                from src.props_lineups import get_lineups_confirmados
+                lineups = get_lineups_confirmados(fid)
+                if not lineups:
+                    continue
+
+                # Necesitamos lambda de goles: corremos el engine completo
+                from src.validacion import registrar
+                datos_reg = registrar(fid)  # registra si no estaba, devuelve None si ya estaba
+                if datos_reg is None:
+                    # Ya estaba registrado: buscar info del log
+                    log.info("props fid=%d: ya registrado, calculando props sin re-registrar", fid)
+                    from src.mundial_engine import correr
+                    res_engine = correr(cod_l, cod_v, lineups["xi_l"], lineups["xi_v"],
+                                        f["fixture"].get("referee"), n_sims=5000)
+                    info_props = {
+                        "xi_l": lineups["xi_l"], "xi_v": lineups["xi_v"],
+                        "cod_l": cod_l, "cod_v": cod_v,
+                        "local": nom_l, "visitante": nom_v,
+                        "fecha": f["fixture"]["date"],
+                        "res": res_engine,
+                    }
+                else:
+                    info_props = datos_reg["info"]
+                    info_props["xi_l"] = lineups["xi_l"]
+                    info_props["xi_v"] = lineups["xi_v"]
+
+                props = calcular_props_partido(info_props, dfj, datos_tiros)
+                top = top_props(props)
+                if top:
+                    enviar_reporte_props(info_props, props, top)
+                    marcar_props_sent(fid)
+                    log.info("props fid=%d: alerta enviada (%d jugadores en top)",
+                             fid, len(top))
+                else:
+                    log.info("props fid=%d: sin jugadores con lambda suficiente -> no se envia", fid)
+                    marcar_props_sent(fid)  # igual marcamos para no re-intentar
+
+            except Exception as e:
+                log.error("props fid=%d: error calculando props: %s: %s",
+                          fid, type(e).__name__, e)
+
+
 def main() -> None:
     from src import config
     config.cargar_env()  # carga TELEGRAM_TOKEN/CHAT_ID (y API key si esta en .env)
@@ -176,7 +276,8 @@ def main() -> None:
                                                        type(e).__name__, e)
             print(f"[autorun] error en actualizar: {type(e).__name__}: {e}")
     if cmd in ("todo", "registrar"):
-        registrar_proximos()
+        registrar_props()      # props primero: ventana mas amplia (20-120 min)
+        registrar_proximos()   # reporte completo: ventana 20-45 min
 
 
 if __name__ == "__main__":
