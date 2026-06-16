@@ -1,0 +1,15 @@
+# Lista de destinatarios del bot de Telegram (ademas del TELEGRAM_CHAT_ID del .env).
+# Copia este archivo como 'suscriptores.txt' (esta gitignored -> no se sube al repo).
+#
+# UN chat_id por linea. Podes poner el nombre como comentario despues de '#'.
+# Las lineas que empiezan con '#' se ignoran.
+#
+# COMO CONSEGUIR EL chat_id DE ALGUIEN:
+#   1. La persona le manda /start (o cualquier mensaje) a @D_SoccerBot en Telegram.
+#   2. Vos corres:  python -m src.telegram_alert --quien
+#   3. Copias el numero que aparece a una linea de abajo.
+#
+# Ejemplo:
+# 8919312535   # Ivan (yo)
+# 123456789    # Amigo 1
+# 987654321    # Amigo 2

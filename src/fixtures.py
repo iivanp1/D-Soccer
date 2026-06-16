@@ -23,8 +23,10 @@ Uso:
 
 from __future__ import annotations
 
+import logging
 import os
 import sys
+import time
 
 import pandas as pd
 import requests
@@ -32,6 +34,8 @@ from rapidfuzz import fuzz, process
 
 from src import config
 from src.jugadores_model import _norm
+
+logger = logging.getLogger("dsoccer.fixtures")
 
 API_BASE = "https://v3.football.api-sports.io"
 UMBRAL_MATCH = 82  # score minimo (0-100) para aceptar un emparejamiento de nombres
@@ -102,17 +106,42 @@ def _self_test_matching() -> None:
 # =========================================================================== #
 #  2. CLIENTE API-Football  (pendiente de verificar contra respuesta real)
 # =========================================================================== #
-def _api_get(path: str, params: dict) -> list:
+def _api_get(path: str, params: dict, reintentos: int = 3) -> list:
+    """Cliente API-Football con reintentos, manejo de rate-limit y degradacion graceful.
+
+    Ante errores de red o 429, reintenta con backoff exponencial. Si falla los 3 intentos,
+    loguea el error y devuelve [] (NO lanza excepcion) para no tumbar el cron.
+    Llama al caller con RuntimeError SOLO si falta la API key (error de config, no de red).
+    """
     key = os.environ.get("API_FOOTBALL_KEY", "")
     if not key:
         raise RuntimeError("Falta API_FOOTBALL_KEY. Ver instrucciones en el encabezado del archivo.")
-    resp = requests.get(f"{API_BASE}/{path}", headers={"x-apisports-key": key},
-                        params=params, timeout=30)
-    resp.raise_for_status()
-    data = resp.json()
-    if data.get("errors"):
-        raise RuntimeError(f"API-Football respondio errores: {data['errors']}")
-    return data.get("response", [])
+    for intento in range(reintentos):
+        try:
+            resp = requests.get(
+                f"{API_BASE}/{path}", headers={"x-apisports-key": key},
+                params=params, timeout=20,
+            )
+            if resp.status_code == 429:
+                espera = 30 * (intento + 1)
+                logger.warning("rate-limit 429 en /%s intento %d/%d, esperando %ds",
+                               path, intento + 1, reintentos, espera)
+                time.sleep(espera)
+                continue
+            resp.raise_for_status()
+            data = resp.json()
+            if data.get("errors"):
+                logger.error("API-Football errores en /%s %s: %s", path, params, data["errors"])
+                return []
+            return data.get("response", [])
+        except requests.Timeout:
+            logger.warning("timeout en /%s intento %d/%d", path, intento + 1, reintentos)
+        except requests.RequestException as e:
+            logger.warning("error de red en /%s intento %d/%d: %s", path, intento + 1, reintentos, e)
+        if intento < reintentos - 1:
+            time.sleep(5 * (intento + 1))
+    logger.error("DROP /%s %s tras %d intentos -> devolviendo []", path, params, reintentos)
+    return []
 
 
 def partidos_del_dia(fecha: str) -> list[dict]:
@@ -154,11 +183,33 @@ PAIS_API_A_CODIGO = {
     "england": "ENG", "spain": "ESP", "germany": "GER", "italy": "ITA", "netherlands": "NED",
     "belgium": "BEL", "croatia": "CRO", "uruguay": "URU", "colombia": "COL", "japan": "JPN",
     "senegal": "SEN", "ghana": "GHA", "egypt": "EGY", "cameroon": "CMR", "ecuador": "ECU",
+    # Resto de UEFA (Eurocopa) para validacion historica
+    "hungary": "HUN", "albania": "ALB", "slovenia": "SVN", "slovakia": "SVK",
+    "romania": "ROU", "georgia": "GEO", "serbia": "SRB", "denmark": "DEN",
+    "poland": "POL", "austria": "AUT", "ukraine": "UKR", "turkey": "TUR",
+    "turkiye": "TUR", "wales": "WAL", "sweden": "SWE", "norway": "NOR", "slovakia ": "SVK",
+    # Resto de CONMEBOL / CONCACAF (Copa America)
+    "peru": "PER", "chile": "CHI", "venezuela": "VEN", "bolivia": "BOL",
+    "panama": "PAN", "costa rica": "CRC",
+    # --- Mundial 2026: resto de selecciones de TODAS las confederaciones ---
+    # AFC
+    "australia": "AUS", "saudi arabia": "KSA", "iran": "IRN", "ir iran": "IRN",
+    "uzbekistan": "UZB", "jordan": "JOR", "iraq": "IRQ", "united arab emirates": "UAE",
+    # CAF
+    "ivory coast": "CIV", "cote d'ivoire": "CIV", "tunisia": "TUN", "algeria": "ALG",
+    "cape verde islands": "CPV", "cape verde": "CPV", "dr congo": "COD", "congo dr": "COD",
+    "mali": "MLI",
+    # CONCACAF
+    "jamaica": "JAM", "honduras": "HON", "curacao": "CUW",
+    # OFC
+    "new zealand": "NZL",
 }
 
 
 def _codigo_nacion(nombre_api: str) -> str | None:
-    return PAIS_API_A_CODIGO.get(_norm(nombre_api))
+    # La API usa '&' (ej. "Bosnia & Herzegovina"); nuestro mapeo usa "and". Normalizamos.
+    n = _norm(nombre_api).replace(" & ", " and ").replace("&", "and")
+    return PAIS_API_A_CODIGO.get(n)
 
 
 def correr_partido_auto(fixture_id: int, n_sims: int = 10000) -> None:
@@ -223,10 +274,6 @@ def main() -> None:
     else:
         # Sin args: corre el self-test del cruce de nombres (no necesita key).
         _self_test_matching()
-
-
-if __name__ == "__main__":
-    main()
 
 
 if __name__ == "__main__":

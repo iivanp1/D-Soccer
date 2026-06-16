@@ -1,0 +1,5582 @@
+{
+  "meta": {
+    "n_partidos": 135,
+    "goles_totales": 306,
+    "tiros_totales": 3374,
+    "xg_totales": 409.42,
+    "tiros_por_equipo_partido": 12.5,
+    "conversion_rate_intl": 0.0907,
+    "conversion_rate_xg": 0.1213,
+    "escala_tiros_seleccion": 0.822,
+    "sot_rate_default": 0.333,
+    "shadow_tiros_90": {
+      "FW": 2.46,
+      "MF": 1.33,
+      "DF": 0.5,
+      "GK": 0.1
+    },
+    "min_partidos_intl": 3
+  },
+  "jugadores": {
+    "cristiano ronaldo": {
+      "n_intl": 5,
+      "tiros_pp_intl": 5.0,
+      "xg_pp_intl": 0.907,
+      "xg_per_shot_intl": 0.1815,
+      "tiros_90_club": 6.156,
+      "sot_rate": 0.398,
+      "fuente_fbref": "Cristiano Ronaldo",
+      "fuente": "intl"
+    },
+    "victor osimhen": {
+      "n_intl": 7,
+      "tiros_pp_intl": 3.429,
+      "xg_pp_intl": 0.445,
+      "xg_per_shot_intl": 0.1297,
+      "tiros_90_club": 4.091,
+      "sot_rate": 0.456,
+      "fuente_fbref": "Victor Osimhen",
+      "fuente": "intl"
+    },
+    "kylian mbappe": {
+      "n_intl": 5,
+      "tiros_pp_intl": 4.8,
+      "xg_pp_intl": 0.501,
+      "xg_per_shot_intl": 0.1045,
+      "tiros_90_club": 4.985,
+      "sot_rate": 0.528,
+      "fuente_fbref": "Kylian Mbappé",
+      "fuente": "intl"
+    },
+    "teboho mokoena": {
+      "n_intl": 7,
+      "tiros_pp_intl": 3.143,
+      "xg_pp_intl": 0.502,
+      "xg_per_shot_intl": 0.1596,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "darwin nunez": {
+      "n_intl": 6,
+      "tiros_pp_intl": 3.5,
+      "xg_pp_intl": 0.31,
+      "xg_per_shot_intl": 0.0886,
+      "tiros_90_club": 4.758,
+      "sot_rate": 0.426,
+      "fuente_fbref": "Darwin Núñez",
+      "fuente": "intl"
+    },
+    "yoane wissa": {
+      "n_intl": 6,
+      "tiros_pp_intl": 3.167,
+      "xg_pp_intl": 0.535,
+      "xg_per_shot_intl": 0.169,
+      "tiros_90_club": 2.778,
+      "sot_rate": 0.478,
+      "fuente_fbref": "Yoane Wissa",
+      "fuente": "intl"
+    },
+    "kai havertz": {
+      "n_intl": 5,
+      "tiros_pp_intl": 3.8,
+      "xg_pp_intl": 0.756,
+      "xg_per_shot_intl": 0.1989,
+      "tiros_90_club": 2.355,
+      "sot_rate": 0.406,
+      "fuente_fbref": "Kai Havertz",
+      "fuente": "intl"
+    },
+    "jose salomon rondon gimenez": {
+      "n_intl": 4,
+      "tiros_pp_intl": 4.75,
+      "xg_pp_intl": 0.775,
+      "xg_per_shot_intl": 0.1632,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "memphis": {
+      "n_intl": 6,
+      "tiros_pp_intl": 3.0,
+      "xg_pp_intl": 0.325,
+      "xg_per_shot_intl": 0.1084,
+      "tiros_90_club": 2.965,
+      "sot_rate": 0.373,
+      "fuente_fbref": "Memphis",
+      "fuente": "intl"
+    },
+    "lamine yamal": {
+      "n_intl": 6,
+      "tiros_pp_intl": 3.0,
+      "xg_pp_intl": 0.265,
+      "xg_per_shot_intl": 0.0882,
+      "tiros_90_club": 4.543,
+      "sot_rate": 0.326,
+      "fuente_fbref": "Lamine Yamal",
+      "fuente": "intl"
+    },
+    "harry kane": {
+      "n_intl": 7,
+      "tiros_pp_intl": 2.571,
+      "xg_pp_intl": 0.436,
+      "xg_per_shot_intl": 0.1697,
+      "tiros_90_club": 4.635,
+      "sot_rate": 0.459,
+      "fuente_fbref": "Harry Kane",
+      "fuente": "intl"
+    },
+    "seko fofana": {
+      "n_intl": 7,
+      "tiros_pp_intl": 2.429,
+      "xg_pp_intl": 0.088,
+      "xg_per_shot_intl": 0.0364,
+      "tiros_90_club": 1.951,
+      "sot_rate": 0.333,
+      "fuente_fbref": "Seko Fofana",
+      "fuente": "intl"
+    },
+    "santiago bueno": {
+      "n_intl": 6,
+      "tiros_pp_intl": 2.833,
+      "xg_pp_intl": 0.359,
+      "xg_per_shot_intl": 0.1269,
+      "tiros_90_club": 0.321,
+      "sot_rate": 0.5,
+      "fuente_fbref": "Santiago Bueno",
+      "fuente": "intl"
+    },
+    "fabian ruiz pena": {
+      "n_intl": 6,
+      "tiros_pp_intl": 2.833,
+      "xg_pp_intl": 0.191,
+      "xg_per_shot_intl": 0.0674,
+      "tiros_90_club": 2.009,
+      "sot_rate": 0.279,
+      "fuente_fbref": "Fabián Ruiz Peña",
+      "fuente": "intl"
+    },
+    "mostafa mohamed": {
+      "n_intl": 4,
+      "tiros_pp_intl": 3.75,
+      "xg_pp_intl": 0.823,
+      "xg_per_shot_intl": 0.2193,
+      "tiros_90_club": 2.928,
+      "sot_rate": 0.4,
+      "fuente_fbref": "Mostafa Mohamed",
+      "fuente": "intl"
+    },
+    "lionel messi": {
+      "n_intl": 5,
+      "tiros_pp_intl": 2.8,
+      "xg_pp_intl": 0.567,
+      "xg_per_shot_intl": 0.2024,
+      "tiros_90_club": 5.836,
+      "sot_rate": 0.452,
+      "fuente_fbref": "Lionel Messi",
+      "fuente": "intl"
+    },
+    "julio enciso": {
+      "n_intl": 3,
+      "tiros_pp_intl": 4.667,
+      "xg_pp_intl": 0.221,
+      "xg_per_shot_intl": 0.0473,
+      "tiros_90_club": 3.299,
+      "sot_rate": 0.344,
+      "fuente_fbref": "Julio Enciso",
+      "fuente": "intl"
+    },
+    "dan ndoye": {
+      "n_intl": 5,
+      "tiros_pp_intl": 2.8,
+      "xg_pp_intl": 0.248,
+      "xg_per_shot_intl": 0.0886,
+      "tiros_90_club": 2.185,
+      "sot_rate": 0.385,
+      "fuente_fbref": "Dan Ndoye",
+      "fuente": "intl"
+    },
+    "phil foden": {
+      "n_intl": 7,
+      "tiros_pp_intl": 1.857,
+      "xg_pp_intl": 0.107,
+      "xg_per_shot_intl": 0.0575,
+      "tiros_90_club": 3.312,
+      "sot_rate": 0.457,
+      "fuente_fbref": "Phil Foden",
+      "fuente": "intl"
+    },
+    "evidence makgopa": {
+      "n_intl": 7,
+      "tiros_pp_intl": 1.857,
+      "xg_pp_intl": 0.293,
+      "xg_per_shot_intl": 0.1579,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "cody gakpo": {
+      "n_intl": 6,
+      "tiros_pp_intl": 2.167,
+      "xg_pp_intl": 0.147,
+      "xg_per_shot_intl": 0.0681,
+      "tiros_90_club": 2.651,
+      "sot_rate": 0.404,
+      "fuente_fbref": "Cody Gakpo",
+      "fuente": "intl"
+    },
+    "alvaro morata": {
+      "n_intl": 6,
+      "tiros_pp_intl": 2.167,
+      "xg_pp_intl": 0.245,
+      "xg_per_shot_intl": 0.1132,
+      "tiros_90_club": 3.16,
+      "sot_rate": 0.507,
+      "fuente_fbref": "Álvaro Morata",
+      "fuente": "intl"
+    },
+    "percy tau": {
+      "n_intl": 6,
+      "tiros_pp_intl": 2.0,
+      "xg_pp_intl": 0.389,
+      "xg_per_shot_intl": 0.1943,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "nico williams": {
+      "n_intl": 6,
+      "tiros_pp_intl": 2.0,
+      "xg_pp_intl": 0.158,
+      "xg_per_shot_intl": 0.079,
+      "tiros_90_club": 2.231,
+      "sot_rate": 0.339,
+      "fuente_fbref": "Nico Williams",
+      "fuente": "intl"
+    },
+    "cristovao paciencia mabululo": {
+      "n_intl": 4,
+      "tiros_pp_intl": 3.0,
+      "xg_pp_intl": 0.281,
+      "xg_per_shot_intl": 0.0938,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "christian norgaard": {
+      "n_intl": 4,
+      "tiros_pp_intl": 3.0,
+      "xg_pp_intl": 0.209,
+      "xg_per_shot_intl": 0.0696,
+      "tiros_90_club": 1.246,
+      "sot_rate": 0.41,
+      "fuente_fbref": "Christian Nørgaard",
+      "fuente": "intl"
+    },
+    "aurelien tchouameni": {
+      "n_intl": 5,
+      "tiros_pp_intl": 2.4,
+      "xg_pp_intl": 0.081,
+      "xg_per_shot_intl": 0.0337,
+      "tiros_90_club": 0.635,
+      "sot_rate": 0.158,
+      "fuente_fbref": "Aurélien Tchouaméni",
+      "fuente": "intl"
+    },
+    "aboubakary koita": {
+      "n_intl": 4,
+      "tiros_pp_intl": 3.0,
+      "xg_pp_intl": 0.129,
+      "xg_per_shot_intl": 0.0431,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "tiago manuel dias correia": {
+      "n_intl": 3,
+      "tiros_pp_intl": 3.667,
+      "xg_pp_intl": 0.158,
+      "xg_per_shot_intl": 0.0431,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "romelu lukaku": {
+      "n_intl": 4,
+      "tiros_pp_intl": 2.75,
+      "xg_pp_intl": 0.438,
+      "xg_per_shot_intl": 0.1592,
+      "tiros_90_club": 2.025,
+      "sot_rate": 0.375,
+      "fuente_fbref": "Romelu Lukaku",
+      "fuente": "intl"
+    },
+    "ray kendry paez andrade": {
+      "n_intl": 4,
+      "tiros_pp_intl": 2.75,
+      "xg_pp_intl": 0.415,
+      "xg_per_shot_intl": 0.1509,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "ronald araujo": {
+      "n_intl": 4,
+      "tiros_pp_intl": 0.75,
+      "xg_pp_intl": 0.022,
+      "xg_per_shot_intl": 0.029,
+      "tiros_90_club": 1.036,
+      "sot_rate": 0.391,
+      "fuente_fbref": "Ronald Araújo",
+      "fuente": "intl"
+    },
+    "marcus thuram": {
+      "n_intl": 3,
+      "tiros_pp_intl": 3.667,
+      "xg_pp_intl": 0.331,
+      "xg_per_shot_intl": 0.0903,
+      "tiros_90_club": 2.575,
+      "sot_rate": 0.377,
+      "fuente_fbref": "Marcus Thuram",
+      "fuente": "intl"
+    },
+    "marcel sabitzer": {
+      "n_intl": 4,
+      "tiros_pp_intl": 2.75,
+      "xg_pp_intl": 0.167,
+      "xg_per_shot_intl": 0.0606,
+      "tiros_90_club": 2.156,
+      "sot_rate": 0.426,
+      "fuente_fbref": "Marcel Sabitzer",
+      "fuente": "intl"
+    },
+    "lucas": {
+      "n_intl": 4,
+      "tiros_pp_intl": 2.75,
+      "xg_pp_intl": 0.553,
+      "xg_per_shot_intl": 0.2012,
+      "tiros_90_club": 0.643,
+      "sot_rate": 0.364,
+      "fuente_fbref": "Lucas",
+      "fuente": "intl"
+    },
+    "kevin de bruyne": {
+      "n_intl": 4,
+      "tiros_pp_intl": 2.75,
+      "xg_pp_intl": 0.219,
+      "xg_per_shot_intl": 0.0798,
+      "tiros_90_club": 3.016,
+      "sot_rate": 0.316,
+      "fuente_fbref": "Kevin De Bruyne",
+      "fuente": "intl"
+    },
+    "jhon solis": {
+      "n_intl": 6,
+      "tiros_pp_intl": 1.167,
+      "xg_pp_intl": 0.035,
+      "xg_per_shot_intl": 0.0298,
+      "tiros_90_club": 0.678,
+      "sot_rate": 0.25,
+      "fuente_fbref": "Jhon Solis",
+      "fuente": "intl"
+    },
+    "bruno fernandes": {
+      "n_intl": 4,
+      "tiros_pp_intl": 2.75,
+      "xg_pp_intl": 0.501,
+      "xg_per_shot_intl": 0.1823,
+      "tiros_90_club": 2.746,
+      "sot_rate": 0.432,
+      "fuente_fbref": "Bruno Fernandes",
+      "fuente": "intl"
+    },
+    "xavi simons": {
+      "n_intl": 5,
+      "tiros_pp_intl": 2.0,
+      "xg_pp_intl": 0.105,
+      "xg_per_shot_intl": 0.0525,
+      "tiros_90_club": 2.746,
+      "sot_rate": 0.407,
+      "fuente_fbref": "Xavi Simons",
+      "fuente": "intl"
+    },
+    "tijjani reijnders": {
+      "n_intl": 6,
+      "tiros_pp_intl": 1.667,
+      "xg_pp_intl": 0.106,
+      "xg_per_shot_intl": 0.0633,
+      "tiros_90_club": 2.213,
+      "sot_rate": 0.364,
+      "fuente_fbref": "Tijjani Reijnders",
+      "fuente": "intl"
+    },
+    "rodrygo": {
+      "n_intl": 4,
+      "tiros_pp_intl": 2.5,
+      "xg_pp_intl": 0.226,
+      "xg_per_shot_intl": 0.0903,
+      "tiros_90_club": 3.295,
+      "sot_rate": 0.414,
+      "fuente_fbref": "Rodrygo",
+      "fuente": "intl"
+    },
+    "peter shalulile": {
+      "n_intl": 4,
+      "tiros_pp_intl": 2.5,
+      "xg_pp_intl": 0.343,
+      "xg_per_shot_intl": 0.1373,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "kenan yildiz": {
+      "n_intl": 4,
+      "tiros_pp_intl": 2.5,
+      "xg_pp_intl": 0.141,
+      "xg_per_shot_intl": 0.0565,
+      "tiros_90_club": 2.285,
+      "sot_rate": 0.377,
+      "fuente_fbref": "Kenan Yıldız",
+      "fuente": "intl"
+    },
+    "jamal musiala": {
+      "n_intl": 5,
+      "tiros_pp_intl": 2.0,
+      "xg_pp_intl": 0.18,
+      "xg_per_shot_intl": 0.0901,
+      "tiros_90_club": 3.4,
+      "sot_rate": 0.471,
+      "fuente_fbref": "Jamal Musiala",
+      "fuente": "intl"
+    },
+    "hakan calhanoglu": {
+      "n_intl": 4,
+      "tiros_pp_intl": 2.5,
+      "xg_pp_intl": 0.068,
+      "xg_per_shot_intl": 0.0271,
+      "tiros_90_club": 2.183,
+      "sot_rate": 0.371,
+      "fuente_fbref": "Hakan Çalhanoğlu",
+      "fuente": "intl"
+    },
+    "antoine griezmann": {
+      "n_intl": 4,
+      "tiros_pp_intl": 2.5,
+      "xg_pp_intl": 0.361,
+      "xg_per_shot_intl": 0.1443,
+      "tiros_90_club": 2.687,
+      "sot_rate": 0.43,
+      "fuente_fbref": "Antoine Griezmann",
+      "fuente": "intl"
+    },
+    "aleksandar mitrovic": {
+      "n_intl": 3,
+      "tiros_pp_intl": 3.333,
+      "xg_pp_intl": 0.385,
+      "xg_per_shot_intl": 0.1154,
+      "tiros_90_club": 4.595,
+      "sot_rate": 0.395,
+      "fuente_fbref": "Aleksandar Mitrović",
+      "fuente": "intl"
+    },
+    "ahmed sayed": {
+      "n_intl": 3,
+      "tiros_pp_intl": 3.333,
+      "xg_pp_intl": 0.149,
+      "xg_per_shot_intl": 0.0447,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "theo bongonda mbul'ofeko batombo": {
+      "n_intl": 5,
+      "tiros_pp_intl": 1.8,
+      "xg_pp_intl": 0.095,
+      "xg_per_shot_intl": 0.0525,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "samuel moutoussamy": {
+      "n_intl": 7,
+      "tiros_pp_intl": 1.286,
+      "xg_pp_intl": 0.325,
+      "xg_per_shot_intl": 0.2529,
+      "tiros_90_club": 1.22,
+      "sot_rate": 0.333,
+      "fuente_fbref": "Samuel Moutoussamy",
+      "fuente": "intl"
+    },
+    "mohamed bayo": {
+      "n_intl": 4,
+      "tiros_pp_intl": 2.25,
+      "xg_pp_intl": 0.442,
+      "xg_per_shot_intl": 0.1966,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "luis sinisterra": {
+      "n_intl": 6,
+      "tiros_pp_intl": 1.5,
+      "xg_pp_intl": 0.239,
+      "xg_per_shot_intl": 0.1591,
+      "tiros_90_club": 3.462,
+      "sot_rate": 0.333,
+      "fuente_fbref": "Luis Sinisterra",
+      "fuente": "intl"
+    },
+    "lassine sinayoko": {
+      "n_intl": 5,
+      "tiros_pp_intl": 1.8,
+      "xg_pp_intl": 0.305,
+      "xg_per_shot_intl": 0.1695,
+      "tiros_90_club": 2.392,
+      "sot_rate": 0.295,
+      "fuente_fbref": "Lassine Sinayoko",
+      "fuente": "intl"
+    },
+    "kamory doumbia": {
+      "n_intl": 4,
+      "tiros_pp_intl": 2.25,
+      "xg_pp_intl": 0.134,
+      "xg_per_shot_intl": 0.0597,
+      "tiros_90_club": 1.497,
+      "sot_rate": 0.455,
+      "fuente_fbref": "Kamory Doumbia",
+      "fuente": "intl"
+    },
+    "julian alvarez": {
+      "n_intl": 4,
+      "tiros_pp_intl": 2.25,
+      "xg_pp_intl": 0.386,
+      "xg_per_shot_intl": 0.1714,
+      "tiros_90_club": 3.333,
+      "sot_rate": 0.408,
+      "fuente_fbref": "Julián Álvarez",
+      "fuente": "intl"
+    },
+    "jovane cabral": {
+      "n_intl": 4,
+      "tiros_pp_intl": 2.25,
+      "xg_pp_intl": 0.181,
+      "xg_per_shot_intl": 0.0805,
+      "tiros_90_club": 2.109,
+      "sot_rate": 0.222,
+      "fuente_fbref": "Jovane Cabral",
+      "fuente": "intl"
+    },
+    "jacinto muondo dala": {
+      "n_intl": 5,
+      "tiros_pp_intl": 1.8,
+      "xg_pp_intl": 0.304,
+      "xg_per_shot_intl": 0.1691,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "georgiy sudakov": {
+      "n_intl": 3,
+      "tiros_pp_intl": 3.0,
+      "xg_pp_intl": 0.143,
+      "xg_per_shot_intl": 0.0477,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "emilio nsue lopez": {
+      "n_intl": 4,
+      "tiros_pp_intl": 2.25,
+      "xg_pp_intl": 0.738,
+      "xg_per_shot_intl": 0.328,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "declan rice": {
+      "n_intl": 7,
+      "tiros_pp_intl": 1.286,
+      "xg_pp_intl": 0.056,
+      "xg_per_shot_intl": 0.0436,
+      "tiros_90_club": 1.62,
+      "sot_rate": 0.345,
+      "fuente_fbref": "Declan Rice",
+      "fuente": "intl"
+    },
+    "cedric bakambu": {
+      "n_intl": 5,
+      "tiros_pp_intl": 1.8,
+      "xg_pp_intl": 0.288,
+      "xg_per_shot_intl": 0.1602,
+      "tiros_90_club": 3.038,
+      "sot_rate": 0.458,
+      "fuente_fbref": "Cédric Bakambu",
+      "fuente": "intl"
+    },
+    "bukayo saka": {
+      "n_intl": 7,
+      "tiros_pp_intl": 1.286,
+      "xg_pp_intl": 0.186,
+      "xg_per_shot_intl": 0.1445,
+      "tiros_90_club": 3.302,
+      "sot_rate": 0.346,
+      "fuente_fbref": "Bukayo Saka",
+      "fuente": "intl"
+    },
+    "bernardo silva": {
+      "n_intl": 4,
+      "tiros_pp_intl": 2.25,
+      "xg_pp_intl": 0.578,
+      "xg_per_shot_intl": 0.2569,
+      "tiros_90_club": 1.077,
+      "sot_rate": 0.375,
+      "fuente_fbref": "Bernardo Silva",
+      "fuente": "intl"
+    },
+    "baghdad bounedjah": {
+      "n_intl": 3,
+      "tiros_pp_intl": 3.0,
+      "xg_pp_intl": 0.63,
+      "xg_per_shot_intl": 0.2101,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "amadou haidara": {
+      "n_intl": 4,
+      "tiros_pp_intl": 2.25,
+      "xg_pp_intl": 0.167,
+      "xg_per_shot_intl": 0.0743,
+      "tiros_90_club": 1.235,
+      "sot_rate": 0.429,
+      "fuente_fbref": "Amadou Haidara",
+      "fuente": "intl"
+    },
+    "youssef en-nesyri": {
+      "n_intl": 3,
+      "tiros_pp_intl": 2.667,
+      "xg_pp_intl": 0.504,
+      "xg_per_shot_intl": 0.189,
+      "tiros_90_club": 2.552,
+      "sot_rate": 0.411,
+      "fuente_fbref": "Youssef En-Nesyri",
+      "fuente": "intl"
+    },
+    "yangel herrera": {
+      "n_intl": 4,
+      "tiros_pp_intl": 2.0,
+      "xg_pp_intl": 0.273,
+      "xg_per_shot_intl": 0.1363,
+      "tiros_90_club": 1.554,
+      "sot_rate": 0.359,
+      "fuente_fbref": "Yangel Herrera",
+      "fuente": "intl"
+    },
+    "andre ferreira": {
+      "n_intl": 4,
+      "tiros_pp_intl": 0.25,
+      "xg_pp_intl": 0.013,
+      "xg_per_shot_intl": 0.0506,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "André Ferreira",
+      "fuente": "intl"
+    },
+    "santiago gimenez": {
+      "n_intl": 3,
+      "tiros_pp_intl": 2.667,
+      "xg_pp_intl": 0.343,
+      "xg_per_shot_intl": 0.1286,
+      "tiros_90_club": 4.106,
+      "sot_rate": 0.491,
+      "fuente_fbref": "Santiago Giménez",
+      "fuente": "intl"
+    },
+    "roland sallai": {
+      "n_intl": 3,
+      "tiros_pp_intl": 2.667,
+      "xg_pp_intl": 0.275,
+      "xg_per_shot_intl": 0.1031,
+      "tiros_90_club": 2.745,
+      "sot_rate": 0.339,
+      "fuente_fbref": "Roland Sallai",
+      "fuente": "intl"
+    },
+    "richard rios": {
+      "n_intl": 6,
+      "tiros_pp_intl": 1.333,
+      "xg_pp_intl": 0.039,
+      "xg_per_shot_intl": 0.0291,
+      "tiros_90_club": 1.856,
+      "sot_rate": 0.278,
+      "fuente_fbref": "Richard Ríos",
+      "fuente": "intl"
+    },
+    "piotr zielinski": {
+      "n_intl": 3,
+      "tiros_pp_intl": 2.667,
+      "xg_pp_intl": 0.126,
+      "xg_per_shot_intl": 0.0471,
+      "tiros_90_club": 1.402,
+      "sot_rate": 0.3,
+      "fuente_fbref": "Piotr Zieliński",
+      "fuente": "intl"
+    },
+    "musa barrow": {
+      "n_intl": 3,
+      "tiros_pp_intl": 2.667,
+      "xg_pp_intl": 0.089,
+      "xg_per_shot_intl": 0.0334,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "mohamed konate": {
+      "n_intl": 3,
+      "tiros_pp_intl": 2.667,
+      "xg_pp_intl": 0.236,
+      "xg_per_shot_intl": 0.0883,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "lukas haraslin": {
+      "n_intl": 4,
+      "tiros_pp_intl": 2.0,
+      "xg_pp_intl": 0.107,
+      "xg_per_shot_intl": 0.0534,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "kristjan asllani": {
+      "n_intl": 3,
+      "tiros_pp_intl": 2.667,
+      "xg_pp_intl": 0.21,
+      "xg_per_shot_intl": 0.0786,
+      "tiros_90_club": 1.455,
+      "sot_rate": 0.312,
+      "fuente_fbref": "Kristjan Asllani",
+      "fuente": "intl"
+    },
+    "juraj kucka": {
+      "n_intl": 4,
+      "tiros_pp_intl": 2.0,
+      "xg_pp_intl": 0.11,
+      "xg_per_shot_intl": 0.0549,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "julian araujo": {
+      "n_intl": 3,
+      "tiros_pp_intl": 2.667,
+      "xg_pp_intl": 0.13,
+      "xg_per_shot_intl": 0.0489,
+      "tiros_90_club": 0.432,
+      "sot_rate": 0.286,
+      "fuente_fbref": "Julian Araujo",
+      "fuente": "intl"
+    },
+    "jonathan david": {
+      "n_intl": 5,
+      "tiros_pp_intl": 1.6,
+      "xg_pp_intl": 0.383,
+      "xg_per_shot_intl": 0.2395,
+      "tiros_90_club": 2.705,
+      "sot_rate": 0.595,
+      "fuente_fbref": "Jonathan David",
+      "fuente": "intl"
+    },
+    "jefferson lerma": {
+      "n_intl": 5,
+      "tiros_pp_intl": 1.6,
+      "xg_pp_intl": 0.066,
+      "xg_per_shot_intl": 0.0411,
+      "tiros_90_club": 1.273,
+      "sot_rate": 0.265,
+      "fuente_fbref": "Jefferson Lerma",
+      "fuente": "intl"
+    },
+    "james rodriguez": {
+      "n_intl": 6,
+      "tiros_pp_intl": 1.333,
+      "xg_pp_intl": 0.185,
+      "xg_per_shot_intl": 0.1391,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "James Rodríguez",
+      "fuente": "intl"
+    },
+    "gael kakuta": {
+      "n_intl": 4,
+      "tiros_pp_intl": 2.0,
+      "xg_pp_intl": 0.085,
+      "xg_per_shot_intl": 0.0425,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "federico chiesa": {
+      "n_intl": 3,
+      "tiros_pp_intl": 2.667,
+      "xg_pp_intl": 0.083,
+      "xg_per_shot_intl": 0.031,
+      "tiros_90_club": 3.033,
+      "sot_rate": 0.365,
+      "fuente_fbref": "Federico Chiesa",
+      "fuente": "intl"
+    },
+    "christoph baumgartner": {
+      "n_intl": 3,
+      "tiros_pp_intl": 2.667,
+      "xg_pp_intl": 0.517,
+      "xg_per_shot_intl": 0.1939,
+      "tiros_90_club": 2.179,
+      "sot_rate": 0.385,
+      "fuente_fbref": "Christoph Baumgartner",
+      "fuente": "intl"
+    },
+    "benjamin sesko": {
+      "n_intl": 4,
+      "tiros_pp_intl": 2.0,
+      "xg_pp_intl": 0.211,
+      "xg_per_shot_intl": 0.1055,
+      "tiros_90_club": 2.576,
+      "sot_rate": 0.456,
+      "fuente_fbref": "Benjamin Šeško",
+      "fuente": "intl"
+    },
+    "andraz sporar": {
+      "n_intl": 4,
+      "tiros_pp_intl": 2.0,
+      "xg_pp_intl": 0.312,
+      "xg_per_shot_intl": 0.1562,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "ademola lookman": {
+      "n_intl": 6,
+      "tiros_pp_intl": 1.333,
+      "xg_pp_intl": 0.22,
+      "xg_per_shot_intl": 0.1649,
+      "tiros_90_club": 3.28,
+      "sot_rate": 0.427,
+      "fuente_fbref": "Ademola Lookman",
+      "fuente": "intl"
+    },
+    "stefan posch": {
+      "n_intl": 4,
+      "tiros_pp_intl": 1.75,
+      "xg_pp_intl": 0.085,
+      "xg_per_shot_intl": 0.0484,
+      "tiros_90_club": 0.672,
+      "sot_rate": 0.222,
+      "fuente_fbref": "Stefan Posch",
+      "fuente": "intl"
+    },
+    "sadio mane": {
+      "n_intl": 4,
+      "tiros_pp_intl": 1.75,
+      "xg_pp_intl": 0.386,
+      "xg_per_shot_intl": 0.2206,
+      "tiros_90_club": 2.843,
+      "sot_rate": 0.404,
+      "fuente_fbref": "Sadio Mané",
+      "fuente": "intl"
+    },
+    "marcos dias": {
+      "n_intl": 3,
+      "tiros_pp_intl": 2.333,
+      "xg_pp_intl": 0.268,
+      "xg_per_shot_intl": 0.1148,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "Marcos Dias",
+      "fuente": "intl"
+    },
+    "pierre hojbjerg": {
+      "n_intl": 4,
+      "tiros_pp_intl": 1.75,
+      "xg_pp_intl": 0.057,
+      "xg_per_shot_intl": 0.0327,
+      "tiros_90_club": 1.115,
+      "sot_rate": 0.242,
+      "fuente_fbref": "Pierre Højbjerg",
+      "fuente": "intl"
+    },
+    "obite evan ndicka": {
+      "n_intl": 7,
+      "tiros_pp_intl": 1.0,
+      "xg_pp_intl": 0.061,
+      "xg_per_shot_intl": 0.0611,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "luis gerardo chavez magallon": {
+      "n_intl": 3,
+      "tiros_pp_intl": 2.333,
+      "xg_pp_intl": 0.103,
+      "xg_per_shot_intl": 0.0441,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "jude bellingham": {
+      "n_intl": 7,
+      "tiros_pp_intl": 1.0,
+      "xg_pp_intl": 0.207,
+      "xg_per_shot_intl": 0.2068,
+      "tiros_90_club": 2.246,
+      "sot_rate": 0.371,
+      "fuente_fbref": "Jude Bellingham",
+      "fuente": "intl"
+    },
+    "joshua kimmich": {
+      "n_intl": 5,
+      "tiros_pp_intl": 1.4,
+      "xg_pp_intl": 0.062,
+      "xg_per_shot_intl": 0.0443,
+      "tiros_90_club": 1.076,
+      "sot_rate": 0.294,
+      "fuente_fbref": "Joshua Kimmich",
+      "fuente": "intl"
+    },
+    "jose fajardo nelson": {
+      "n_intl": 3,
+      "tiros_pp_intl": 2.333,
+      "xg_pp_intl": 0.195,
+      "xg_per_shot_intl": 0.0837,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "ismaila sarr": {
+      "n_intl": 4,
+      "tiros_pp_intl": 1.75,
+      "xg_pp_intl": 0.255,
+      "xg_per_shot_intl": 0.1455,
+      "tiros_90_club": 1.96,
+      "sot_rate": 0.492,
+      "fuente_fbref": "Ismaila Sarr",
+      "fuente": "intl"
+    },
+    "ilkay gundogan": {
+      "n_intl": 5,
+      "tiros_pp_intl": 1.4,
+      "xg_pp_intl": 0.149,
+      "xg_per_shot_intl": 0.1066,
+      "tiros_90_club": 1.291,
+      "sot_rate": 0.395,
+      "fuente_fbref": "İlkay Gündoğan",
+      "fuente": "intl"
+    },
+    "hamdi fathi": {
+      "n_intl": 4,
+      "tiros_pp_intl": 1.75,
+      "xg_pp_intl": 0.065,
+      "xg_per_shot_intl": 0.0374,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "hakim ziyech": {
+      "n_intl": 3,
+      "tiros_pp_intl": 2.333,
+      "xg_pp_intl": 0.098,
+      "xg_per_shot_intl": 0.0421,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "franck kessie": {
+      "n_intl": 6,
+      "tiros_pp_intl": 1.167,
+      "xg_pp_intl": 0.083,
+      "xg_per_shot_intl": 0.0711,
+      "tiros_90_club": 1.739,
+      "sot_rate": 0.404,
+      "fuente_fbref": "Franck Kessié",
+      "fuente": "intl"
+    },
+    "davinson sanchez": {
+      "n_intl": 6,
+      "tiros_pp_intl": 1.167,
+      "xg_pp_intl": 0.213,
+      "xg_per_shot_intl": 0.1824,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "Davinson Sánchez",
+      "fuente": "intl"
+    },
+    "daniel vivian": {
+      "n_intl": 5,
+      "tiros_pp_intl": 0.4,
+      "xg_pp_intl": 0.07,
+      "xg_per_shot_intl": 0.1744,
+      "tiros_90_club": 0.344,
+      "sot_rate": 0.091,
+      "fuente_fbref": "Daniel Vivian",
+      "fuente": "intl"
+    },
+    "cyle larin": {
+      "n_intl": 5,
+      "tiros_pp_intl": 1.4,
+      "xg_pp_intl": 0.126,
+      "xg_per_shot_intl": 0.0903,
+      "tiros_90_club": 3.399,
+      "sot_rate": 0.362,
+      "fuente_fbref": "Cyle Larin",
+      "fuente": "intl"
+    },
+    "christian pulisic": {
+      "n_intl": 3,
+      "tiros_pp_intl": 2.333,
+      "xg_pp_intl": 0.125,
+      "xg_per_shot_intl": 0.0535,
+      "tiros_90_club": 2.249,
+      "sot_rate": 0.477,
+      "fuente_fbref": "Christian Pulisic",
+      "fuente": "intl"
+    },
+    "chancel mbemba": {
+      "n_intl": 7,
+      "tiros_pp_intl": 1.0,
+      "xg_pp_intl": 0.33,
+      "xg_per_shot_intl": 0.3297,
+      "tiros_90_club": 0.776,
+      "sot_rate": 0.105,
+      "fuente_fbref": "Chancel Mbemba",
+      "fuente": "intl"
+    },
+    "breel embolo": {
+      "n_intl": 3,
+      "tiros_pp_intl": 2.333,
+      "xg_pp_intl": 0.376,
+      "xg_per_shot_intl": 0.161,
+      "tiros_90_club": 2.439,
+      "sot_rate": 0.38,
+      "fuente_fbref": "Breel Embolo",
+      "fuente": "intl"
+    },
+    "azzedine ounahi": {
+      "n_intl": 4,
+      "tiros_pp_intl": 1.75,
+      "xg_pp_intl": 0.124,
+      "xg_per_shot_intl": 0.071,
+      "tiros_90_club": 1.194,
+      "sot_rate": 0.25,
+      "fuente_fbref": "Azzedine Ounahi",
+      "fuente": "intl"
+    },
+    "arthur masuaku": {
+      "n_intl": 6,
+      "tiros_pp_intl": 1.167,
+      "xg_pp_intl": 0.156,
+      "xg_per_shot_intl": 0.1333,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "arda guler": {
+      "n_intl": 4,
+      "tiros_pp_intl": 1.75,
+      "xg_pp_intl": 0.079,
+      "xg_per_shot_intl": 0.045,
+      "tiros_90_club": 2.806,
+      "sot_rate": 0.436,
+      "fuente_fbref": "Arda Güler",
+      "fuente": "intl"
+    },
+    "alexis mac allister": {
+      "n_intl": 5,
+      "tiros_pp_intl": 1.4,
+      "xg_pp_intl": 0.282,
+      "xg_per_shot_intl": 0.2012,
+      "tiros_90_club": 1.522,
+      "sot_rate": 0.205,
+      "fuente_fbref": "Alexis Mac Allister",
+      "fuente": "intl"
+    },
+    "zaidu sanusi": {
+      "n_intl": 5,
+      "tiros_pp_intl": 1.2,
+      "xg_pp_intl": 0.112,
+      "xg_per_shot_intl": 0.0934,
+      "tiros_90_club": 0.312,
+      "sot_rate": 1.0,
+      "fuente_fbref": "Zaidu Sanusi",
+      "fuente": "intl"
+    },
+    "william troost-ekong": {
+      "n_intl": 6,
+      "tiros_pp_intl": 1.0,
+      "xg_pp_intl": 0.424,
+      "xg_per_shot_intl": 0.4239,
+      "tiros_90_club": 0.694,
+      "sot_rate": 0.227,
+      "fuente_fbref": "William Troost-Ekong",
+      "fuente": "intl"
+    },
+    "sidi bouna sidi amar": {
+      "n_intl": 3,
+      "tiros_pp_intl": 2.0,
+      "xg_pp_intl": 0.111,
+      "xg_per_shot_intl": 0.0554,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "alessio da cruz": {
+      "n_intl": 5,
+      "tiros_pp_intl": 1.2,
+      "xg_pp_intl": 0.286,
+      "xg_per_shot_intl": 0.238,
+      "tiros_90_club": 1.894,
+      "sot_rate": 0.44,
+      "fuente_fbref": "Alessio da Cruz",
+      "fuente": "intl"
+    },
+    "razvan marin": {
+      "n_intl": 4,
+      "tiros_pp_intl": 0.0,
+      "xg_pp_intl": 0.0,
+      "xg_per_shot_intl": 0.1213,
+      "tiros_90_club": 1.733,
+      "sot_rate": 0.257,
+      "fuente_fbref": "Răzvan Marin",
+      "fuente": "intl"
+    },
+    "rasmus hojlund": {
+      "n_intl": 4,
+      "tiros_pp_intl": 1.5,
+      "xg_pp_intl": 0.276,
+      "xg_per_shot_intl": 0.184,
+      "tiros_90_club": 1.583,
+      "sot_rate": 0.553,
+      "fuente_fbref": "Rasmus Højlund",
+      "fuente": "intl"
+    },
+    "pedro": {
+      "n_intl": 4,
+      "tiros_pp_intl": 1.5,
+      "xg_pp_intl": 0.213,
+      "xg_per_shot_intl": 0.1419,
+      "tiros_90_club": 2.554,
+      "sot_rate": 0.574,
+      "fuente_fbref": "Pedro",
+      "fuente": "intl"
+    },
+    "orkun kokcu": {
+      "n_intl": 3,
+      "tiros_pp_intl": 2.0,
+      "xg_pp_intl": 0.267,
+      "xg_per_shot_intl": 0.1333,
+      "tiros_90_club": 2.116,
+      "sot_rate": 0.387,
+      "fuente_fbref": "Orkun Kökçü",
+      "fuente": "intl"
+    },
+    "mohamed abdelmonem": {
+      "n_intl": 4,
+      "tiros_pp_intl": 1.5,
+      "xg_pp_intl": 0.237,
+      "xg_per_shot_intl": 0.1579,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "Mohamed Abdelmonem",
+      "fuente": "intl"
+    },
+    "mateo kovacic": {
+      "n_intl": 3,
+      "tiros_pp_intl": 2.0,
+      "xg_pp_intl": 0.108,
+      "xg_per_shot_intl": 0.0542,
+      "tiros_90_club": 1.844,
+      "sot_rate": 0.267,
+      "fuente_fbref": "Mateo Kovačić",
+      "fuente": "intl"
+    },
+    "lorenzo pellegrini": {
+      "n_intl": 3,
+      "tiros_pp_intl": 2.0,
+      "xg_pp_intl": 0.16,
+      "xg_per_shot_intl": 0.0802,
+      "tiros_90_club": 2.271,
+      "sot_rate": 0.426,
+      "fuente_fbref": "Lorenzo Pellegrini",
+      "fuente": "intl"
+    },
+    "khvicha kvaratskhelia": {
+      "n_intl": 4,
+      "tiros_pp_intl": 1.5,
+      "xg_pp_intl": 0.138,
+      "xg_per_shot_intl": 0.092,
+      "tiros_90_club": 4.243,
+      "sot_rate": 0.349,
+      "fuente_fbref": "Khvicha Kvaratskhelia",
+      "fuente": "intl"
+    },
+    "kennedy amutenya": {
+      "n_intl": 4,
+      "tiros_pp_intl": 1.5,
+      "xg_pp_intl": 0.094,
+      "xg_per_shot_intl": 0.0624,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "karl etta eyong": {
+      "n_intl": 3,
+      "tiros_pp_intl": 2.0,
+      "xg_pp_intl": 0.269,
+      "xg_per_shot_intl": 0.1344,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "Karl Etta Eyong",
+      "fuente": "intl"
+    },
+    "jeremy sarmiento": {
+      "n_intl": 4,
+      "tiros_pp_intl": 1.5,
+      "xg_pp_intl": 0.096,
+      "xg_per_shot_intl": 0.0643,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "Jeremy Sarmiento",
+      "fuente": "intl"
+    },
+    "georges-kevin n'koudou": {
+      "n_intl": 4,
+      "tiros_pp_intl": 1.5,
+      "xg_pp_intl": 0.114,
+      "xg_per_shot_intl": 0.0759,
+      "tiros_90_club": 2.292,
+      "sot_rate": 0.455,
+      "fuente_fbref": "Georges-Kévin N'Koudou",
+      "fuente": "intl"
+    },
+    "georges mikautadze": {
+      "n_intl": 4,
+      "tiros_pp_intl": 1.5,
+      "xg_pp_intl": 0.506,
+      "xg_per_shot_intl": 0.3375,
+      "tiros_90_club": 2.938,
+      "sot_rate": 0.474,
+      "fuente_fbref": "Georges Mikautadze",
+      "fuente": "intl"
+    },
+    "frank onyeka": {
+      "n_intl": 7,
+      "tiros_pp_intl": 0.857,
+      "xg_pp_intl": 0.051,
+      "xg_per_shot_intl": 0.0598,
+      "tiros_90_club": 0.836,
+      "sot_rate": 0.25,
+      "fuente_fbref": "Frank Onyeka",
+      "fuente": "intl"
+    },
+    "frank magri": {
+      "n_intl": 4,
+      "tiros_pp_intl": 1.5,
+      "xg_pp_intl": 0.139,
+      "xg_per_shot_intl": 0.0927,
+      "tiros_90_club": 2.619,
+      "sot_rate": 0.432,
+      "fuente_fbref": "Frank Magri",
+      "fuente": "intl"
+    },
+    "fabian schar": {
+      "n_intl": 5,
+      "tiros_pp_intl": 1.2,
+      "xg_pp_intl": 0.201,
+      "xg_per_shot_intl": 0.1673,
+      "tiros_90_club": 1.032,
+      "sot_rate": 0.257,
+      "fuente_fbref": "Fabian Schär",
+      "fuente": "intl"
+    },
+    "edgar yoel barcenas herrera": {
+      "n_intl": 4,
+      "tiros_pp_intl": 1.5,
+      "xg_pp_intl": 0.095,
+      "xg_per_shot_intl": 0.0635,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "dominik szoboszlai": {
+      "n_intl": 3,
+      "tiros_pp_intl": 2.0,
+      "xg_pp_intl": 0.073,
+      "xg_per_shot_intl": 0.0366,
+      "tiros_90_club": 2.419,
+      "sot_rate": 0.343,
+      "fuente_fbref": "Dominik Szoboszlai",
+      "fuente": "intl"
+    },
+    "dennis man": {
+      "n_intl": 3,
+      "tiros_pp_intl": 2.0,
+      "xg_pp_intl": 0.182,
+      "xg_per_shot_intl": 0.0912,
+      "tiros_90_club": 2.207,
+      "sot_rate": 0.408,
+      "fuente_fbref": "Dennis Man",
+      "fuente": "intl"
+    },
+    "deivi miguel vieira": {
+      "n_intl": 4,
+      "tiros_pp_intl": 1.5,
+      "xg_pp_intl": 0.165,
+      "xg_per_shot_intl": 0.1099,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "bruno guimaraes": {
+      "n_intl": 4,
+      "tiros_pp_intl": 1.5,
+      "xg_pp_intl": 0.084,
+      "xg_per_shot_intl": 0.0563,
+      "tiros_90_club": 1.24,
+      "sot_rate": 0.333,
+      "fuente_fbref": "Bruno Guimarães",
+      "fuente": "intl"
+    },
+    "aubrey maphosa modiba": {
+      "n_intl": 7,
+      "tiros_pp_intl": 0.857,
+      "xg_pp_intl": 0.234,
+      "xg_per_shot_intl": 0.2724,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "artem dovbyk": {
+      "n_intl": 3,
+      "tiros_pp_intl": 2.0,
+      "xg_pp_intl": 0.182,
+      "xg_per_shot_intl": 0.0908,
+      "tiros_90_club": 2.962,
+      "sot_rate": 0.541,
+      "fuente_fbref": "Artem Dovbyk",
+      "fuente": "intl"
+    },
+    "angel correa": {
+      "n_intl": 4,
+      "tiros_pp_intl": 1.5,
+      "xg_pp_intl": 0.137,
+      "xg_per_shot_intl": 0.0914,
+      "tiros_90_club": 2.529,
+      "sot_rate": 0.465,
+      "fuente_fbref": "Ángel Correa",
+      "fuente": "intl"
+    },
+    "alphonso davies": {
+      "n_intl": 5,
+      "tiros_pp_intl": 1.2,
+      "xg_pp_intl": 0.232,
+      "xg_per_shot_intl": 0.1932,
+      "tiros_90_club": 0.568,
+      "sot_rate": 0.308,
+      "fuente_fbref": "Alphonso Davies",
+      "fuente": "intl"
+    },
+    "alex iwobi": {
+      "n_intl": 6,
+      "tiros_pp_intl": 1.0,
+      "xg_pp_intl": 0.051,
+      "xg_per_shot_intl": 0.0514,
+      "tiros_90_club": 2.054,
+      "sot_rate": 0.426,
+      "fuente_fbref": "Alex Iwobi",
+      "fuente": "intl"
+    },
+    "achraf hakimi": {
+      "n_intl": 4,
+      "tiros_pp_intl": 1.5,
+      "xg_pp_intl": 0.265,
+      "xg_per_shot_intl": 0.1766,
+      "tiros_90_club": 1.391,
+      "sot_rate": 0.406,
+      "fuente_fbref": "Achraf Hakimi",
+      "fuente": "intl"
+    },
+    "virgil van dijk": {
+      "n_intl": 6,
+      "tiros_pp_intl": 0.833,
+      "xg_pp_intl": 0.058,
+      "xg_per_shot_intl": 0.0693,
+      "tiros_90_club": 0.703,
+      "sot_rate": 0.308,
+      "fuente_fbref": "Virgil van Dijk",
+      "fuente": "intl"
+    },
+    "victor alejandro davila zavala": {
+      "n_intl": 3,
+      "tiros_pp_intl": 1.667,
+      "xg_pp_intl": 0.089,
+      "xg_per_shot_intl": 0.0536,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "theo le bris": {
+      "n_intl": 6,
+      "tiros_pp_intl": 0.833,
+      "xg_pp_intl": 0.171,
+      "xg_per_shot_intl": 0.2053,
+      "tiros_90_club": 0.774,
+      "sot_rate": 0.154,
+      "fuente_fbref": "Théo Le Bris",
+      "fuente": "intl"
+    },
+    "thapelo james morena": {
+      "n_intl": 5,
+      "tiros_pp_intl": 1.0,
+      "xg_pp_intl": 0.083,
+      "xg_per_shot_intl": 0.0832,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "sphephelo sithole": {
+      "n_intl": 7,
+      "tiros_pp_intl": 0.714,
+      "xg_pp_intl": 0.044,
+      "xg_per_shot_intl": 0.0623,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "Sphephelo Sithole",
+      "fuente": "intl"
+    },
+    "ruben vargas": {
+      "n_intl": 4,
+      "tiros_pp_intl": 1.25,
+      "xg_pp_intl": 0.173,
+      "xg_per_shot_intl": 0.1383,
+      "tiros_90_club": 2.248,
+      "sot_rate": 0.347,
+      "fuente_fbref": "Ruben Vargas",
+      "fuente": "intl"
+    },
+    "rodri": {
+      "n_intl": 6,
+      "tiros_pp_intl": 0.833,
+      "xg_pp_intl": 0.032,
+      "xg_per_shot_intl": 0.0382,
+      "tiros_90_club": 1.902,
+      "sot_rate": 0.355,
+      "fuente_fbref": "Rodri",
+      "fuente": "intl"
+    },
+    "patson daka": {
+      "n_intl": 3,
+      "tiros_pp_intl": 1.667,
+      "xg_pp_intl": 0.168,
+      "xg_per_shot_intl": 0.1008,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "ousmane dembele": {
+      "n_intl": 4,
+      "tiros_pp_intl": 1.25,
+      "xg_pp_intl": 0.092,
+      "xg_per_shot_intl": 0.0739,
+      "tiros_90_club": 5.052,
+      "sot_rate": 0.526,
+      "fuente_fbref": "Ousmane Dembélé",
+      "fuente": "intl"
+    },
+    "nicolae stanciu": {
+      "n_intl": 4,
+      "tiros_pp_intl": 1.25,
+      "xg_pp_intl": 0.034,
+      "xg_per_shot_intl": 0.0269,
+      "tiros_90_club": 2.708,
+      "sot_rate": 0.397,
+      "fuente_fbref": "Nicolae Stanciu",
+      "fuente": "intl"
+    },
+    "n'golo kante": {
+      "n_intl": 6,
+      "tiros_pp_intl": 0.833,
+      "xg_pp_intl": 0.04,
+      "xg_per_shot_intl": 0.048,
+      "tiros_90_club": 0.561,
+      "sot_rate": 0.412,
+      "fuente_fbref": "N'Golo Kanté",
+      "fuente": "intl"
+    },
+    "moses simon": {
+      "n_intl": 5,
+      "tiros_pp_intl": 1.0,
+      "xg_pp_intl": 0.092,
+      "xg_per_shot_intl": 0.0919,
+      "tiros_90_club": 1.517,
+      "sot_rate": 0.386,
+      "fuente_fbref": "Moses Simon",
+      "fuente": "intl"
+    },
+    "morten hjulmand": {
+      "n_intl": 3,
+      "tiros_pp_intl": 1.667,
+      "xg_pp_intl": 0.048,
+      "xg_per_shot_intl": 0.0288,
+      "tiros_90_club": 0.691,
+      "sot_rate": 0.412,
+      "fuente_fbref": "Morten Hjulmand",
+      "fuente": "intl"
+    },
+    "moise bombito": {
+      "n_intl": 6,
+      "tiros_pp_intl": 0.833,
+      "xg_pp_intl": 0.283,
+      "xg_per_shot_intl": 0.3394,
+      "tiros_90_club": 0.328,
+      "sot_rate": 0.125,
+      "fuente_fbref": "Moïse Bombito",
+      "fuente": "intl"
+    },
+    "manuel ugarte": {
+      "n_intl": 6,
+      "tiros_pp_intl": 0.833,
+      "xg_pp_intl": 0.16,
+      "xg_per_shot_intl": 0.1926,
+      "tiros_90_club": 0.465,
+      "sot_rate": 0.1,
+      "fuente_fbref": "Manuel Ugarte",
+      "fuente": "intl"
+    },
+    "luka modric": {
+      "n_intl": 3,
+      "tiros_pp_intl": 1.667,
+      "xg_pp_intl": 0.454,
+      "xg_per_shot_intl": 0.2727,
+      "tiros_90_club": 1.084,
+      "sot_rate": 0.273,
+      "fuente_fbref": "Luka Modrić",
+      "fuente": "intl"
+    },
+    "lisandro martinez": {
+      "n_intl": 5,
+      "tiros_pp_intl": 1.0,
+      "xg_pp_intl": 0.116,
+      "xg_per_shot_intl": 0.1155,
+      "tiros_90_club": 0.872,
+      "sot_rate": 0.353,
+      "fuente_fbref": "Lisandro Martínez",
+      "fuente": "intl"
+    },
+    "ladislav krejci": {
+      "n_intl": 3,
+      "tiros_pp_intl": 1.667,
+      "xg_pp_intl": 0.066,
+      "xg_per_shot_intl": 0.0395,
+      "tiros_90_club": 0.664,
+      "sot_rate": 0.278,
+      "fuente_fbref": "Ladislav Krejčí",
+      "fuente": "intl"
+    },
+    "kobbie mainoo": {
+      "n_intl": 4,
+      "tiros_pp_intl": 1.25,
+      "xg_pp_intl": 0.063,
+      "xg_per_shot_intl": 0.0501,
+      "tiros_90_club": 0.514,
+      "sot_rate": 0.455,
+      "fuente_fbref": "Kobbie Mainoo",
+      "fuente": "intl"
+    },
+    "wagner pina": {
+      "n_intl": 5,
+      "tiros_pp_intl": 1.0,
+      "xg_pp_intl": 0.03,
+      "xg_per_shot_intl": 0.0297,
+      "tiros_90_club": 0.684,
+      "sot_rate": 0.333,
+      "fuente_fbref": "Wagner Pina",
+      "fuente": "intl"
+    },
+    "jules olivier ntcham": {
+      "n_intl": 3,
+      "tiros_pp_intl": 1.667,
+      "xg_pp_intl": 0.041,
+      "xg_per_shot_intl": 0.0243,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "jonas wind": {
+      "n_intl": 3,
+      "tiros_pp_intl": 1.667,
+      "xg_pp_intl": 0.128,
+      "xg_per_shot_intl": 0.0766,
+      "tiros_90_club": 2.475,
+      "sot_rate": 0.479,
+      "fuente_fbref": "Jonas Wind",
+      "fuente": "intl"
+    },
+    "johan vasquez": {
+      "n_intl": 3,
+      "tiros_pp_intl": 1.667,
+      "xg_pp_intl": 0.084,
+      "xg_per_shot_intl": 0.0504,
+      "tiros_90_club": 1.065,
+      "sot_rate": 0.222,
+      "fuente_fbref": "Johan Vásquez",
+      "fuente": "intl"
+    },
+    "joao palhinha": {
+      "n_intl": 4,
+      "tiros_pp_intl": 1.25,
+      "xg_pp_intl": 0.053,
+      "xg_per_shot_intl": 0.0421,
+      "tiros_90_club": 1.467,
+      "sot_rate": 0.295,
+      "fuente_fbref": "João Palhinha",
+      "fuente": "intl"
+    },
+    "jeremy doku": {
+      "n_intl": 4,
+      "tiros_pp_intl": 1.25,
+      "xg_pp_intl": 0.064,
+      "xg_per_shot_intl": 0.0511,
+      "tiros_90_club": 3.164,
+      "sot_rate": 0.339,
+      "fuente_fbref": "Jeremy Doku",
+      "fuente": "intl"
+    },
+    "jean-philippe krasso": {
+      "n_intl": 3,
+      "tiros_pp_intl": 1.667,
+      "xg_pp_intl": 0.106,
+      "xg_per_shot_intl": 0.0635,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "ivan schranz": {
+      "n_intl": 4,
+      "tiros_pp_intl": 1.25,
+      "xg_pp_intl": 0.219,
+      "xg_per_shot_intl": 0.1754,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "ismael kone": {
+      "n_intl": 4,
+      "tiros_pp_intl": 1.25,
+      "xg_pp_intl": 0.297,
+      "xg_per_shot_intl": 0.2372,
+      "tiros_90_club": 1.154,
+      "sot_rate": 0.5,
+      "fuente_fbref": "Ismaël Koné",
+      "fuente": "intl"
+    },
+    "ibrahim sangare": {
+      "n_intl": 4,
+      "tiros_pp_intl": 1.25,
+      "xg_pp_intl": 0.064,
+      "xg_per_shot_intl": 0.0512,
+      "tiros_90_club": 0.696,
+      "sot_rate": 0.333,
+      "fuente_fbref": "Ibrahim Sangaré",
+      "fuente": "intl"
+    },
+    "habib diallo": {
+      "n_intl": 4,
+      "tiros_pp_intl": 1.25,
+      "xg_pp_intl": 0.409,
+      "xg_per_shot_intl": 0.3275,
+      "tiros_90_club": 1.953,
+      "sot_rate": 0.34,
+      "fuente_fbref": "Habib Diallo",
+      "fuente": "intl"
+    },
+    "giorgi kochorashvili": {
+      "n_intl": 4,
+      "tiros_pp_intl": 1.25,
+      "xg_pp_intl": 0.204,
+      "xg_per_shot_intl": 0.1631,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "gianluca scamacca": {
+      "n_intl": 3,
+      "tiros_pp_intl": 1.667,
+      "xg_pp_intl": 0.173,
+      "xg_per_shot_intl": 0.1039,
+      "tiros_90_club": 3.727,
+      "sot_rate": 0.433,
+      "fuente_fbref": "Gianluca Scamacca",
+      "fuente": "intl"
+    },
+    "folarin balogun": {
+      "n_intl": 3,
+      "tiros_pp_intl": 1.667,
+      "xg_pp_intl": 0.082,
+      "xg_per_shot_intl": 0.0492,
+      "tiros_90_club": 3.511,
+      "sot_rate": 0.439,
+      "fuente_fbref": "Folarin Balogun",
+      "fuente": "intl"
+    },
+    "felix torres caicedo": {
+      "n_intl": 4,
+      "tiros_pp_intl": 1.25,
+      "xg_pp_intl": 0.116,
+      "xg_per_shot_intl": 0.0925,
+      "tiros_90_club": 0.421,
+      "sot_rate": 0.125,
+      "fuente_fbref": "Félix Torres Caicedo",
+      "fuente": "intl"
+    },
+    "enzo fernandez": {
+      "n_intl": 4,
+      "tiros_pp_intl": 1.25,
+      "xg_pp_intl": 0.084,
+      "xg_per_shot_intl": 0.0674,
+      "tiros_90_club": 1.621,
+      "sot_rate": 0.377,
+      "fuente_fbref": "Enzo Fernández",
+      "fuente": "intl"
+    },
+    "deroy duarte": {
+      "n_intl": 3,
+      "tiros_pp_intl": 1.667,
+      "xg_pp_intl": 0.083,
+      "xg_per_shot_intl": 0.0498,
+      "tiros_90_club": 0.743,
+      "sot_rate": 0.3,
+      "fuente_fbref": "Deroy Duarte",
+      "fuente": "intl"
+    },
+    "mihai dobre": {
+      "n_intl": 4,
+      "tiros_pp_intl": 1.25,
+      "xg_pp_intl": 0.275,
+      "xg_per_shot_intl": 0.22,
+      "tiros_90_club": 2.564,
+      "sot_rate": 0.5,
+      "fuente_fbref": "Mihai Dobre",
+      "fuente": "intl"
+    },
+    "aymeric laporte": {
+      "n_intl": 6,
+      "tiros_pp_intl": 0.833,
+      "xg_pp_intl": 0.045,
+      "xg_per_shot_intl": 0.0536,
+      "tiros_90_club": 0.902,
+      "sot_rate": 0.417,
+      "fuente_fbref": "Aymeric Laporte",
+      "fuente": "intl"
+    },
+    "angelo smit preciado quinonez": {
+      "n_intl": 4,
+      "tiros_pp_intl": 1.25,
+      "xg_pp_intl": 0.055,
+      "xg_per_shot_intl": 0.0438,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "aguibou camara": {
+      "n_intl": 5,
+      "tiros_pp_intl": 1.0,
+      "xg_pp_intl": 0.099,
+      "xg_per_shot_intl": 0.0986,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "josef martinez": {
+      "n_intl": 3,
+      "tiros_pp_intl": 1.333,
+      "xg_pp_intl": 0.065,
+      "xg_per_shot_intl": 0.0488,
+      "tiros_90_club": 2.548,
+      "sot_rate": 0.66,
+      "fuente_fbref": "Josef Martínez",
+      "fuente": "intl"
+    },
+    "witiness chimoio joao quembo": {
+      "n_intl": 3,
+      "tiros_pp_intl": 1.333,
+      "xg_pp_intl": 0.088,
+      "xg_per_shot_intl": 0.0663,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "vinicius": {
+      "n_intl": 3,
+      "tiros_pp_intl": 1.333,
+      "xg_pp_intl": 0.244,
+      "xg_per_shot_intl": 0.183,
+      "tiros_90_club": 2.169,
+      "sot_rate": 0.333,
+      "fuente_fbref": "Vinícius",
+      "fuente": "intl"
+    },
+    "ola aina": {
+      "n_intl": 7,
+      "tiros_pp_intl": 0.571,
+      "xg_pp_intl": 0.157,
+      "xg_per_shot_intl": 0.2747,
+      "tiros_90_club": 0.33,
+      "sot_rate": 0.182,
+      "fuente_fbref": "Ola Aina",
+      "fuente": "intl"
+    },
+    "stephen eustaquio": {
+      "n_intl": 5,
+      "tiros_pp_intl": 0.8,
+      "xg_pp_intl": 0.237,
+      "xg_per_shot_intl": 0.2968,
+      "tiros_90_club": 0.751,
+      "sot_rate": 0.375,
+      "fuente_fbref": "Stephen Eustáquio",
+      "fuente": "intl"
+    },
+    "stefan de vrij": {
+      "n_intl": 6,
+      "tiros_pp_intl": 0.667,
+      "xg_pp_intl": 0.046,
+      "xg_per_shot_intl": 0.0689,
+      "tiros_90_club": 0.677,
+      "sot_rate": 0.231,
+      "fuente_fbref": "Stefan de Vrij",
+      "fuente": "intl"
+    },
+    "sekou oumar sylla": {
+      "n_intl": 4,
+      "tiros_pp_intl": 1.0,
+      "xg_pp_intl": 0.092,
+      "xg_per_shot_intl": 0.0918,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "scott mctominay": {
+      "n_intl": 3,
+      "tiros_pp_intl": 1.333,
+      "xg_pp_intl": 0.082,
+      "xg_per_shot_intl": 0.0614,
+      "tiros_90_club": 2.331,
+      "sot_rate": 0.434,
+      "fuente_fbref": "Scott McTominay",
+      "fuente": "intl"
+    },
+    "rodrigo de paul": {
+      "n_intl": 5,
+      "tiros_pp_intl": 0.8,
+      "xg_pp_intl": 0.021,
+      "xg_per_shot_intl": 0.0261,
+      "tiros_90_club": 0.812,
+      "sot_rate": 0.211,
+      "fuente_fbref": "Rodrigo De Paul",
+      "fuente": "intl"
+    },
+    "robert andrich": {
+      "n_intl": 4,
+      "tiros_pp_intl": 1.0,
+      "xg_pp_intl": 0.04,
+      "xg_per_shot_intl": 0.0399,
+      "tiros_90_club": 1.223,
+      "sot_rate": 0.391,
+      "fuente_fbref": "Robert Andrich",
+      "fuente": "intl"
+    },
+    "richie laryea": {
+      "n_intl": 5,
+      "tiros_pp_intl": 0.8,
+      "xg_pp_intl": 0.028,
+      "xg_per_shot_intl": 0.0355,
+      "tiros_90_club": 0.576,
+      "sot_rate": 0.125,
+      "fuente_fbref": "Richie Laryea",
+      "fuente": "intl"
+    },
+    "pablo ganet comitre": {
+      "n_intl": 4,
+      "tiros_pp_intl": 1.0,
+      "xg_pp_intl": 0.029,
+      "xg_per_shot_intl": 0.0293,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "nuno mendes": {
+      "n_intl": 4,
+      "tiros_pp_intl": 1.0,
+      "xg_pp_intl": 0.242,
+      "xg_per_shot_intl": 0.2421,
+      "tiros_90_club": 1.129,
+      "sot_rate": 0.476,
+      "fuente_fbref": "Nuno Mendes",
+      "fuente": "intl"
+    },
+    "morgan guilavogui": {
+      "n_intl": 4,
+      "tiros_pp_intl": 1.0,
+      "xg_pp_intl": 0.184,
+      "xg_per_shot_intl": 0.1841,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "michael amir murillo": {
+      "n_intl": 4,
+      "tiros_pp_intl": 1.0,
+      "xg_pp_intl": 0.066,
+      "xg_per_shot_intl": 0.066,
+      "tiros_90_club": 0.48,
+      "sot_rate": 0.308,
+      "fuente_fbref": "Michael Amir Murillo",
+      "fuente": "intl"
+    },
+    "maximilian mittelstadt": {
+      "n_intl": 3,
+      "tiros_pp_intl": 1.333,
+      "xg_pp_intl": 0.035,
+      "xg_per_shot_intl": 0.0263,
+      "tiros_90_club": 0.766,
+      "sot_rate": 0.19,
+      "fuente_fbref": "Maximilian Mittelstädt",
+      "fuente": "intl"
+    },
+    "max-alain gradel": {
+      "n_intl": 4,
+      "tiros_pp_intl": 1.0,
+      "xg_pp_intl": 0.088,
+      "xg_per_shot_intl": 0.0882,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "mathias olivera": {
+      "n_intl": 5,
+      "tiros_pp_intl": 0.8,
+      "xg_pp_intl": 0.154,
+      "xg_per_shot_intl": 0.1928,
+      "tiros_90_club": 0.608,
+      "sot_rate": 0.125,
+      "fuente_fbref": "Mathías Olivera",
+      "fuente": "intl"
+    },
+    "marko arnautovic": {
+      "n_intl": 3,
+      "tiros_pp_intl": 1.333,
+      "xg_pp_intl": 0.525,
+      "xg_per_shot_intl": 0.3934,
+      "tiros_90_club": 1.91,
+      "sot_rate": 0.529,
+      "fuente_fbref": "Marko Arnautović",
+      "fuente": "intl"
+    },
+    "kalidou koulibaly": {
+      "n_intl": 4,
+      "tiros_pp_intl": 1.0,
+      "xg_pp_intl": 0.241,
+      "xg_per_shot_intl": 0.2415,
+      "tiros_90_club": 0.578,
+      "sot_rate": 0.294,
+      "fuente_fbref": "Kalidou Koulibaly",
+      "fuente": "intl"
+    },
+    "julian jeanvier": {
+      "n_intl": 4,
+      "tiros_pp_intl": 1.0,
+      "xg_pp_intl": 0.063,
+      "xg_per_shot_intl": 0.0633,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "jose andres martinez": {
+      "n_intl": 4,
+      "tiros_pp_intl": 1.0,
+      "xg_pp_intl": 0.049,
+      "xg_per_shot_intl": 0.0488,
+      "tiros_90_club": 0.839,
+      "sot_rate": 0.308,
+      "fuente_fbref": "José Andrés Martínez",
+      "fuente": "intl"
+    },
+    "steven moreira": {
+      "n_intl": 4,
+      "tiros_pp_intl": 0.25,
+      "xg_pp_intl": 0.012,
+      "xg_per_shot_intl": 0.0462,
+      "tiros_90_club": 0.659,
+      "sot_rate": 0.333,
+      "fuente_fbref": "Steven Moreira",
+      "fuente": "intl"
+    },
+    "jasir asani": {
+      "n_intl": 3,
+      "tiros_pp_intl": 1.333,
+      "xg_pp_intl": 0.02,
+      "xg_per_shot_intl": 0.015,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "jannik vestergaard": {
+      "n_intl": 4,
+      "tiros_pp_intl": 1.0,
+      "xg_pp_intl": 0.056,
+      "xg_per_shot_intl": 0.0559,
+      "tiros_90_club": 0.194,
+      "sot_rate": 0.667,
+      "fuente_fbref": "Jannik Vestergaard",
+      "fuente": "intl"
+    },
+    "jacob shaffelburg": {
+      "n_intl": 4,
+      "tiros_pp_intl": 1.0,
+      "xg_pp_intl": 0.078,
+      "xg_per_shot_intl": 0.0782,
+      "tiros_90_club": 1.338,
+      "sot_rate": 0.333,
+      "fuente_fbref": "Jacob Shaffelburg",
+      "fuente": "intl"
+    },
+    "granit xhaka": {
+      "n_intl": 5,
+      "tiros_pp_intl": 0.8,
+      "xg_pp_intl": 0.03,
+      "xg_per_shot_intl": 0.0381,
+      "tiros_90_club": 0.654,
+      "sot_rate": 0.143,
+      "fuente_fbref": "Granit Xhaka",
+      "fuente": "intl"
+    },
+    "florian wirtz": {
+      "n_intl": 3,
+      "tiros_pp_intl": 1.333,
+      "xg_pp_intl": 0.07,
+      "xg_per_shot_intl": 0.0522,
+      "tiros_90_club": 2.689,
+      "sot_rate": 0.479,
+      "fuente_fbref": "Florian Wirtz",
+      "fuente": "intl"
+    },
+    "enso gonzalez": {
+      "n_intl": 3,
+      "tiros_pp_intl": 1.333,
+      "xg_pp_intl": 0.101,
+      "xg_per_shot_intl": 0.0756,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "Enso Gonzalez",
+      "fuente": "intl"
+    },
+    "enner valencia": {
+      "n_intl": 3,
+      "tiros_pp_intl": 1.333,
+      "xg_pp_intl": 0.296,
+      "xg_per_shot_intl": 0.2223,
+      "tiros_90_club": 2.804,
+      "sot_rate": 0.467,
+      "fuente_fbref": "Enner Valencia",
+      "fuente": "intl"
+    },
+    "emmanuel justine rabby banda": {
+      "n_intl": 3,
+      "tiros_pp_intl": 1.333,
+      "xg_pp_intl": 0.029,
+      "xg_per_shot_intl": 0.0221,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "edmond faycal tapsoba": {
+      "n_intl": 4,
+      "tiros_pp_intl": 1.0,
+      "xg_pp_intl": 0.065,
+      "xg_per_shot_intl": 0.0652,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "nicolas de la cruz": {
+      "n_intl": 4,
+      "tiros_pp_intl": 1.0,
+      "xg_pp_intl": 0.032,
+      "xg_per_shot_intl": 0.0318,
+      "tiros_90_club": 1.504,
+      "sot_rate": 0.235,
+      "fuente_fbref": "Nicolás De La Cruz",
+      "fuente": "intl"
+    },
+    "deon hotto kavendji": {
+      "n_intl": 4,
+      "tiros_pp_intl": 1.0,
+      "xg_pp_intl": 0.093,
+      "xg_per_shot_intl": 0.0932,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "denzel dumfries": {
+      "n_intl": 5,
+      "tiros_pp_intl": 0.8,
+      "xg_pp_intl": 0.054,
+      "xg_per_shot_intl": 0.0672,
+      "tiros_90_club": 1.705,
+      "sot_rate": 0.514,
+      "fuente_fbref": "Denzel Dumfries",
+      "fuente": "intl"
+    },
+    "david hancko": {
+      "n_intl": 4,
+      "tiros_pp_intl": 1.0,
+      "xg_pp_intl": 0.063,
+      "xg_per_shot_intl": 0.0634,
+      "tiros_90_club": 1.988,
+      "sot_rate": 0.313,
+      "fuente_fbref": "Dávid Hancko",
+      "fuente": "intl"
+    },
+    "daniel munoz": {
+      "n_intl": 5,
+      "tiros_pp_intl": 0.8,
+      "xg_pp_intl": 0.121,
+      "xg_per_shot_intl": 0.1515,
+      "tiros_90_club": 1.031,
+      "sot_rate": 0.486,
+      "fuente_fbref": "Daniel Muñoz",
+      "fuente": "intl"
+    },
+    "christian kouame": {
+      "n_intl": 3,
+      "tiros_pp_intl": 1.333,
+      "xg_pp_intl": 0.2,
+      "xg_per_shot_intl": 0.1503,
+      "tiros_90_club": 1.983,
+      "sot_rate": 0.292,
+      "fuente_fbref": "Christian Kouamé",
+      "fuente": "intl"
+    },
+    "cesar rodolfo blackman camarena": {
+      "n_intl": 3,
+      "tiros_pp_intl": 1.333,
+      "xg_pp_intl": 0.06,
+      "xg_per_shot_intl": 0.0451,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "bodda mouhsine": {
+      "n_intl": 3,
+      "tiros_pp_intl": 1.333,
+      "xg_pp_intl": 0.043,
+      "xg_per_shot_intl": 0.0319,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "barnabas varga": {
+      "n_intl": 3,
+      "tiros_pp_intl": 1.333,
+      "xg_pp_intl": 0.313,
+      "xg_per_shot_intl": 0.2347,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "baris alper yilmaz": {
+      "n_intl": 5,
+      "tiros_pp_intl": 0.8,
+      "xg_pp_intl": 0.07,
+      "xg_per_shot_intl": 0.0873,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "antonio rudiger": {
+      "n_intl": 5,
+      "tiros_pp_intl": 0.8,
+      "xg_pp_intl": 0.033,
+      "xg_per_shot_intl": 0.0408,
+      "tiros_90_club": 0.631,
+      "sot_rate": 0.105,
+      "fuente_fbref": "Antonio Rüdiger",
+      "fuente": "intl"
+    },
+    "andrej kramaric": {
+      "n_intl": 3,
+      "tiros_pp_intl": 1.333,
+      "xg_pp_intl": 0.309,
+      "xg_per_shot_intl": 0.2319,
+      "tiros_90_club": 2.248,
+      "sot_rate": 0.377,
+      "fuente_fbref": "Andrej Kramarić",
+      "fuente": "intl"
+    },
+    "andreas christensen": {
+      "n_intl": 4,
+      "tiros_pp_intl": 1.0,
+      "xg_pp_intl": 0.091,
+      "xg_per_shot_intl": 0.0915,
+      "tiros_90_club": 0.545,
+      "sot_rate": 0.333,
+      "fuente_fbref": "Andreas Christensen",
+      "fuente": "intl"
+    },
+    "alfredo kulembe ribeiro": {
+      "n_intl": 5,
+      "tiros_pp_intl": 0.8,
+      "xg_pp_intl": 0.079,
+      "xg_per_shot_intl": 0.0993,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "alexis sanchez": {
+      "n_intl": 3,
+      "tiros_pp_intl": 1.333,
+      "xg_pp_intl": 0.214,
+      "xg_per_shot_intl": 0.1605,
+      "tiros_90_club": 2.118,
+      "sot_rate": 0.333,
+      "fuente_fbref": "Alexis Sánchez",
+      "fuente": "intl"
+    },
+    "adam gnezda cerin": {
+      "n_intl": 4,
+      "tiros_pp_intl": 1.0,
+      "xg_pp_intl": 0.072,
+      "xg_per_shot_intl": 0.0715,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "zan karnicnik": {
+      "n_intl": 4,
+      "tiros_pp_intl": 0.75,
+      "xg_pp_intl": 0.089,
+      "xg_per_shot_intl": 0.1187,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "youcef atal": {
+      "n_intl": 3,
+      "tiros_pp_intl": 1.0,
+      "xg_pp_intl": 0.024,
+      "xg_per_shot_intl": 0.0235,
+      "tiros_90_club": 1.0,
+      "sot_rate": 0.25,
+      "fuente_fbref": "Youcef Atal",
+      "fuente": "intl"
+    },
+    "yordan osorio": {
+      "n_intl": 4,
+      "tiros_pp_intl": 0.75,
+      "xg_pp_intl": 0.175,
+      "xg_per_shot_intl": 0.2327,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "Yordan Osorio",
+      "fuente": "intl"
+    },
+    "willi orban": {
+      "n_intl": 3,
+      "tiros_pp_intl": 1.0,
+      "xg_pp_intl": 0.189,
+      "xg_per_shot_intl": 0.1893,
+      "tiros_90_club": 0.891,
+      "sot_rate": 0.318,
+      "fuente_fbref": "Willi Orban",
+      "fuente": "intl"
+    },
+    "toni kroos": {
+      "n_intl": 5,
+      "tiros_pp_intl": 0.6,
+      "xg_pp_intl": 0.031,
+      "xg_per_shot_intl": 0.0516,
+      "tiros_90_club": 1.483,
+      "sot_rate": 0.371,
+      "fuente_fbref": "Toni Kroos",
+      "fuente": "intl"
+    },
+    "timi elsnik": {
+      "n_intl": 4,
+      "tiros_pp_intl": 0.75,
+      "xg_pp_intl": 0.054,
+      "xg_per_shot_intl": 0.0718,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "themba zwane": {
+      "n_intl": 7,
+      "tiros_pp_intl": 0.429,
+      "xg_pp_intl": 0.08,
+      "xg_per_shot_intl": 0.1878,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "saul basilio coco-bassey oubina": {
+      "n_intl": 4,
+      "tiros_pp_intl": 0.75,
+      "xg_pp_intl": 0.008,
+      "xg_per_shot_intl": 0.0111,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "roderick alonso miller molina": {
+      "n_intl": 3,
+      "tiros_pp_intl": 1.0,
+      "xg_pp_intl": 0.081,
+      "xg_per_shot_intl": 0.0812,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "robert sanchez": {
+      "n_intl": 5,
+      "tiros_pp_intl": 0.6,
+      "xg_pp_intl": 0.059,
+      "xg_per_shot_intl": 0.0987,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "Robert Sánchez",
+      "fuente": "intl"
+    },
+    "riccardo calafiori": {
+      "n_intl": 3,
+      "tiros_pp_intl": 1.0,
+      "xg_pp_intl": 0.103,
+      "xg_per_shot_intl": 0.1031,
+      "tiros_90_club": 0.651,
+      "sot_rate": 0.353,
+      "fuente_fbref": "Riccardo Calafiori",
+      "fuente": "intl"
+    },
+    "ricardo rodriguez": {
+      "n_intl": 5,
+      "tiros_pp_intl": 0.6,
+      "xg_pp_intl": 0.015,
+      "xg_per_shot_intl": 0.0245,
+      "tiros_90_club": 0.357,
+      "sot_rate": 0.182,
+      "fuente_fbref": "Ricardo Rodríguez",
+      "fuente": "intl"
+    },
+    "remo freuler": {
+      "n_intl": 5,
+      "tiros_pp_intl": 0.6,
+      "xg_pp_intl": 0.042,
+      "xg_per_shot_intl": 0.0704,
+      "tiros_90_club": 0.478,
+      "sot_rate": 0.235,
+      "fuente_fbref": "Remo Freuler",
+      "fuente": "intl"
+    },
+    "rayan ait-nouri": {
+      "n_intl": 3,
+      "tiros_pp_intl": 1.0,
+      "xg_pp_intl": 0.023,
+      "xg_per_shot_intl": 0.0233,
+      "tiros_90_club": 1.043,
+      "sot_rate": 0.361,
+      "fuente_fbref": "Rayan Aït-Nouri",
+      "fuente": "intl"
+    },
+    "rafael leao": {
+      "n_intl": 4,
+      "tiros_pp_intl": 0.75,
+      "xg_pp_intl": 0.046,
+      "xg_per_shot_intl": 0.0607,
+      "tiros_90_club": 2.509,
+      "sot_rate": 0.357,
+      "fuente_fbref": "Rafael Leão",
+      "fuente": "intl"
+    },
+    "radu dragusin": {
+      "n_intl": 4,
+      "tiros_pp_intl": 0.75,
+      "xg_pp_intl": 0.036,
+      "xg_per_shot_intl": 0.048,
+      "tiros_90_club": 0.895,
+      "sot_rate": 0.235,
+      "fuente_fbref": "Radu Drăgușin",
+      "fuente": "intl"
+    },
+    "peter pekarik": {
+      "n_intl": 4,
+      "tiros_pp_intl": 0.75,
+      "xg_pp_intl": 0.138,
+      "xg_per_shot_intl": 0.1834,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "omar alderete": {
+      "n_intl": 3,
+      "tiros_pp_intl": 1.0,
+      "xg_pp_intl": 0.024,
+      "xg_per_shot_intl": 0.0243,
+      "tiros_90_club": 1.152,
+      "sot_rate": 0.263,
+      "fuente_fbref": "Omar Alderete",
+      "fuente": "intl"
+    },
+    "nouhou tolo": {
+      "n_intl": 3,
+      "tiros_pp_intl": 1.0,
+      "xg_pp_intl": 0.046,
+      "xg_per_shot_intl": 0.0458,
+      "tiros_90_club": 0.49,
+      "sot_rate": 0.167,
+      "fuente_fbref": "Nouhou Tolo",
+      "fuente": "intl"
+    },
+    "alejandro garnacho": {
+      "n_intl": 5,
+      "tiros_pp_intl": 0.6,
+      "xg_pp_intl": 0.03,
+      "xg_per_shot_intl": 0.0493,
+      "tiros_90_club": 3.509,
+      "sot_rate": 0.28,
+      "fuente_fbref": "Alejandro Garnacho",
+      "fuente": "intl"
+    },
+    "nedim bajrami": {
+      "n_intl": 3,
+      "tiros_pp_intl": 1.0,
+      "xg_pp_intl": 0.065,
+      "xg_per_shot_intl": 0.0654,
+      "tiros_90_club": 2.192,
+      "sot_rate": 0.281,
+      "fuente_fbref": "Nedim Bajrami",
+      "fuente": "intl"
+    },
+    "moriba kourouma kourouma": {
+      "n_intl": 3,
+      "tiros_pp_intl": 1.0,
+      "xg_pp_intl": 0.072,
+      "xg_per_shot_intl": 0.0724,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "moises caicedo": {
+      "n_intl": 4,
+      "tiros_pp_intl": 0.75,
+      "xg_pp_intl": 0.025,
+      "xg_per_shot_intl": 0.0328,
+      "tiros_90_club": 0.538,
+      "sot_rate": 0.15,
+      "fuente_fbref": "Moisés Caicedo",
+      "fuente": "intl"
+    },
+    "milan skriniar": {
+      "n_intl": 4,
+      "tiros_pp_intl": 0.75,
+      "xg_pp_intl": 0.055,
+      "xg_per_shot_intl": 0.0731,
+      "tiros_90_club": 0.166,
+      "sot_rate": 0.333,
+      "fuente_fbref": "Milan Škriniar",
+      "fuente": "intl"
+    },
+    "michail antonio": {
+      "n_intl": 3,
+      "tiros_pp_intl": 1.0,
+      "xg_pp_intl": 0.16,
+      "xg_per_shot_intl": 0.1605,
+      "tiros_90_club": 1.596,
+      "sot_rate": 0.467,
+      "fuente_fbref": "Michail Antonio",
+      "fuente": "intl"
+    },
+    "meschak elia": {
+      "n_intl": 3,
+      "tiros_pp_intl": 1.0,
+      "xg_pp_intl": 0.32,
+      "xg_per_shot_intl": 0.3199,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "Meschak Elia",
+      "fuente": "intl"
+    },
+    "mert muldur": {
+      "n_intl": 4,
+      "tiros_pp_intl": 0.75,
+      "xg_pp_intl": 0.117,
+      "xg_per_shot_intl": 0.1558,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "mathias villasanti": {
+      "n_intl": 3,
+      "tiros_pp_intl": 1.0,
+      "xg_pp_intl": 0.137,
+      "xg_per_shot_intl": 0.137,
+      "tiros_90_club": 0.731,
+      "sot_rate": 0.368,
+      "fuente_fbref": "Mathías Villasanti",
+      "fuente": "intl"
+    },
+    "marcelo brozovic": {
+      "n_intl": 3,
+      "tiros_pp_intl": 1.0,
+      "xg_pp_intl": 0.042,
+      "xg_per_shot_intl": 0.0424,
+      "tiros_90_club": 1.191,
+      "sot_rate": 0.424,
+      "fuente_fbref": "Marcelo Brozović",
+      "fuente": "intl"
+    },
+    "lukas provod": {
+      "n_intl": 3,
+      "tiros_pp_intl": 1.0,
+      "xg_pp_intl": 0.032,
+      "xg_per_shot_intl": 0.0323,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "lamine camara": {
+      "n_intl": 3,
+      "tiros_pp_intl": 1.0,
+      "xg_pp_intl": 0.056,
+      "xg_per_shot_intl": 0.056,
+      "tiros_90_club": 1.195,
+      "sot_rate": 0.3,
+      "fuente_fbref": "Lamine Camara",
+      "fuente": "intl"
+    },
+    "kaan ayhan": {
+      "n_intl": 4,
+      "tiros_pp_intl": 0.75,
+      "xg_pp_intl": 0.058,
+      "xg_per_shot_intl": 0.0777,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "jorge sanchez": {
+      "n_intl": 3,
+      "tiros_pp_intl": 1.0,
+      "xg_pp_intl": 0.048,
+      "xg_per_shot_intl": 0.0477,
+      "tiros_90_club": 1.27,
+      "sot_rate": 0.25,
+      "fuente_fbref": "Jorge Sánchez",
+      "fuente": "intl"
+    },
+    "jordan ayew": {
+      "n_intl": 3,
+      "tiros_pp_intl": 1.0,
+      "xg_pp_intl": 0.529,
+      "xg_per_shot_intl": 0.5288,
+      "tiros_90_club": 1.696,
+      "sot_rate": 0.417,
+      "fuente_fbref": "Jordan Ayew",
+      "fuente": "intl"
+    },
+    "jonathan buatu mananga": {
+      "n_intl": 4,
+      "tiros_pp_intl": 0.75,
+      "xg_pp_intl": 0.142,
+      "xg_per_shot_intl": 0.1893,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "joachim andersen": {
+      "n_intl": 4,
+      "tiros_pp_intl": 0.75,
+      "xg_pp_intl": 0.036,
+      "xg_per_shot_intl": 0.0481,
+      "tiros_90_club": 0.554,
+      "sot_rate": 0.381,
+      "fuente_fbref": "Joachim Andersen",
+      "fuente": "intl"
+    },
+    "jamiro monteiro": {
+      "n_intl": 4,
+      "tiros_pp_intl": 0.75,
+      "xg_pp_intl": 0.149,
+      "xg_per_shot_intl": 0.1984,
+      "tiros_90_club": 0.773,
+      "sot_rate": 0.412,
+      "fuente_fbref": "Jamiro Monteiro",
+      "fuente": "intl"
+    },
+    "hamari traore": {
+      "n_intl": 5,
+      "tiros_pp_intl": 0.6,
+      "xg_pp_intl": 0.184,
+      "xg_per_shot_intl": 0.3071,
+      "tiros_90_club": 0.706,
+      "sot_rate": 0.111,
+      "fuente_fbref": "Hamari Traoré",
+      "fuente": "intl"
+    },
+    "daniel armando rios": {
+      "n_intl": 3,
+      "tiros_pp_intl": 1.0,
+      "xg_pp_intl": 0.054,
+      "xg_per_shot_intl": 0.0539,
+      "tiros_90_club": 2.675,
+      "sot_rate": 0.262,
+      "fuente_fbref": "Daniel Armando Ríos",
+      "fuente": "intl"
+    },
+    "gabriel alejandro villamil cortez": {
+      "n_intl": 3,
+      "tiros_pp_intl": 1.0,
+      "xg_pp_intl": 0.051,
+      "xg_per_shot_intl": 0.0509,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "florian grillitsch": {
+      "n_intl": 3,
+      "tiros_pp_intl": 1.0,
+      "xg_pp_intl": 0.049,
+      "xg_per_shot_intl": 0.0492,
+      "tiros_90_club": 0.824,
+      "sot_rate": 0.286,
+      "fuente_fbref": "Florian Grillitsch",
+      "fuente": "intl"
+    },
+    "facundo pellistri": {
+      "n_intl": 6,
+      "tiros_pp_intl": 0.5,
+      "xg_pp_intl": 0.168,
+      "xg_per_shot_intl": 0.3359,
+      "tiros_90_club": 1.241,
+      "sot_rate": 0.353,
+      "fuente_fbref": "Facundo Pellistri",
+      "fuente": "intl"
+    },
+    "erik janza": {
+      "n_intl": 3,
+      "tiros_pp_intl": 1.0,
+      "xg_pp_intl": 0.019,
+      "xg_per_shot_intl": 0.0186,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "eduard alexander bello gil": {
+      "n_intl": 3,
+      "tiros_pp_intl": 1.0,
+      "xg_pp_intl": 0.103,
+      "xg_per_shot_intl": 0.103,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "edgardo isaac farina wynter": {
+      "n_intl": 4,
+      "tiros_pp_intl": 0.75,
+      "xg_pp_intl": 0.024,
+      "xg_per_shot_intl": 0.0323,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "denis vavro": {
+      "n_intl": 4,
+      "tiros_pp_intl": 0.75,
+      "xg_pp_intl": 0.014,
+      "xg_per_shot_intl": 0.0182,
+      "tiros_90_club": 0.916,
+      "sot_rate": 0.28,
+      "fuente_fbref": "Denis Vavro",
+      "fuente": "intl"
+    },
+    "dayot upamecano": {
+      "n_intl": 6,
+      "tiros_pp_intl": 0.5,
+      "xg_pp_intl": 0.038,
+      "xg_per_shot_intl": 0.0758,
+      "tiros_90_club": 0.561,
+      "sot_rate": 0.364,
+      "fuente_fbref": "Dayot Upamecano",
+      "fuente": "intl"
+    },
+    "cristian jesus martinez": {
+      "n_intl": 4,
+      "tiros_pp_intl": 0.75,
+      "xg_pp_intl": 0.029,
+      "xg_per_shot_intl": 0.0385,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "charles pickel": {
+      "n_intl": 6,
+      "tiros_pp_intl": 0.5,
+      "xg_pp_intl": 0.017,
+      "xg_per_shot_intl": 0.034,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "cesar montes": {
+      "n_intl": 3,
+      "tiros_pp_intl": 1.0,
+      "xg_pp_intl": 0.048,
+      "xg_per_shot_intl": 0.0476,
+      "tiros_90_club": 0.653,
+      "sot_rate": 0.154,
+      "fuente_fbref": "César Montes",
+      "fuente": "intl"
+    },
+    "carlos teran": {
+      "n_intl": 5,
+      "tiros_pp_intl": 0.6,
+      "xg_pp_intl": 0.064,
+      "xg_per_shot_intl": 0.1067,
+      "tiros_90_club": 0.593,
+      "sot_rate": 0.375,
+      "fuente_fbref": "Carlos Terán",
+      "fuente": "intl"
+    },
+    "callum mcgregor": {
+      "n_intl": 3,
+      "tiros_pp_intl": 1.0,
+      "xg_pp_intl": 0.047,
+      "xg_per_shot_intl": 0.0466,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "antonee robinson": {
+      "n_intl": 3,
+      "tiros_pp_intl": 1.0,
+      "xg_pp_intl": 0.032,
+      "xg_per_shot_intl": 0.0324,
+      "tiros_90_club": 0.441,
+      "sot_rate": 0.438,
+      "fuente_fbref": "Antonee Robinson",
+      "fuente": "intl"
+    },
+    "anis ben slimane": {
+      "n_intl": 3,
+      "tiros_pp_intl": 1.0,
+      "xg_pp_intl": 0.008,
+      "xg_per_shot_intl": 0.0078,
+      "tiros_90_club": 1.702,
+      "sot_rate": 0.375,
+      "fuente_fbref": "Anis Ben Slimane",
+      "fuente": "intl"
+    },
+    "andrei ratiu": {
+      "n_intl": 4,
+      "tiros_pp_intl": 0.75,
+      "xg_pp_intl": 0.034,
+      "xg_per_shot_intl": 0.0449,
+      "tiros_90_club": 0.909,
+      "sot_rate": 0.258,
+      "fuente_fbref": "Andrei Ratiu",
+      "fuente": "intl"
+    },
+    "amadou onana": {
+      "n_intl": 4,
+      "tiros_pp_intl": 0.75,
+      "xg_pp_intl": 0.042,
+      "xg_per_shot_intl": 0.0559,
+      "tiros_90_club": 1.25,
+      "sot_rate": 0.207,
+      "fuente_fbref": "Amadou Onana",
+      "fuente": "intl"
+    },
+    "alessandro bastoni": {
+      "n_intl": 4,
+      "tiros_pp_intl": 0.75,
+      "xg_pp_intl": 0.113,
+      "xg_per_shot_intl": 0.1501,
+      "tiros_90_club": 0.487,
+      "sot_rate": 0.154,
+      "fuente_fbref": "Alessandro Bastoni",
+      "fuente": "intl"
+    },
+    "alan franco": {
+      "n_intl": 4,
+      "tiros_pp_intl": 0.75,
+      "xg_pp_intl": 0.031,
+      "xg_per_shot_intl": 0.0407,
+      "tiros_90_club": 0.342,
+      "sot_rate": 0.1,
+      "fuente_fbref": "Alan Franco",
+      "fuente": "intl"
+    },
+    "aissa mandi": {
+      "n_intl": 3,
+      "tiros_pp_intl": 1.0,
+      "xg_pp_intl": 0.155,
+      "xg_per_shot_intl": 0.1555,
+      "tiros_90_club": 0.311,
+      "sot_rate": 0.333,
+      "fuente_fbref": "Aïssa Mandi",
+      "fuente": "intl"
+    },
+    "ahmed mostafa": {
+      "n_intl": 4,
+      "tiros_pp_intl": 0.75,
+      "xg_pp_intl": 0.285,
+      "xg_per_shot_intl": 0.3803,
+      "tiros_90_club": 2.188,
+      "sot_rate": 0.286,
+      "fuente_fbref": "Ahmed Mostafa",
+      "fuente": "intl"
+    },
+    "adrien rabiot": {
+      "n_intl": 5,
+      "tiros_pp_intl": 0.6,
+      "xg_pp_intl": 0.052,
+      "xg_per_shot_intl": 0.0873,
+      "tiros_90_club": 1.288,
+      "sot_rate": 0.447,
+      "fuente_fbref": "Adrien Rabiot",
+      "fuente": "intl"
+    },
+    "yassine meriah": {
+      "n_intl": 3,
+      "tiros_pp_intl": 0.667,
+      "xg_pp_intl": 0.098,
+      "xg_per_shot_intl": 0.1469,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "william saliba": {
+      "n_intl": 6,
+      "tiros_pp_intl": 0.333,
+      "xg_pp_intl": 0.019,
+      "xg_per_shot_intl": 0.0571,
+      "tiros_90_club": 0.263,
+      "sot_rate": 0.4,
+      "fuente_fbref": "William Saliba",
+      "fuente": "intl"
+    },
+    "weston mckennie": {
+      "n_intl": 3,
+      "tiros_pp_intl": 0.667,
+      "xg_pp_intl": 0.079,
+      "xg_per_shot_intl": 0.1187,
+      "tiros_90_club": 0.799,
+      "sot_rate": 0.304,
+      "fuente_fbref": "Weston McKennie",
+      "fuente": "intl"
+    },
+    "tomas soucek": {
+      "n_intl": 3,
+      "tiros_pp_intl": 0.667,
+      "xg_pp_intl": 0.062,
+      "xg_per_shot_intl": 0.0927,
+      "tiros_90_club": 1.317,
+      "sot_rate": 0.357,
+      "fuente_fbref": "Tomáš Souček",
+      "fuente": "intl"
+    },
+    "siyanda xulu": {
+      "n_intl": 3,
+      "tiros_pp_intl": 0.667,
+      "xg_pp_intl": 0.287,
+      "xg_per_shot_intl": 0.4307,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "serge aurier": {
+      "n_intl": 4,
+      "tiros_pp_intl": 0.5,
+      "xg_pp_intl": 0.202,
+      "xg_per_shot_intl": 0.4032,
+      "tiros_90_club": 0.645,
+      "sot_rate": 0.167,
+      "fuente_fbref": "Serge Aurier",
+      "fuente": "intl"
+    },
+    "samuel chukwueze": {
+      "n_intl": 3,
+      "tiros_pp_intl": 0.667,
+      "xg_pp_intl": 0.024,
+      "xg_per_shot_intl": 0.0363,
+      "tiros_90_club": 2.478,
+      "sot_rate": 0.286,
+      "fuente_fbref": "Samuel Chukwueze",
+      "fuente": "intl"
+    },
+    "samet akaydin": {
+      "n_intl": 4,
+      "tiros_pp_intl": 0.5,
+      "xg_pp_intl": 0.08,
+      "xg_per_shot_intl": 0.1605,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "ruben dias": {
+      "n_intl": 4,
+      "tiros_pp_intl": 0.5,
+      "xg_pp_intl": 0.02,
+      "xg_per_shot_intl": 0.0403,
+      "tiros_90_club": 0.704,
+      "sot_rate": 0.4,
+      "fuente_fbref": "Rúben Dias",
+      "fuente": "intl"
+    },
+    "robin hranac": {
+      "n_intl": 3,
+      "tiros_pp_intl": 0.667,
+      "xg_pp_intl": 0.112,
+      "xg_per_shot_intl": 0.1686,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "Robin Hranáč",
+      "fuente": "intl"
+    },
+    "riaan hanamub": {
+      "n_intl": 4,
+      "tiros_pp_intl": 0.5,
+      "xg_pp_intl": 0.005,
+      "xg_per_shot_intl": 0.0104,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "reinildo isnard mandava": {
+      "n_intl": 3,
+      "tiros_pp_intl": 0.667,
+      "xg_pp_intl": 0.029,
+      "xg_per_shot_intl": 0.0432,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "prins menelik tjiueza": {
+      "n_intl": 4,
+      "tiros_pp_intl": 0.5,
+      "xg_pp_intl": 0.109,
+      "xg_per_shot_intl": 0.2177,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "philipp lienhart": {
+      "n_intl": 3,
+      "tiros_pp_intl": 0.667,
+      "xg_pp_intl": 0.06,
+      "xg_per_shot_intl": 0.0906,
+      "tiros_90_club": 0.26,
+      "sot_rate": 0.125,
+      "fuente_fbref": "Philipp Lienhart",
+      "fuente": "intl"
+    },
+    "pape matar sarr": {
+      "n_intl": 3,
+      "tiros_pp_intl": 0.667,
+      "xg_pp_intl": 0.267,
+      "xg_per_shot_intl": 0.4011,
+      "tiros_90_club": 1.565,
+      "sot_rate": 0.389,
+      "fuente_fbref": "Pape Matar Sarr",
+      "fuente": "intl"
+    },
+    "pape gueye": {
+      "n_intl": 3,
+      "tiros_pp_intl": 0.667,
+      "xg_pp_intl": 0.058,
+      "xg_per_shot_intl": 0.0868,
+      "tiros_90_club": 2.186,
+      "sot_rate": 0.315,
+      "fuente_fbref": "Pape Gueye",
+      "fuente": "intl"
+    },
+    "orlando moises galo calderon": {
+      "n_intl": 3,
+      "tiros_pp_intl": 0.667,
+      "xg_pp_intl": 0.019,
+      "xg_per_shot_intl": 0.0278,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "ondrej duda": {
+      "n_intl": 4,
+      "tiros_pp_intl": 0.5,
+      "xg_pp_intl": 0.034,
+      "xg_per_shot_intl": 0.0673,
+      "tiros_90_club": 0.879,
+      "sot_rate": 0.292,
+      "fuente_fbref": "Ondrej Duda",
+      "fuente": "intl"
+    },
+    "omare gassama": {
+      "n_intl": 4,
+      "tiros_pp_intl": 0.5,
+      "xg_pp_intl": 0.007,
+      "xg_per_shot_intl": 0.0134,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "omar colley": {
+      "n_intl": 3,
+      "tiros_pp_intl": 0.667,
+      "xg_pp_intl": 0.059,
+      "xg_per_shot_intl": 0.0882,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "odilon kossounou": {
+      "n_intl": 3,
+      "tiros_pp_intl": 0.667,
+      "xg_pp_intl": 0.017,
+      "xg_per_shot_intl": 0.0253,
+      "tiros_90_club": 0.249,
+      "sot_rate": 0.2,
+      "fuente_fbref": "Odilon Kossounou",
+      "fuente": "intl"
+    },
+    "nicola zalewski": {
+      "n_intl": 3,
+      "tiros_pp_intl": 0.667,
+      "xg_pp_intl": 0.039,
+      "xg_per_shot_intl": 0.0589,
+      "tiros_90_club": 1.481,
+      "sot_rate": 0.062,
+      "fuente_fbref": "Nicola Zalewski",
+      "fuente": "intl"
+    },
+    "nathan ake": {
+      "n_intl": 6,
+      "tiros_pp_intl": 0.333,
+      "xg_pp_intl": 0.018,
+      "xg_per_shot_intl": 0.0534,
+      "tiros_90_club": 0.881,
+      "sot_rate": 0.25,
+      "fuente_fbref": "Nathan Aké",
+      "fuente": "intl"
+    },
+    "mouctar diakhaby": {
+      "n_intl": 4,
+      "tiros_pp_intl": 0.5,
+      "xg_pp_intl": 0.029,
+      "xg_per_shot_intl": 0.0586,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "mothobi mvala": {
+      "n_intl": 6,
+      "tiros_pp_intl": 0.333,
+      "xg_pp_intl": 0.261,
+      "xg_per_shot_intl": 0.7835,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "mohamed elneny": {
+      "n_intl": 3,
+      "tiros_pp_intl": 0.0,
+      "xg_pp_intl": 0.0,
+      "xg_per_shot_intl": 0.1213,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "Mohamed Elneny",
+      "fuente": "intl"
+    },
+    "michel aebischer": {
+      "n_intl": 5,
+      "tiros_pp_intl": 0.4,
+      "xg_pp_intl": 0.018,
+      "xg_per_shot_intl": 0.0452,
+      "tiros_90_club": 0.726,
+      "sot_rate": 0.278,
+      "fuente_fbref": "Michel Aebischer",
+      "fuente": "intl"
+    },
+    "mbwana ally samatta": {
+      "n_intl": 3,
+      "tiros_pp_intl": 0.667,
+      "xg_pp_intl": 0.019,
+      "xg_per_shot_intl": 0.0284,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "matias arezo": {
+      "n_intl": 5,
+      "tiros_pp_intl": 0.4,
+      "xg_pp_intl": 0.02,
+      "xg_per_shot_intl": 0.0496,
+      "tiros_90_club": 2.927,
+      "sot_rate": 0.333,
+      "fuente_fbref": "Matias Arezo",
+      "fuente": "intl"
+    },
+    "marc guehi": {
+      "n_intl": 6,
+      "tiros_pp_intl": 0.333,
+      "xg_pp_intl": 0.023,
+      "xg_per_shot_intl": 0.0694,
+      "tiros_90_club": 0.441,
+      "sot_rate": 0.467,
+      "fuente_fbref": "Marc Guéhi",
+      "fuente": "intl"
+    },
+    "manuel luis da silva cafumana": {
+      "n_intl": 4,
+      "tiros_pp_intl": 0.5,
+      "xg_pp_intl": 0.009,
+      "xg_per_shot_intl": 0.0186,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "krepin diatta": {
+      "n_intl": 4,
+      "tiros_pp_intl": 0.5,
+      "xg_pp_intl": 0.022,
+      "xg_per_shot_intl": 0.0441,
+      "tiros_90_club": 0.672,
+      "sot_rate": 0.333,
+      "fuente_fbref": "Krépin Diatta",
+      "fuente": "intl"
+    },
+    "konrad laimer": {
+      "n_intl": 3,
+      "tiros_pp_intl": 0.667,
+      "xg_pp_intl": 0.09,
+      "xg_per_shot_intl": 0.1346,
+      "tiros_90_club": 0.863,
+      "sot_rate": 0.294,
+      "fuente_fbref": "Konrad Laimer",
+      "fuente": "intl"
+    },
+    "kialonda gaspar": {
+      "n_intl": 5,
+      "tiros_pp_intl": 0.4,
+      "xg_pp_intl": 0.018,
+      "xg_per_shot_intl": 0.0452,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "khuliso johnson mudau": {
+      "n_intl": 7,
+      "tiros_pp_intl": 0.286,
+      "xg_pp_intl": 0.052,
+      "xg_per_shot_intl": 0.1815,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "kasey palmer": {
+      "n_intl": 3,
+      "tiros_pp_intl": 0.667,
+      "xg_pp_intl": 0.027,
+      "xg_per_shot_intl": 0.0401,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "jules kounde": {
+      "n_intl": 6,
+      "tiros_pp_intl": 0.333,
+      "xg_pp_intl": 0.142,
+      "xg_per_shot_intl": 0.4271,
+      "tiros_90_club": 0.745,
+      "sot_rate": 0.292,
+      "fuente_fbref": "Jules Koundé",
+      "fuente": "intl"
+    },
+    "josko gvardiol": {
+      "n_intl": 3,
+      "tiros_pp_intl": 0.667,
+      "xg_pp_intl": 0.023,
+      "xg_per_shot_intl": 0.0345,
+      "tiros_90_club": 1.099,
+      "sot_rate": 0.3,
+      "fuente_fbref": "Joško Gvardiol",
+      "fuente": "intl"
+    },
+    "jose ndong machin dicombo": {
+      "n_intl": 4,
+      "tiros_pp_intl": 0.5,
+      "xg_pp_intl": 0.013,
+      "xg_per_shot_intl": 0.0265,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "jonathan osorio": {
+      "n_intl": 3,
+      "tiros_pp_intl": 0.667,
+      "xg_pp_intl": 0.225,
+      "xg_per_shot_intl": 0.3378,
+      "tiros_90_club": 0.751,
+      "sot_rate": 0.625,
+      "fuente_fbref": "Jonathan Osorio",
+      "fuente": "intl"
+    },
+    "joao pedro": {
+      "n_intl": 4,
+      "tiros_pp_intl": 0.5,
+      "xg_pp_intl": 0.02,
+      "xg_per_shot_intl": 0.0404,
+      "tiros_90_club": 3.304,
+      "sot_rate": 0.347,
+      "fuente_fbref": "João Pedro",
+      "fuente": "intl"
+    },
+    "jean-charles castelletto": {
+      "n_intl": 4,
+      "tiros_pp_intl": 0.5,
+      "xg_pp_intl": 0.034,
+      "xg_per_shot_intl": 0.0678,
+      "tiros_90_club": 0.619,
+      "sot_rate": 0.333,
+      "fuente_fbref": "Jean-Charles Castelletto",
+      "fuente": "intl"
+    },
+    "jean seri": {
+      "n_intl": 4,
+      "tiros_pp_intl": 0.5,
+      "xg_pp_intl": 0.008,
+      "xg_per_shot_intl": 0.0168,
+      "tiros_90_club": 0.8,
+      "sot_rate": 0.25,
+      "fuente_fbref": "Jean Seri",
+      "fuente": "intl"
+    },
+    "jan mlakar": {
+      "n_intl": 4,
+      "tiros_pp_intl": 0.5,
+      "xg_pp_intl": 0.041,
+      "xg_per_shot_intl": 0.0824,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "jakub kiwior": {
+      "n_intl": 3,
+      "tiros_pp_intl": 0.667,
+      "xg_pp_intl": 0.026,
+      "xg_per_shot_intl": 0.0396,
+      "tiros_90_club": 0.24,
+      "sot_rate": 0.333,
+      "fuente_fbref": "Jakub Kiwior",
+      "fuente": "intl"
+    },
+    "issoufou dayo": {
+      "n_intl": 4,
+      "tiros_pp_intl": 0.5,
+      "xg_pp_intl": 0.07,
+      "xg_per_shot_intl": 0.1406,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "ismail jakobs": {
+      "n_intl": 4,
+      "tiros_pp_intl": 0.5,
+      "xg_pp_intl": 0.032,
+      "xg_per_shot_intl": 0.0632,
+      "tiros_90_club": 1.288,
+      "sot_rate": 0.333,
+      "fuente_fbref": "Ismail Jakobs",
+      "fuente": "intl"
+    },
+    "igor lichnovsky osorio": {
+      "n_intl": 3,
+      "tiros_pp_intl": 0.667,
+      "xg_pp_intl": 0.062,
+      "xg_per_shot_intl": 0.0935,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "iban salvador edu": {
+      "n_intl": 4,
+      "tiros_pp_intl": 0.5,
+      "xg_pp_intl": 0.024,
+      "xg_per_shot_intl": 0.0481,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "giovanni di lorenzo": {
+      "n_intl": 4,
+      "tiros_pp_intl": 0.5,
+      "xg_pp_intl": 0.048,
+      "xg_per_shot_intl": 0.0956,
+      "tiros_90_club": 0.568,
+      "sot_rate": 0.286,
+      "fuente_fbref": "Giovanni Di Lorenzo",
+      "fuente": "intl"
+    },
+    "giorgi kvernadze": {
+      "n_intl": 3,
+      "tiros_pp_intl": 0.667,
+      "xg_pp_intl": 0.026,
+      "xg_per_shot_intl": 0.039,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "Giorgi Kvernadze",
+      "fuente": "intl"
+    },
+    "gedeon kalulu": {
+      "n_intl": 6,
+      "tiros_pp_intl": 0.333,
+      "xg_pp_intl": 0.141,
+      "xg_per_shot_intl": 0.4226,
+      "tiros_90_club": 0.556,
+      "sot_rate": 0.167,
+      "fuente_fbref": "Gédéon Kalulu",
+      "fuente": "intl"
+    },
+    "ferdi kadioglu": {
+      "n_intl": 5,
+      "tiros_pp_intl": 0.4,
+      "xg_pp_intl": 0.011,
+      "xg_per_shot_intl": 0.0276,
+      "tiros_90_club": 0.93,
+      "sot_rate": 0.25,
+      "fuente_fbref": "Ferdi Kadioglu",
+      "fuente": "intl"
+    },
+    "federico dimarco": {
+      "n_intl": 3,
+      "tiros_pp_intl": 0.667,
+      "xg_pp_intl": 0.009,
+      "xg_per_shot_intl": 0.0128,
+      "tiros_90_club": 2.314,
+      "sot_rate": 0.393,
+      "fuente_fbref": "Federico Dimarco",
+      "fuente": "intl"
+    },
+    "ellyes skhiri": {
+      "n_intl": 3,
+      "tiros_pp_intl": 0.667,
+      "xg_pp_intl": 0.025,
+      "xg_per_shot_intl": 0.0381,
+      "tiros_90_club": 0.524,
+      "sot_rate": 0.154,
+      "fuente_fbref": "Ellyes Skhiri",
+      "fuente": "intl"
+    },
+    "edison michael flores peralta": {
+      "n_intl": 3,
+      "tiros_pp_intl": 0.667,
+      "xg_pp_intl": 0.02,
+      "xg_per_shot_intl": 0.0294,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "gabriel": {
+      "n_intl": 4,
+      "tiros_pp_intl": 0.5,
+      "xg_pp_intl": 0.212,
+      "xg_per_shot_intl": 0.4243,
+      "tiros_90_club": 0.686,
+      "sot_rate": 0.292,
+      "fuente_fbref": "Gabriel",
+      "fuente": "intl"
+    },
+    "christopher wooh": {
+      "n_intl": 4,
+      "tiros_pp_intl": 0.5,
+      "xg_pp_intl": 0.057,
+      "xg_per_shot_intl": 0.1143,
+      "tiros_90_club": 0.617,
+      "sot_rate": 0.4,
+      "fuente_fbref": "Christopher Wooh",
+      "fuente": "intl"
+    },
+    "chris richards": {
+      "n_intl": 3,
+      "tiros_pp_intl": 0.667,
+      "xg_pp_intl": 0.06,
+      "xg_per_shot_intl": 0.0897,
+      "tiros_90_club": 0.472,
+      "sot_rate": 0.273,
+      "fuente_fbref": "Chris Richards",
+      "fuente": "intl"
+    },
+    "che adams": {
+      "n_intl": 3,
+      "tiros_pp_intl": 0.667,
+      "xg_pp_intl": 0.041,
+      "xg_per_shot_intl": 0.0622,
+      "tiros_90_club": 2.169,
+      "sot_rate": 0.406,
+      "fuente_fbref": "Che Adams",
+      "fuente": "intl"
+    },
+    "carlos augusto zambrano ochandarte": {
+      "n_intl": 3,
+      "tiros_pp_intl": 0.667,
+      "xg_pp_intl": 0.015,
+      "xg_per_shot_intl": 0.023,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "calvin bassey": {
+      "n_intl": 6,
+      "tiros_pp_intl": 0.333,
+      "xg_pp_intl": 0.102,
+      "xg_per_shot_intl": 0.3056,
+      "tiros_90_club": 0.409,
+      "sot_rate": 0.286,
+      "fuente_fbref": "Calvin Bassey",
+      "fuente": "intl"
+    },
+    "boubakar kouyate": {
+      "n_intl": 5,
+      "tiros_pp_intl": 0.4,
+      "xg_pp_intl": 0.052,
+      "xg_per_shot_intl": 0.1297,
+      "tiros_90_club": 0.607,
+      "sot_rate": 0.154,
+      "fuente_fbref": "Boubakar Kouyaté",
+      "fuente": "intl"
+    },
+    "berat djimsiti": {
+      "n_intl": 3,
+      "tiros_pp_intl": 0.667,
+      "xg_pp_intl": 0.035,
+      "xg_per_shot_intl": 0.0522,
+      "tiros_90_club": 0.413,
+      "sot_rate": 0.333,
+      "fuente_fbref": "Berat Djimsiti",
+      "fuente": "intl"
+    },
+    "arthur theate": {
+      "n_intl": 3,
+      "tiros_pp_intl": 0.667,
+      "xg_pp_intl": 0.005,
+      "xg_per_shot_intl": 0.007,
+      "tiros_90_club": 1.2,
+      "sot_rate": 0.25,
+      "fuente_fbref": "Arthur Theate",
+      "fuente": "intl"
+    },
+    "aprocious petrus": {
+      "n_intl": 4,
+      "tiros_pp_intl": 0.5,
+      "xg_pp_intl": 0.028,
+      "xg_per_shot_intl": 0.0568,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "antoine semenyo": {
+      "n_intl": 3,
+      "tiros_pp_intl": 0.667,
+      "xg_pp_intl": 0.026,
+      "xg_per_shot_intl": 0.0396,
+      "tiros_90_club": 3.539,
+      "sot_rate": 0.325,
+      "fuente_fbref": "Antoine Semenyo",
+      "fuente": "intl"
+    },
+    "andras schafer": {
+      "n_intl": 3,
+      "tiros_pp_intl": 0.667,
+      "xg_pp_intl": 0.022,
+      "xg_per_shot_intl": 0.033,
+      "tiros_90_club": 0.706,
+      "sot_rate": 0.083,
+      "fuente_fbref": "András Schäfer",
+      "fuente": "intl"
+    },
+    "alfons amade": {
+      "n_intl": 3,
+      "tiros_pp_intl": 0.667,
+      "xg_pp_intl": 0.057,
+      "xg_per_shot_intl": 0.0858,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "alexander bah": {
+      "n_intl": 3,
+      "tiros_pp_intl": 0.667,
+      "xg_pp_intl": 0.08,
+      "xg_per_shot_intl": 0.1206,
+      "tiros_90_club": 0.533,
+      "sot_rate": 0.444,
+      "fuente_fbref": "Alexander Bah",
+      "fuente": "intl"
+    },
+    "abdulkerim bardakci": {
+      "n_intl": 4,
+      "tiros_pp_intl": 0.5,
+      "xg_pp_intl": 0.055,
+      "xg_per_shot_intl": 0.1105,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "papa amadou diallo": {
+      "n_intl": 3,
+      "tiros_pp_intl": 0.667,
+      "xg_pp_intl": 0.055,
+      "xg_per_shot_intl": 0.0818,
+      "tiros_90_club": 1.313,
+      "sot_rate": 0.462,
+      "fuente_fbref": "Papa Amadou Diallo",
+      "fuente": "intl"
+    },
+    "wilfried singo": {
+      "n_intl": 3,
+      "tiros_pp_intl": 0.333,
+      "xg_pp_intl": 0.03,
+      "xg_per_shot_intl": 0.0915,
+      "tiros_90_club": 0.782,
+      "sot_rate": 0.368,
+      "fuente_fbref": "Wilfried Singo",
+      "fuente": "intl"
+    },
+    "wilder cartagena": {
+      "n_intl": 3,
+      "tiros_pp_intl": 0.333,
+      "xg_pp_intl": 0.003,
+      "xg_per_shot_intl": 0.0076,
+      "tiros_90_club": 0.943,
+      "sot_rate": 0.304,
+      "fuente_fbref": "Wilder Cartagena",
+      "fuente": "intl"
+    },
+    "wajdi kechrida": {
+      "n_intl": 3,
+      "tiros_pp_intl": 0.333,
+      "xg_pp_intl": 0.011,
+      "xg_per_shot_intl": 0.0333,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "gustavo gomez": {
+      "n_intl": 3,
+      "tiros_pp_intl": 0.333,
+      "xg_pp_intl": 0.019,
+      "xg_per_shot_intl": 0.0569,
+      "tiros_90_club": 1.065,
+      "sot_rate": 0.143,
+      "fuente_fbref": "Gustavo Gómez",
+      "fuente": "intl"
+    },
+    "valdomiro tualungo paulo lameiras": {
+      "n_intl": 3,
+      "tiros_pp_intl": 0.333,
+      "xg_pp_intl": 0.02,
+      "xg_per_shot_intl": 0.06,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "tomas holes": {
+      "n_intl": 3,
+      "tiros_pp_intl": 0.333,
+      "xg_pp_intl": 0.006,
+      "xg_per_shot_intl": 0.0193,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "stanislav lobotka": {
+      "n_intl": 4,
+      "tiros_pp_intl": 0.25,
+      "xg_pp_intl": 0.005,
+      "xg_per_shot_intl": 0.0219,
+      "tiros_90_club": 0.384,
+      "sot_rate": 0.286,
+      "fuente_fbref": "Stanislav Lobotka",
+      "fuente": "intl"
+    },
+    "silvan widmer": {
+      "n_intl": 3,
+      "tiros_pp_intl": 0.333,
+      "xg_pp_intl": 0.014,
+      "xg_per_shot_intl": 0.0422,
+      "tiros_90_club": 1.014,
+      "sot_rate": 0.214,
+      "fuente_fbref": "Silvan Widmer",
+      "fuente": "intl"
+    },
+    "sergio fernando pena flores": {
+      "n_intl": 3,
+      "tiros_pp_intl": 0.333,
+      "xg_pp_intl": 0.002,
+      "xg_per_shot_intl": 0.0057,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "selim amallah": {
+      "n_intl": 3,
+      "tiros_pp_intl": 0.333,
+      "xg_pp_intl": 0.024,
+      "xg_per_shot_intl": 0.0724,
+      "tiros_90_club": 1.503,
+      "sot_rate": 0.348,
+      "fuente_fbref": "Selim Amallah",
+      "fuente": "intl"
+    },
+    "sasa lukic": {
+      "n_intl": 3,
+      "tiros_pp_intl": 0.333,
+      "xg_pp_intl": 0.029,
+      "xg_per_shot_intl": 0.0881,
+      "tiros_90_club": 0.692,
+      "sot_rate": 0.167,
+      "fuente_fbref": "Saša Lukić",
+      "fuente": "intl"
+    },
+    "romain saiss": {
+      "n_intl": 3,
+      "tiros_pp_intl": 0.333,
+      "xg_pp_intl": 0.135,
+      "xg_per_shot_intl": 0.4062,
+      "tiros_90_club": 1.061,
+      "sot_rate": 0.462,
+      "fuente_fbref": "Romain Saïss",
+      "fuente": "intl"
+    },
+    "roberto lopes": {
+      "n_intl": 4,
+      "tiros_pp_intl": 0.25,
+      "xg_pp_intl": 0.025,
+      "xg_per_shot_intl": 0.099,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "ricardo martins guimaraes": {
+      "n_intl": 3,
+      "tiros_pp_intl": 0.333,
+      "xg_pp_intl": 0.016,
+      "xg_per_shot_intl": 0.0485,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "piero hincapie": {
+      "n_intl": 4,
+      "tiros_pp_intl": 0.25,
+      "xg_pp_intl": 0.002,
+      "xg_per_shot_intl": 0.0074,
+      "tiros_90_club": 0.741,
+      "sot_rate": 0.136,
+      "fuente_fbref": "Piero Hincapié",
+      "fuente": "intl"
+    },
+    "petar stojanovic": {
+      "n_intl": 4,
+      "tiros_pp_intl": 0.25,
+      "xg_pp_intl": 0.006,
+      "xg_per_shot_intl": 0.0232,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "Petar Stojanović",
+      "fuente": "intl"
+    },
+    "otar kakabadze": {
+      "n_intl": 4,
+      "tiros_pp_intl": 0.25,
+      "xg_pp_intl": 0.003,
+      "xg_per_shot_intl": 0.013,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "oluwasemilogo adesewo ibidapo ajayi": {
+      "n_intl": 7,
+      "tiros_pp_intl": 0.143,
+      "xg_pp_intl": 0.028,
+      "xg_per_shot_intl": 0.1936,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "nicolo barella": {
+      "n_intl": 4,
+      "tiros_pp_intl": 0.25,
+      "xg_pp_intl": 0.021,
+      "xg_per_shot_intl": 0.0846,
+      "tiros_90_club": 1.297,
+      "sot_rate": 0.293,
+      "fuente_fbref": "Nicolò Barella",
+      "fuente": "intl"
+    },
+    "nicolas seiwald": {
+      "n_intl": 4,
+      "tiros_pp_intl": 0.25,
+      "xg_pp_intl": 0.008,
+      "xg_per_shot_intl": 0.0339,
+      "tiros_90_club": 0.216,
+      "sot_rate": 0.333,
+      "fuente_fbref": "Nicolas Seiwald",
+      "fuente": "intl"
+    },
+    "nayef aguerd": {
+      "n_intl": 4,
+      "tiros_pp_intl": 0.25,
+      "xg_pp_intl": 0.016,
+      "xg_per_shot_intl": 0.064,
+      "tiros_90_club": 0.68,
+      "sot_rate": 0.286,
+      "fuente_fbref": "Nayef Aguerd",
+      "fuente": "intl"
+    },
+    "nahuel molina": {
+      "n_intl": 3,
+      "tiros_pp_intl": 0.333,
+      "xg_pp_intl": 0.049,
+      "xg_per_shot_intl": 0.1471,
+      "tiros_90_club": 0.583,
+      "sot_rate": 0.417,
+      "fuente_fbref": "Nahuel Molina",
+      "fuente": "intl"
+    },
+    "nahitan nandez": {
+      "n_intl": 5,
+      "tiros_pp_intl": 0.2,
+      "xg_pp_intl": 0.034,
+      "xg_per_shot_intl": 0.1699,
+      "tiros_90_club": 0.325,
+      "sot_rate": 0.444,
+      "fuente_fbref": "Nahitan Nández",
+      "fuente": "intl"
+    },
+    "mykola shaparenko": {
+      "n_intl": 3,
+      "tiros_pp_intl": 0.333,
+      "xg_pp_intl": 0.08,
+      "xg_per_shot_intl": 0.2398,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "montassar talbi": {
+      "n_intl": 3,
+      "tiros_pp_intl": 0.333,
+      "xg_pp_intl": 0.008,
+      "xg_per_shot_intl": 0.0248,
+      "tiros_90_club": 0.204,
+      "sot_rate": 0.4,
+      "fuente_fbref": "Montassar Talbi",
+      "fuente": "intl"
+    },
+    "mohamed hussein mohamed": {
+      "n_intl": 3,
+      "tiros_pp_intl": 0.333,
+      "xg_pp_intl": 0.002,
+      "xg_per_shot_intl": 0.0065,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "mohamed haj": {
+      "n_intl": 3,
+      "tiros_pp_intl": 0.333,
+      "xg_pp_intl": 0.026,
+      "xg_per_shot_intl": 0.0769,
+      "tiros_90_club": 1.4,
+      "sot_rate": 0.429,
+      "fuente_fbref": "Mohamed Haj",
+      "fuente": "intl"
+    },
+    "wilker angel": {
+      "n_intl": 3,
+      "tiros_pp_intl": 0.333,
+      "xg_pp_intl": 0.027,
+      "xg_per_shot_intl": 0.0798,
+      "tiros_90_club": 0.696,
+      "sot_rate": 0.545,
+      "fuente_fbref": "Wilker Ángel",
+      "fuente": "intl"
+    },
+    "miguel almiron": {
+      "n_intl": 3,
+      "tiros_pp_intl": 0.333,
+      "xg_pp_intl": 0.011,
+      "xg_per_shot_intl": 0.0327,
+      "tiros_90_club": 2.259,
+      "sot_rate": 0.338,
+      "fuente_fbref": "Miguel Almirón",
+      "fuente": "intl"
+    },
+    "mario mitaj": {
+      "n_intl": 3,
+      "tiros_pp_intl": 0.333,
+      "xg_pp_intl": 0.01,
+      "xg_per_shot_intl": 0.0307,
+      "tiros_90_club": 0.188,
+      "sot_rate": 0.667,
+      "fuente_fbref": "Mario Mitaj",
+      "fuente": "intl"
+    },
+    "marcos andre": {
+      "n_intl": 4,
+      "tiros_pp_intl": 0.25,
+      "xg_pp_intl": 0.041,
+      "xg_per_shot_intl": 0.1658,
+      "tiros_90_club": 1.667,
+      "sot_rate": 0.091,
+      "fuente_fbref": "Marcos André",
+      "fuente": "intl"
+    },
+    "marc cucurella": {
+      "n_intl": 6,
+      "tiros_pp_intl": 0.167,
+      "xg_pp_intl": 0.003,
+      "xg_per_shot_intl": 0.0156,
+      "tiros_90_club": 0.723,
+      "sot_rate": 0.5,
+      "fuente_fbref": "Marc Cucurella",
+      "fuente": "intl"
+    },
+    "manuel akanji": {
+      "n_intl": 5,
+      "tiros_pp_intl": 0.2,
+      "xg_pp_intl": 0.157,
+      "xg_per_shot_intl": 0.7835,
+      "tiros_90_club": 0.538,
+      "sot_rate": 0.333,
+      "fuente_fbref": "Manuel Akanji",
+      "fuente": "intl"
+    },
+    "majeed ashimeru": {
+      "n_intl": 3,
+      "tiros_pp_intl": 0.333,
+      "xg_pp_intl": 0.012,
+      "xg_per_shot_intl": 0.035,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "luis fernando haquin lopez": {
+      "n_intl": 3,
+      "tiros_pp_intl": 0.333,
+      "xg_pp_intl": 0.009,
+      "xg_per_shot_intl": 0.0267,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "lionel mpasi-nzau": {
+      "n_intl": 6,
+      "tiros_pp_intl": 0.167,
+      "xg_pp_intl": 0.131,
+      "xg_per_shot_intl": 0.7835,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "lassana coulibaly": {
+      "n_intl": 3,
+      "tiros_pp_intl": 0.333,
+      "xg_pp_intl": 0.013,
+      "xg_per_shot_intl": 0.0379,
+      "tiros_90_club": 0.304,
+      "sot_rate": 0.333,
+      "fuente_fbref": "Lassana Coulibaly",
+      "fuente": "intl"
+    },
+    "kieran trippier": {
+      "n_intl": 6,
+      "tiros_pp_intl": 0.167,
+      "xg_pp_intl": 0.015,
+      "xg_per_shot_intl": 0.089,
+      "tiros_90_club": 0.323,
+      "sot_rate": 0.25,
+      "fuente_fbref": "Kieran Trippier",
+      "fuente": "intl"
+    },
+    "josip sutalo": {
+      "n_intl": 3,
+      "tiros_pp_intl": 0.333,
+      "xg_pp_intl": 0.093,
+      "xg_per_shot_intl": 0.2778,
+      "tiros_90_club": 0.257,
+      "sot_rate": 0.286,
+      "fuente_fbref": "Josip Šutalo",
+      "fuente": "intl"
+    },
+    "joe scally": {
+      "n_intl": 3,
+      "tiros_pp_intl": 0.333,
+      "xg_pp_intl": 0.006,
+      "xg_per_shot_intl": 0.0188,
+      "tiros_90_club": 0.21,
+      "sot_rate": 0.167,
+      "fuente_fbref": "Joe Scally",
+      "fuente": "intl"
+    },
+    "jose angel cordoba chambers": {
+      "n_intl": 4,
+      "tiros_pp_intl": 0.25,
+      "xg_pp_intl": 0.005,
+      "xg_per_shot_intl": 0.0219,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "jonathan tah": {
+      "n_intl": 4,
+      "tiros_pp_intl": 0.25,
+      "xg_pp_intl": 0.005,
+      "xg_per_shot_intl": 0.0215,
+      "tiros_90_club": 0.727,
+      "sot_rate": 0.292,
+      "fuente_fbref": "Jonathan Tah",
+      "fuente": "intl"
+    },
+    "jon aramburu": {
+      "n_intl": 3,
+      "tiros_pp_intl": 0.333,
+      "xg_pp_intl": 0.009,
+      "xg_per_shot_intl": 0.0258,
+      "tiros_90_club": 0.403,
+      "sot_rate": 0.273,
+      "fuente_fbref": "Jon Aramburu",
+      "fuente": "intl"
+    },
+    "john stones": {
+      "n_intl": 7,
+      "tiros_pp_intl": 0.143,
+      "xg_pp_intl": 0.01,
+      "xg_per_shot_intl": 0.0716,
+      "tiros_90_club": 0.339,
+      "sot_rate": 0.5,
+      "fuente_fbref": "John Stones",
+      "fuente": "intl"
+    },
+    "johan mojica": {
+      "n_intl": 5,
+      "tiros_pp_intl": 0.2,
+      "xg_pp_intl": 0.012,
+      "xg_per_shot_intl": 0.0616,
+      "tiros_90_club": 0.556,
+      "sot_rate": 0.176,
+      "fuente_fbref": "Johan Mojica",
+      "fuente": "intl"
+    },
+    "joao victor": {
+      "n_intl": 4,
+      "tiros_pp_intl": 0.25,
+      "xg_pp_intl": 0.008,
+      "xg_per_shot_intl": 0.0313,
+      "tiros_90_club": 0.353,
+      "sot_rate": 0.333,
+      "fuente_fbref": "João Victor",
+      "fuente": "intl"
+    },
+    "joakim maehle": {
+      "n_intl": 3,
+      "tiros_pp_intl": 0.333,
+      "xg_pp_intl": 0.031,
+      "xg_per_shot_intl": 0.0925,
+      "tiros_90_club": 0.735,
+      "sot_rate": 0.3,
+      "fuente_fbref": "Joakim Mæhle",
+      "fuente": "intl"
+    },
+    "jerdy schouten": {
+      "n_intl": 6,
+      "tiros_pp_intl": 0.167,
+      "xg_pp_intl": 0.012,
+      "xg_per_shot_intl": 0.072,
+      "tiros_90_club": 0.818,
+      "sot_rate": 0.364,
+      "fuente_fbref": "Jerdy Schouten",
+      "fuente": "intl"
+    },
+    "jan vertonghen": {
+      "n_intl": 3,
+      "tiros_pp_intl": 0.333,
+      "xg_pp_intl": 0.035,
+      "xg_per_shot_intl": 0.1049,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "jan bednarek": {
+      "n_intl": 3,
+      "tiros_pp_intl": 0.333,
+      "xg_pp_intl": 0.068,
+      "xg_per_shot_intl": 0.2037,
+      "tiros_90_club": 0.178,
+      "sot_rate": 0.6,
+      "fuente_fbref": "Jan Bednarek",
+      "fuente": "intl"
+    },
+    "james gomez": {
+      "n_intl": 3,
+      "tiros_pp_intl": 0.333,
+      "xg_pp_intl": 0.012,
+      "xg_per_shot_intl": 0.0355,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "jaka bijol": {
+      "n_intl": 4,
+      "tiros_pp_intl": 0.25,
+      "xg_pp_intl": 0.009,
+      "xg_per_shot_intl": 0.036,
+      "tiros_90_club": 0.578,
+      "sot_rate": 0.316,
+      "fuente_fbref": "Jaka Bijol",
+      "fuente": "intl"
+    },
+    "jack hendry": {
+      "n_intl": 3,
+      "tiros_pp_intl": 0.333,
+      "xg_pp_intl": 0.022,
+      "xg_per_shot_intl": 0.0662,
+      "tiros_90_club": 0.676,
+      "sot_rate": 0.304,
+      "fuente_fbref": "Jack Hendry",
+      "fuente": "intl"
+    },
+    "issiaga sylla": {
+      "n_intl": 4,
+      "tiros_pp_intl": 0.25,
+      "xg_pp_intl": 0.009,
+      "xg_per_shot_intl": 0.0375,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "issa kabore": {
+      "n_intl": 4,
+      "tiros_pp_intl": 0.25,
+      "xg_pp_intl": 0.05,
+      "xg_per_shot_intl": 0.1996,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "ibrahim diakite": {
+      "n_intl": 3,
+      "tiros_pp_intl": 0.333,
+      "xg_pp_intl": 0.026,
+      "xg_per_shot_intl": 0.0795,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "ibrahim blati toure": {
+      "n_intl": 3,
+      "tiros_pp_intl": 0.333,
+      "xg_pp_intl": 0.022,
+      "xg_per_shot_intl": 0.0647,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "ibrahim abdallah hamad": {
+      "n_intl": 3,
+      "tiros_pp_intl": 0.333,
+      "xg_pp_intl": 0.024,
+      "xg_per_shot_intl": 0.0732,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "gustavo fabrice sangare": {
+      "n_intl": 3,
+      "tiros_pp_intl": 0.333,
+      "xg_pp_intl": 0.02,
+      "xg_per_shot_intl": 0.0596,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "gio reyna": {
+      "n_intl": 3,
+      "tiros_pp_intl": 0.333,
+      "xg_pp_intl": 0.024,
+      "xg_per_shot_intl": 0.0733,
+      "tiros_90_club": 0.769,
+      "sot_rate": 0.667,
+      "fuente_fbref": "Gio Reyna",
+      "fuente": "intl"
+    },
+    "ghislain konan": {
+      "n_intl": 7,
+      "tiros_pp_intl": 0.143,
+      "xg_pp_intl": 0.007,
+      "xg_per_shot_intl": 0.0523,
+      "tiros_90_club": 0.68,
+      "sot_rate": 0.412,
+      "fuente_fbref": "Ghislain Konan",
+      "fuente": "intl"
+    },
+    "francisco javier calvo quesada": {
+      "n_intl": 3,
+      "tiros_pp_intl": 0.333,
+      "xg_pp_intl": 0.077,
+      "xg_per_shot_intl": 0.2308,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "federico bikoro akieme nchama": {
+      "n_intl": 4,
+      "tiros_pp_intl": 0.25,
+      "xg_pp_intl": 0.008,
+      "xg_per_shot_intl": 0.0323,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "fabian rieder": {
+      "n_intl": 3,
+      "tiros_pp_intl": 0.333,
+      "xg_pp_intl": 0.003,
+      "xg_per_shot_intl": 0.0081,
+      "tiros_90_club": 2.083,
+      "sot_rate": 0.35,
+      "fuente_fbref": "Fabian Rieder",
+      "fuente": "intl"
+    },
+    "ethan pinnock": {
+      "n_intl": 3,
+      "tiros_pp_intl": 0.333,
+      "xg_pp_intl": 0.042,
+      "xg_per_shot_intl": 0.1257,
+      "tiros_90_club": 0.679,
+      "sot_rate": 0.211,
+      "fuente_fbref": "Ethan Pinnock",
+      "fuente": "intl"
+    },
+    "erick javier davis grajales": {
+      "n_intl": 4,
+      "tiros_pp_intl": 0.25,
+      "xg_pp_intl": 0.01,
+      "xg_per_shot_intl": 0.0403,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "edson andre sitoe": {
+      "n_intl": 3,
+      "tiros_pp_intl": 0.333,
+      "xg_pp_intl": 0.002,
+      "xg_per_shot_intl": 0.0058,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "derek cornelius": {
+      "n_intl": 5,
+      "tiros_pp_intl": 0.2,
+      "xg_pp_intl": 0.008,
+      "xg_per_shot_intl": 0.0424,
+      "tiros_90_club": 0.57,
+      "sot_rate": 0.111,
+      "fuente_fbref": "Derek Cornelius",
+      "fuente": "intl"
+    },
+    "danilo": {
+      "n_intl": 4,
+      "tiros_pp_intl": 0.25,
+      "xg_pp_intl": 0.019,
+      "xg_per_shot_intl": 0.0766,
+      "tiros_90_club": 0.625,
+      "sot_rate": 0.118,
+      "fuente_fbref": "Danilo",
+      "fuente": "intl"
+    },
+    "cristian romero": {
+      "n_intl": 5,
+      "tiros_pp_intl": 0.2,
+      "xg_pp_intl": 0.017,
+      "xg_per_shot_intl": 0.0848,
+      "tiros_90_club": 0.774,
+      "sot_rate": 0.417,
+      "fuente_fbref": "Cristian Romero",
+      "fuente": "intl"
+    },
+    "basilio ndong owono nchamaaa": {
+      "n_intl": 4,
+      "tiros_pp_intl": 0.25,
+      "xg_pp_intl": 0.006,
+      "xg_per_shot_intl": 0.0241,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "andrei burca": {
+      "n_intl": 4,
+      "tiros_pp_intl": 0.25,
+      "xg_pp_intl": 0.028,
+      "xg_per_shot_intl": 0.1115,
+      "tiros_90_club": 1.136,
+      "sot_rate": 0.533,
+      "fuente_fbref": "Andrei Burcă",
+      "fuente": "intl"
+    },
+    "andre-frank zambo anguissa": {
+      "n_intl": 4,
+      "tiros_pp_intl": 0.25,
+      "xg_pp_intl": 0.051,
+      "xg_per_shot_intl": 0.202,
+      "tiros_90_club": 1.388,
+      "sot_rate": 0.295,
+      "fuente_fbref": "Andre-Frank Zambo Anguissa",
+      "fuente": "intl"
+    },
+    "alistair johnston": {
+      "n_intl": 6,
+      "tiros_pp_intl": 0.167,
+      "xg_pp_intl": 0.002,
+      "xg_per_shot_intl": 0.0113,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "alexander djiku": {
+      "n_intl": 3,
+      "tiros_pp_intl": 0.333,
+      "xg_pp_intl": 0.032,
+      "xg_per_shot_intl": 0.0974,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "ylber ramadani": {
+      "n_intl": 3,
+      "tiros_pp_intl": 0.0,
+      "xg_pp_intl": 0.0,
+      "xg_per_shot_intl": 0.1213,
+      "tiros_90_club": 0.939,
+      "sot_rate": 0.194,
+      "fuente_fbref": "Ylber Ramadani",
+      "fuente": "intl"
+    },
+    "yassine bounou": {
+      "n_intl": 4,
+      "tiros_pp_intl": 0.0,
+      "xg_pp_intl": 0.0,
+      "xg_per_shot_intl": 0.1213,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "Yassine Bounou",
+      "fuente": "intl"
+    },
+    "yann sommer": {
+      "n_intl": 5,
+      "tiros_pp_intl": 0.0,
+      "xg_pp_intl": 0.0,
+      "xg_per_shot_intl": 0.1213,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "Yann Sommer",
+      "fuente": "intl"
+    },
+    "yahia fofana": {
+      "n_intl": 7,
+      "tiros_pp_intl": 0.0,
+      "xg_pp_intl": 0.0,
+      "xg_per_shot_intl": 0.1213,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "Yahia Fofana",
+      "fuente": "intl"
+    },
+    "wout faes": {
+      "n_intl": 4,
+      "tiros_pp_intl": 0.0,
+      "xg_pp_intl": 0.0,
+      "xg_per_shot_intl": 0.1213,
+      "tiros_90_club": 0.383,
+      "sot_rate": 0.083,
+      "fuente_fbref": "Wout Faes",
+      "fuente": "intl"
+    },
+    "willian pacho": {
+      "n_intl": 4,
+      "tiros_pp_intl": 0.0,
+      "xg_pp_intl": 0.0,
+      "xg_per_shot_intl": 0.1213,
+      "tiros_90_club": 0.303,
+      "sot_rate": 0.2,
+      "fuente_fbref": "Willian Pacho",
+      "fuente": "intl"
+    },
+    "vladimir coufal": {
+      "n_intl": 3,
+      "tiros_pp_intl": 0.0,
+      "xg_pp_intl": 0.0,
+      "xg_per_shot_intl": 0.1213,
+      "tiros_90_club": 0.23,
+      "sot_rate": 0.25,
+      "fuente_fbref": "Vladimír Coufal",
+      "fuente": "intl"
+    },
+    "vanja drkusic": {
+      "n_intl": 4,
+      "tiros_pp_intl": 0.0,
+      "xg_pp_intl": 0.0,
+      "xg_per_shot_intl": 0.1213,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "unai simon": {
+      "n_intl": 6,
+      "tiros_pp_intl": 0.0,
+      "xg_pp_intl": 0.0,
+      "xg_per_shot_intl": 0.1213,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "Unai Simón",
+      "fuente": "intl"
+    },
+    "tyler adams": {
+      "n_intl": 3,
+      "tiros_pp_intl": 0.0,
+      "xg_pp_intl": 0.0,
+      "xg_per_shot_intl": 0.1213,
+      "tiros_90_club": 0.413,
+      "sot_rate": 0.222,
+      "fuente_fbref": "Tyler Adams",
+      "fuente": "intl"
+    },
+    "tresford lawrence mulenga": {
+      "n_intl": 3,
+      "tiros_pp_intl": 0.0,
+      "xg_pp_intl": 0.0,
+      "xg_per_shot_intl": 0.1213,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "timothy castagne": {
+      "n_intl": 4,
+      "tiros_pp_intl": 0.0,
+      "xg_pp_intl": 0.0,
+      "xg_per_shot_intl": 0.1213,
+      "tiros_90_club": 0.478,
+      "sot_rate": 0.357,
+      "fuente_fbref": "Timothy Castagne",
+      "fuente": "intl"
+    },
+    "tim ream": {
+      "n_intl": 3,
+      "tiros_pp_intl": 0.0,
+      "xg_pp_intl": 0.0,
+      "xg_per_shot_intl": 0.1213,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "Tim Ream",
+      "fuente": "intl"
+    },
+    "thomas strakosha": {
+      "n_intl": 3,
+      "tiros_pp_intl": 0.0,
+      "xg_pp_intl": 0.0,
+      "xg_per_shot_intl": 0.1213,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "Thomas Strakosha",
+      "fuente": "intl"
+    },
+    "strahinja pavlovic": {
+      "n_intl": 3,
+      "tiros_pp_intl": 0.0,
+      "xg_pp_intl": 0.0,
+      "xg_per_shot_intl": 0.1213,
+      "tiros_90_club": 0.821,
+      "sot_rate": 0.471,
+      "fuente_fbref": "Strahinja Pavlović",
+      "fuente": "intl"
+    },
+    "stopilla sunzu": {
+      "n_intl": 3,
+      "tiros_pp_intl": 0.0,
+      "xg_pp_intl": 0.0,
+      "xg_per_shot_intl": 0.1213,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "steeve yago": {
+      "n_intl": 3,
+      "tiros_pp_intl": 0.0,
+      "xg_pp_intl": 0.0,
+      "xg_per_shot_intl": 0.1213,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "stanley bobo nwabali": {
+      "n_intl": 7,
+      "tiros_pp_intl": 0.0,
+      "xg_pp_intl": 0.0,
+      "xg_per_shot_intl": 0.1213,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "sofyan amrabat": {
+      "n_intl": 4,
+      "tiros_pp_intl": 0.0,
+      "xg_pp_intl": 0.0,
+      "xg_per_shot_intl": 0.1213,
+      "tiros_90_club": 0.288,
+      "sot_rate": 0.333,
+      "fuente_fbref": "Sofyan Amrabat",
+      "fuente": "intl"
+    },
+    "sikou niakate": {
+      "n_intl": 5,
+      "tiros_pp_intl": 0.0,
+      "xg_pp_intl": 0.0,
+      "xg_per_shot_intl": 0.1213,
+      "tiros_90_club": 0.55,
+      "sot_rate": 0.25,
+      "fuente_fbref": "Sikou Niakaté",
+      "fuente": "intl"
+    },
+    "sergio rochet": {
+      "n_intl": 6,
+      "tiros_pp_intl": 0.0,
+      "xg_pp_intl": 0.0,
+      "xg_per_shot_intl": 0.1213,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "Sergio Rochet",
+      "fuente": "intl"
+    },
+    "ronwen williams": {
+      "n_intl": 7,
+      "tiros_pp_intl": 0.0,
+      "xg_pp_intl": 0.0,
+      "xg_per_shot_intl": 0.1213,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "rodrigo mario morinigo acosta": {
+      "n_intl": 3,
+      "tiros_pp_intl": 0.0,
+      "xg_pp_intl": 0.0,
+      "xg_per_shot_intl": 0.1213,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "seth antwi": {
+      "n_intl": 3,
+      "tiros_pp_intl": 0.0,
+      "xg_pp_intl": 0.0,
+      "xg_per_shot_intl": 0.1213,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "Seth Antwi",
+      "fuente": "intl"
+    },
+    "rafael enrique romo perez": {
+      "n_intl": 4,
+      "tiros_pp_intl": 0.0,
+      "xg_pp_intl": 0.0,
+      "xg_per_shot_intl": 0.1213,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "przemyslaw frankowski": {
+      "n_intl": 3,
+      "tiros_pp_intl": 0.0,
+      "xg_pp_intl": 0.0,
+      "xg_per_shot_intl": 0.1213,
+      "tiros_90_club": 1.27,
+      "sot_rate": 0.323,
+      "fuente_fbref": "Przemysław Frankowski",
+      "fuente": "intl"
+    },
+    "predrag rajkovic": {
+      "n_intl": 3,
+      "tiros_pp_intl": 0.0,
+      "xg_pp_intl": 0.0,
+      "xg_per_shot_intl": 0.1213,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "Predrag Rajković",
+      "fuente": "intl"
+    },
+    "phillipp mwene": {
+      "n_intl": 3,
+      "tiros_pp_intl": 0.0,
+      "xg_pp_intl": 0.0,
+      "xg_per_shot_intl": 0.1213,
+      "tiros_90_club": 0.724,
+      "sot_rate": 0.238,
+      "fuente_fbref": "Phillipp Mwene",
+      "fuente": "intl"
+    },
+    "peter gulacsi": {
+      "n_intl": 3,
+      "tiros_pp_intl": 0.0,
+      "xg_pp_intl": 0.0,
+      "xg_per_shot_intl": 0.1213,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "Péter Gulácsi",
+      "fuente": "intl"
+    },
+    "pedro gallese": {
+      "n_intl": 3,
+      "tiros_pp_intl": 0.0,
+      "xg_pp_intl": 0.0,
+      "xg_per_shot_intl": 0.1213,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "Pedro Gallese",
+      "fuente": "intl"
+    },
+    "patrick pentz": {
+      "n_intl": 4,
+      "tiros_pp_intl": 0.0,
+      "xg_pp_intl": 0.0,
+      "xg_per_shot_intl": 0.1213,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "patrick sequeira": {
+      "n_intl": 3,
+      "tiros_pp_intl": 0.0,
+      "xg_pp_intl": 0.0,
+      "xg_per_shot_intl": 0.1213,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "Patrick Sequeira",
+      "fuente": "intl"
+    },
+    "orlando mosquera": {
+      "n_intl": 4,
+      "tiros_pp_intl": 0.0,
+      "xg_pp_intl": 0.0,
+      "xg_per_shot_intl": 0.1213,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "Orlando Mosquera",
+      "fuente": "intl"
+    },
+    "nikola milenkovic": {
+      "n_intl": 3,
+      "tiros_pp_intl": 0.0,
+      "xg_pp_intl": 0.0,
+      "xg_per_shot_intl": 0.1213,
+      "tiros_90_club": 0.784,
+      "sot_rate": 0.276,
+      "fuente_fbref": "Nikola Milenković",
+      "fuente": "intl"
+    },
+    "nicusor silviu bancu": {
+      "n_intl": 3,
+      "tiros_pp_intl": 0.0,
+      "xg_pp_intl": 0.0,
+      "xg_per_shot_intl": 0.1213,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "ronald hernandez": {
+      "n_intl": 3,
+      "tiros_pp_intl": 0.0,
+      "xg_pp_intl": 0.0,
+      "xg_per_shot_intl": 0.1213,
+      "tiros_90_club": 0.479,
+      "sot_rate": 0.286,
+      "fuente_fbref": "Ronald Hernández",
+      "fuente": "intl"
+    },
+    "mykola matvienko": {
+      "n_intl": 3,
+      "tiros_pp_intl": 0.0,
+      "xg_pp_intl": 0.0,
+      "xg_per_shot_intl": 0.1213,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "mohammed salisu": {
+      "n_intl": 3,
+      "tiros_pp_intl": 0.0,
+      "xg_pp_intl": 0.0,
+      "xg_per_shot_intl": 0.1213,
+      "tiros_90_club": 0.348,
+      "sot_rate": 0.25,
+      "fuente_fbref": "Mohammed Salisu",
+      "fuente": "intl"
+    },
+    "milos veljkovic": {
+      "n_intl": 3,
+      "tiros_pp_intl": 0.0,
+      "xg_pp_intl": 0.0,
+      "xg_per_shot_intl": 0.1213,
+      "tiros_90_club": 0.282,
+      "sot_rate": 0.5,
+      "fuente_fbref": "Miloš Veljković",
+      "fuente": "intl"
+    },
+    "milos kerkez": {
+      "n_intl": 3,
+      "tiros_pp_intl": 0.0,
+      "xg_pp_intl": 0.0,
+      "xg_per_shot_intl": 0.1213,
+      "tiros_90_club": 0.512,
+      "sot_rate": 0.263,
+      "fuente_fbref": "Milos Kerkez",
+      "fuente": "intl"
+    },
+    "mike maignan": {
+      "n_intl": 6,
+      "tiros_pp_intl": 0.0,
+      "xg_pp_intl": 0.0,
+      "xg_per_shot_intl": 0.1213,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "Mike Maignan",
+      "fuente": "intl"
+    },
+    "maxime crepeau": {
+      "n_intl": 5,
+      "tiros_pp_intl": 0.0,
+      "xg_pp_intl": 0.0,
+      "xg_per_shot_intl": 0.1213,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "Maxime Crépeau",
+      "fuente": "intl"
+    },
+    "mauricio anibal isla isla": {
+      "n_intl": 3,
+      "tiros_pp_intl": 0.0,
+      "xg_pp_intl": 0.0,
+      "xg_per_shot_intl": 0.1213,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "matt turner": {
+      "n_intl": 3,
+      "tiros_pp_intl": 0.0,
+      "xg_pp_intl": 0.0,
+      "xg_per_shot_intl": 0.1213,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "Matt Turner",
+      "fuente": "intl"
+    },
+    "martin dubravka": {
+      "n_intl": 4,
+      "tiros_pp_intl": 0.0,
+      "xg_pp_intl": 0.0,
+      "xg_per_shot_intl": 0.1213,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "Martin Dúbravka",
+      "fuente": "intl"
+    },
+    "manuel neuer": {
+      "n_intl": 5,
+      "tiros_pp_intl": 0.0,
+      "xg_pp_intl": 0.0,
+      "xg_per_shot_intl": 0.1213,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "Manuel Neuer",
+      "fuente": "intl"
+    },
+    "lubeni haukongo": {
+      "n_intl": 4,
+      "tiros_pp_intl": 0.0,
+      "xg_pp_intl": 0.0,
+      "xg_per_shot_intl": 0.1213,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "logan costa": {
+      "n_intl": 5,
+      "tiros_pp_intl": 0.0,
+      "xg_pp_intl": 0.0,
+      "xg_per_shot_intl": 0.1213,
+      "tiros_90_club": 0.476,
+      "sot_rate": 0.286,
+      "fuente_fbref": "Logan Costa",
+      "fuente": "intl"
+    },
+    "lloyd junior kazapua": {
+      "n_intl": 4,
+      "tiros_pp_intl": 0.0,
+      "xg_pp_intl": 0.0,
+      "xg_per_shot_intl": 0.1213,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "lasha dvali": {
+      "n_intl": 4,
+      "tiros_pp_intl": 0.0,
+      "xg_pp_intl": 0.0,
+      "xg_per_shot_intl": 0.1213,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "lamine ba": {
+      "n_intl": 4,
+      "tiros_pp_intl": 0.0,
+      "xg_pp_intl": 0.0,
+      "xg_per_shot_intl": 0.1213,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "kyle walker": {
+      "n_intl": 7,
+      "tiros_pp_intl": 0.0,
+      "xg_pp_intl": 0.0,
+      "xg_per_shot_intl": 0.1213,
+      "tiros_90_club": 0.521,
+      "sot_rate": 0.188,
+      "fuente_fbref": "Kyle Walker",
+      "fuente": "intl"
+    },
+    "kouakou herve koffi": {
+      "n_intl": 4,
+      "tiros_pp_intl": 0.0,
+      "xg_pp_intl": 0.0,
+      "xg_per_shot_intl": 0.1213,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "koen casteels": {
+      "n_intl": 4,
+      "tiros_pp_intl": 0.0,
+      "xg_pp_intl": 0.0,
+      "xg_per_shot_intl": 0.1213,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "Koen Casteels",
+      "fuente": "intl"
+    },
+    "kasper schmeichel": {
+      "n_intl": 4,
+      "tiros_pp_intl": 0.0,
+      "xg_pp_intl": 0.0,
+      "xg_per_shot_intl": 0.1213,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "julio jose gonzalez vela-alvizu": {
+      "n_intl": 3,
+      "tiros_pp_intl": 0.0,
+      "xg_pp_intl": 0.0,
+      "xg_per_shot_intl": 0.1213,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "juan pablo vargas campos": {
+      "n_intl": 3,
+      "tiros_pp_intl": 0.0,
+      "xg_pp_intl": 0.0,
+      "xg_per_shot_intl": 0.1213,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "josimar jose evora dias": {
+      "n_intl": 5,
+      "tiros_pp_intl": 0.0,
+      "xg_pp_intl": 0.0,
+      "xg_per_shot_intl": 0.1213,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "joseph fabrice ondoa ebogo": {
+      "n_intl": 3,
+      "tiros_pp_intl": 0.0,
+      "xg_pp_intl": 0.0,
+      "xg_per_shot_intl": 0.1213,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "lucas chavez": {
+      "n_intl": 3,
+      "tiros_pp_intl": 0.0,
+      "xg_pp_intl": 0.0,
+      "xg_per_shot_intl": 0.1213,
+      "tiros_90_club": 0.968,
+      "sot_rate": 0.5,
+      "fuente_fbref": "Lucas Chávez",
+      "fuente": "intl"
+    },
+    "luiz felipe": {
+      "n_intl": 3,
+      "tiros_pp_intl": 0.0,
+      "xg_pp_intl": 0.0,
+      "xg_per_shot_intl": 0.1213,
+      "tiros_90_club": 0.195,
+      "sot_rate": 0.333,
+      "fuente_fbref": "Luiz Felipe",
+      "fuente": "intl"
+    },
+    "jordan pickford": {
+      "n_intl": 7,
+      "tiros_pp_intl": 0.0,
+      "xg_pp_intl": 0.0,
+      "xg_per_shot_intl": 0.1213,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "Jordan Pickford",
+      "fuente": "intl"
+    },
+    "john mcginn": {
+      "n_intl": 3,
+      "tiros_pp_intl": 0.0,
+      "xg_pp_intl": 0.0,
+      "xg_per_shot_intl": 0.1213,
+      "tiros_90_club": 1.201,
+      "sot_rate": 0.4,
+      "fuente_fbref": "John McGinn",
+      "fuente": "intl"
+    },
+    "joel latibeaudiere": {
+      "n_intl": 3,
+      "tiros_pp_intl": 0.0,
+      "xg_pp_intl": 0.0,
+      "xg_per_shot_intl": 0.1213,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "jindrich stanek": {
+      "n_intl": 3,
+      "tiros_pp_intl": 0.0,
+      "xg_pp_intl": 0.0,
+      "xg_per_shot_intl": 0.1213,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "jeyland mitchell": {
+      "n_intl": 3,
+      "tiros_pp_intl": 0.0,
+      "xg_pp_intl": 0.0,
+      "xg_per_shot_intl": 0.1213,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "Jeyland Mitchell",
+      "fuente": "intl"
+    },
+    "jesus lazaro owono ngua akeng": {
+      "n_intl": 4,
+      "tiros_pp_intl": 0.0,
+      "xg_pp_intl": 0.0,
+      "xg_per_shot_intl": 0.1213,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "janio bikel figueiredo silva": {
+      "n_intl": 3,
+      "tiros_pp_intl": 0.0,
+      "xg_pp_intl": 0.0,
+      "xg_per_shot_intl": 0.1213,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "jan oblak": {
+      "n_intl": 4,
+      "tiros_pp_intl": 0.0,
+      "xg_pp_intl": 0.0,
+      "xg_per_shot_intl": 0.1213,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "Jan Oblak",
+      "fuente": "intl"
+    },
+    "jahmali waite": {
+      "n_intl": 3,
+      "tiros_pp_intl": 0.0,
+      "xg_pp_intl": 0.0,
+      "xg_per_shot_intl": 0.1213,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "illia zabarnyi": {
+      "n_intl": 3,
+      "tiros_pp_intl": 0.0,
+      "xg_pp_intl": 0.0,
+      "xg_per_shot_intl": 0.1213,
+      "tiros_90_club": 0.216,
+      "sot_rate": 0.375,
+      "fuente_fbref": "Illia Zabarnyi",
+      "fuente": "intl"
+    },
+    "ibrahima keita": {
+      "n_intl": 4,
+      "tiros_pp_intl": 0.0,
+      "xg_pp_intl": 0.0,
+      "xg_per_shot_intl": 0.1213,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "ibrahim kone": {
+      "n_intl": 5,
+      "tiros_pp_intl": 0.0,
+      "xg_pp_intl": 0.0,
+      "xg_per_shot_intl": 0.1213,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "himid mao mkami": {
+      "n_intl": 3,
+      "tiros_pp_intl": 0.0,
+      "xg_pp_intl": 0.0,
+      "xg_per_shot_intl": 0.1213,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "henoc inonga baka": {
+      "n_intl": 4,
+      "tiros_pp_intl": 0.0,
+      "xg_pp_intl": 0.0,
+      "xg_per_shot_intl": 0.1213,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "haji mnoga": {
+      "n_intl": 3,
+      "tiros_pp_intl": 0.0,
+      "xg_pp_intl": 0.0,
+      "xg_per_shot_intl": 0.1213,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "guram kashia": {
+      "n_intl": 4,
+      "tiros_pp_intl": 0.0,
+      "xg_pp_intl": 0.0,
+      "xg_per_shot_intl": 0.1213,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "guillermo viscarra bruckner": {
+      "n_intl": 3,
+      "tiros_pp_intl": 0.0,
+      "xg_pp_intl": 0.0,
+      "xg_per_shot_intl": 0.1213,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "gonzalo montiel": {
+      "n_intl": 3,
+      "tiros_pp_intl": 0.0,
+      "xg_pp_intl": 0.0,
+      "xg_per_shot_intl": 0.1213,
+      "tiros_90_club": 0.337,
+      "sot_rate": 0.333,
+      "fuente_fbref": "Gonzalo Montiel",
+      "fuente": "intl"
+    },
+    "gomolemo grant kekana": {
+      "n_intl": 5,
+      "tiros_pp_intl": 0.0,
+      "xg_pp_intl": 0.0,
+      "xg_per_shot_intl": 0.1213,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "giorgi mamardashvili": {
+      "n_intl": 4,
+      "tiros_pp_intl": 0.0,
+      "xg_pp_intl": 0.0,
+      "xg_per_shot_intl": 0.1213,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "Giorgi Mamardashvili",
+      "fuente": "intl"
+    },
+    "gideon mensah": {
+      "n_intl": 3,
+      "tiros_pp_intl": 0.0,
+      "xg_pp_intl": 0.0,
+      "xg_per_shot_intl": 0.1213,
+      "tiros_90_club": 0.158,
+      "sot_rate": 0.25,
+      "fuente_fbref": "Gideon Mensah",
+      "fuente": "intl"
+    },
+    "gianluigi donnarumma": {
+      "n_intl": 4,
+      "tiros_pp_intl": 0.0,
+      "xg_pp_intl": 0.0,
+      "xg_per_shot_intl": 0.1213,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "Gianluigi Donnarumma",
+      "fuente": "intl"
+    },
+    "gabriel suazo": {
+      "n_intl": 3,
+      "tiros_pp_intl": 0.0,
+      "xg_pp_intl": 0.0,
+      "xg_per_shot_intl": 0.1213,
+      "tiros_90_club": 0.382,
+      "sot_rate": 0.3,
+      "fuente_fbref": "Gabriel Suazo",
+      "fuente": "intl"
+    },
+    "frankie musonda": {
+      "n_intl": 3,
+      "tiros_pp_intl": 0.0,
+      "xg_pp_intl": 0.0,
+      "xg_per_shot_intl": 0.1213,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "florin tanase": {
+      "n_intl": 4,
+      "tiros_pp_intl": 0.0,
+      "xg_pp_intl": 0.0,
+      "xg_per_shot_intl": 0.1213,
+      "tiros_90_club": 1.324,
+      "sot_rate": 0.517,
+      "fuente_fbref": "Florin Tănase",
+      "fuente": "intl"
+    },
+    "fehmi mert gunok": {
+      "n_intl": 4,
+      "tiros_pp_intl": 0.0,
+      "xg_pp_intl": 0.0,
+      "xg_per_shot_intl": 0.1213,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "falaye sacko": {
+      "n_intl": 4,
+      "tiros_pp_intl": 0.0,
+      "xg_pp_intl": 0.0,
+      "xg_per_shot_intl": 0.1213,
+      "tiros_90_club": 0.065,
+      "sot_rate": 0.333,
+      "fuente_fbref": "Falaye Sacko",
+      "fuente": "intl"
+    },
+    "esteban orozco fernandez": {
+      "n_intl": 4,
+      "tiros_pp_intl": 0.0,
+      "xg_pp_intl": 0.0,
+      "xg_per_shot_intl": 0.1213,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "eduardo vargas": {
+      "n_intl": 3,
+      "tiros_pp_intl": 0.0,
+      "xg_pp_intl": 0.0,
+      "xg_per_shot_intl": 0.1213,
+      "tiros_90_club": 3.158,
+      "sot_rate": 0.467,
+      "fuente_fbref": "Eduardo Vargas",
+      "fuente": "intl"
+    },
+    "edouard mendy": {
+      "n_intl": 4,
+      "tiros_pp_intl": 0.0,
+      "xg_pp_intl": 0.0,
+      "xg_per_shot_intl": 0.1213,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "Edouard Mendy",
+      "fuente": "intl"
+    },
+    "eddie marcos melo afonso": {
+      "n_intl": 4,
+      "tiros_pp_intl": 0.0,
+      "xg_pp_intl": 0.0,
+      "xg_per_shot_intl": 0.1213,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "dylan batubinsika": {
+      "n_intl": 3,
+      "tiros_pp_intl": 0.0,
+      "xg_pp_intl": 0.0,
+      "xg_per_shot_intl": 0.1213,
+      "tiros_90_club": 0.312,
+      "sot_rate": 0.286,
+      "fuente_fbref": "Dylan Batubinsika",
+      "fuente": "intl"
+    },
+    "dominik livakovic": {
+      "n_intl": 3,
+      "tiros_pp_intl": 0.0,
+      "xg_pp_intl": 0.0,
+      "xg_per_shot_intl": 0.1213,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "djigui diarra": {
+      "n_intl": 5,
+      "tiros_pp_intl": 0.0,
+      "xg_pp_intl": 0.0,
+      "xg_per_shot_intl": 0.1213,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "diogo jota": {
+      "n_intl": 5,
+      "tiros_pp_intl": 0.0,
+      "xg_pp_intl": 0.0,
+      "xg_per_shot_intl": 0.1213,
+      "tiros_90_club": 3.835,
+      "sot_rate": 0.255,
+      "fuente_fbref": "Diogo Jota",
+      "fuente": "intl"
+    },
+    "denis odoi": {
+      "n_intl": 3,
+      "tiros_pp_intl": 0.0,
+      "xg_pp_intl": 0.0,
+      "xg_per_shot_intl": 0.1213,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "emiliano martinez": {
+      "n_intl": 6,
+      "tiros_pp_intl": 0.0,
+      "xg_pp_intl": 0.0,
+      "xg_per_shot_intl": 0.1213,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "Emiliano Martínez",
+      "fuente": "intl"
+    },
+    "carlos akapo martinez": {
+      "n_intl": 4,
+      "tiros_pp_intl": 0.0,
+      "xg_pp_intl": 0.0,
+      "xg_per_shot_intl": 0.1213,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "andres gomez": {
+      "n_intl": 6,
+      "tiros_pp_intl": 0.0,
+      "xg_pp_intl": 0.0,
+      "xg_per_shot_intl": 0.1213,
+      "tiros_90_club": 3.383,
+      "sot_rate": 0.485,
+      "fuente_fbref": "Andrés Gómez",
+      "fuente": "intl"
+    },
+    "bechir ben said": {
+      "n_intl": 3,
+      "tiros_pp_intl": 0.0,
+      "xg_pp_intl": 0.0,
+      "xg_per_shot_intl": 0.1213,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "bart verbruggen": {
+      "n_intl": 6,
+      "tiros_pp_intl": 0.0,
+      "xg_pp_intl": 0.0,
+      "xg_per_shot_intl": 0.1213,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "Bart Verbruggen",
+      "fuente": "intl"
+    },
+    "bakari nondo mwamnyeto": {
+      "n_intl": 3,
+      "tiros_pp_intl": 0.0,
+      "xg_pp_intl": 0.0,
+      "xg_per_shot_intl": 0.1213,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "baboucarr gaye": {
+      "n_intl": 3,
+      "tiros_pp_intl": 0.0,
+      "xg_pp_intl": 0.0,
+      "xg_per_shot_intl": 0.1213,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "babacar niasse": {
+      "n_intl": 4,
+      "tiros_pp_intl": 0.0,
+      "xg_pp_intl": 0.0,
+      "xg_per_shot_intl": 0.1213,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "augusto de jesus corte real carneiro": {
+      "n_intl": 3,
+      "tiros_pp_intl": 0.0,
+      "xg_pp_intl": 0.0,
+      "xg_per_shot_intl": 0.1213,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "arlind afrim ajeti": {
+      "n_intl": 3,
+      "tiros_pp_intl": 0.0,
+      "xg_pp_intl": 0.0,
+      "xg_per_shot_intl": 0.1213,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "anthony ralston": {
+      "n_intl": 3,
+      "tiros_pp_intl": 0.0,
+      "xg_pp_intl": 0.0,
+      "xg_per_shot_intl": 0.1213,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "anthony louis mandrea": {
+      "n_intl": 3,
+      "tiros_pp_intl": 0.0,
+      "xg_pp_intl": 0.0,
+      "xg_per_shot_intl": 0.1213,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "angus gunn": {
+      "n_intl": 3,
+      "tiros_pp_intl": 0.0,
+      "xg_pp_intl": 0.0,
+      "xg_per_shot_intl": 0.1213,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "andrija zivkovic": {
+      "n_intl": 3,
+      "tiros_pp_intl": 0.0,
+      "xg_pp_intl": 0.0,
+      "xg_per_shot_intl": 0.1213,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "andrew robertson": {
+      "n_intl": 3,
+      "tiros_pp_intl": 0.0,
+      "xg_pp_intl": 0.0,
+      "xg_per_shot_intl": 0.1213,
+      "tiros_90_club": 0.543,
+      "sot_rate": 0.2,
+      "fuente_fbref": "Andrew Robertson",
+      "fuente": "intl"
+    },
+    "amadou diawara": {
+      "n_intl": 3,
+      "tiros_pp_intl": 0.0,
+      "xg_pp_intl": 0.0,
+      "xg_per_shot_intl": 0.1213,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "alisson": {
+      "n_intl": 4,
+      "tiros_pp_intl": 0.0,
+      "xg_pp_intl": 0.0,
+      "xg_per_shot_intl": 0.1213,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "Alisson",
+      "fuente": "intl"
+    },
+    "alexander martin marquinho callens asin": {
+      "n_intl": 3,
+      "tiros_pp_intl": 0.0,
+      "xg_pp_intl": 0.0,
+      "xg_per_shot_intl": 0.1213,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "alexander dominguez carabali": {
+      "n_intl": 4,
+      "tiros_pp_intl": 0.0,
+      "xg_pp_intl": 0.0,
+      "xg_per_shot_intl": 0.1213,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "aishi manula": {
+      "n_intl": 3,
+      "tiros_pp_intl": 0.0,
+      "xg_pp_intl": 0.0,
+      "xg_per_shot_intl": 0.1213,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    },
+    "adilson cipriano da cruz": {
+      "n_intl": 4,
+      "tiros_pp_intl": 0.0,
+      "xg_pp_intl": 0.0,
+      "xg_per_shot_intl": 0.1213,
+      "tiros_90_club": 0.0,
+      "sot_rate": 0.333,
+      "fuente_fbref": "",
+      "fuente": "intl"
+    }
+  }
+}

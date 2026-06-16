@@ -57,6 +57,24 @@ COLUMNAS = {
 
 URL_BASE = "https://www.football-data.co.uk/mmz4281"
 
+
+def cargar_env() -> None:
+    """Carga variables de un archivo .env en la raiz hacia os.environ.
+
+    No pisa las que ya esten seteadas (asi el cron puede traer la API key inline y el
+    .env aporta el resto: TELEGRAM_TOKEN, TELEGRAM_CHAT_ID, etc.). Sin dependencias.
+    """
+    import os
+    env = RAIZ / ".env"
+    if not env.exists():
+        return
+    for linea in env.read_text(encoding="utf-8").splitlines():
+        linea = linea.strip()
+        if not linea or linea.startswith("#") or "=" not in linea:
+            continue
+        clave, valor = linea.split("=", 1)
+        os.environ.setdefault(clave.strip(), valor.strip().strip('"').strip("'"))
+
 # =========================================================================== #
 #  DATOS A NIVEL JUGADOR (FBref via soccerdata) -- para el Motor Mundialista
 # =========================================================================== #
@@ -171,16 +189,19 @@ NACION_CONFED = {
     "POR": "UEFA", "NED": "UEFA", "BEL": "UEFA", "CRO": "UEFA", "SUI": "UEFA",
     "DEN": "UEFA", "POL": "UEFA", "SRB": "UEFA", "WAL": "UEFA", "SCO": "UEFA",
     "AUT": "UEFA", "UKR": "UEFA", "SWE": "UEFA", "NOR": "UEFA", "TUR": "UEFA",
+    "CZE": "UEFA", "HUN": "UEFA", "ALB": "UEFA", "SVN": "UEFA", "SVK": "UEFA",
+    "ROU": "UEFA", "GEO": "UEFA", "BIH": "UEFA",
     # AFC
     "JPN": "AFC", "KOR": "AFC", "KSA": "AFC", "IRN": "AFC", "AUS": "AFC",
-    "QAT": "AFC", "IRQ": "AFC", "UAE": "AFC", "UZB": "AFC",
+    "QAT": "AFC", "IRQ": "AFC", "UAE": "AFC", "UZB": "AFC", "JOR": "AFC",
     # CONCACAF
     "USA": "CONCACAF", "MEX": "CONCACAF", "CAN": "CONCACAF", "CRC": "CONCACAF",
-    "PAN": "CONCACAF", "JAM": "CONCACAF", "HON": "CONCACAF",
+    "PAN": "CONCACAF", "JAM": "CONCACAF", "HON": "CONCACAF", "CUW": "CONCACAF",
+    "HAI": "CONCACAF",
     # CAF
     "MAR": "CAF", "SEN": "CAF", "NGA": "CAF", "EGY": "CAF", "GHA": "CAF",
     "CMR": "CAF", "CIV": "CAF", "TUN": "CAF", "ALG": "CAF", "MLI": "CAF",
-    "RSA": "CAF",
+    "RSA": "CAF", "CPV": "CAF", "COD": "CAF",
     # OFC
     "NZL": "OFC",
 }
@@ -189,3 +210,10 @@ NACION_CONFED = {
 # 11 x 1.1 = ~12 faltas/equipo, 11 x 0.18 = ~2 tarjetas/equipo.
 SHADOW_FALTAS_90 = 1.10
 SHADOW_TARJETAS_90 = 0.18
+
+# Calibracion club->internacional de FALTAS (DATA-DRIVEN, src/validar_estilos_statsbomb.py):
+# las selecciones cometen mas faltas que el promedio de club. Sobre 244 equipos-partido de
+# StatsBomb, el modelo predecia 11.9 y la realidad internacional era 14.4 -> factor ~1.21.
+# Recalibrado, el modelo le gana al baseline en faltas (MAE 3.50 vs 3.67, +4.8%). Se aplica en
+# disciplina_seleccion. Las tarjetas NO se escalan (su media ya coincidia; ademas no hay senal).
+ESCALA_FALTAS_SELECCION = 1.21

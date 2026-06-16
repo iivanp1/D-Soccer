@@ -65,7 +65,8 @@ def correr(nacion_local: str, nacion_visit: str,
            arbitro: str | None, n_sims: int = 10000) -> None:
     # --- 1. Motor Mundialista: ratings de jugadores -> tasas base ---
     df_j = pd.read_csv(config.DATA_PROC / "jugadores.csv")
-    jm = JugadoresModel().entrenar_jugadores(df_j)
+    from src.enriquecer_xg import cargar_ajuste  # correccion por xG real (si xg_ajuste.csv existe)
+    jm = JugadoresModel().entrenar_jugadores(df_j, ajuste_xg=cargar_ajuste())
 
     # Calibracion internacional (si existe): ancla los goles a la media real del Mundial
     import json
@@ -77,6 +78,17 @@ def correr(nacion_local: str, nacion_visit: str,
     else:
         msg_cal = "SIN calibrar (corre: python -m src.calibrar_internacional)"
 
+    # Elo de selecciones (columna vertebral del hibrido). Si falla, sigue con jugadores solo.
+    try:
+        propio = config.DATA_PROC / "elo_propio.json"
+        if propio.exists():  # nuestro Elo computado de la historia (preferido, refrescable)
+            jm.cargar_elo(json.loads(propio.read_text(encoding="utf-8")))
+        else:                # respaldo: Elo scrapeado de eloratings.net
+            from src.elo import cargar_elo as _cargar_elo
+            jm.cargar_elo(_cargar_elo())
+    except Exception as e:
+        print(f"  (sin Elo: {type(e).__name__} -> solo modelo de jugadores)")
+
     # Con imputacion por niveles, una seleccion con pocos (o cero) jugadores en el
     # dataset igual se completa con ratings sombra de su federacion. El motor corre
     # cualquier cruce del planeta.
@@ -84,10 +96,18 @@ def correr(nacion_local: str, nacion_visit: str,
     xi_v = xi_visit or jm.seleccion_probable(nacion_visit)
 
     pred = jm.predecir_partido_mundial(xi_l, xi_v, nacion_local, nacion_visit)
-    disc_l = jm.disciplina_seleccion(xi_l, nacion_local)
-    disc_v = jm.disciplina_seleccion(xi_v, nacion_visit)
 
-    # --- 2. Arbitro -> escala las tarjetas (no las faltas) ---
+    # --- 2. Arbitro: factor para FALTAS (StatsBomb intl, shrinkage bayesiano) ---
+    #        + factor para TARJETAS (EstilosModel, datos de club -> siempre neutro para intl)
+    from src.arbitros_faltas import cargar as _cargar_arb, factor_faltas as _get_factor_faltas
+    _datos_arb = _cargar_arb()
+    f_faltas, msg_faltas = _get_factor_faltas(arbitro, _datos_arb)
+
+    disc_l = jm.disciplina_seleccion(xi_l, nacion_local, factor_faltas=f_faltas)
+    disc_v = jm.disciplina_seleccion(xi_v, nacion_visit, factor_faltas=f_faltas)
+
+    # Tarjetas: factor de rigurosidad del arbitro via EstilosModel (clubes).
+    # Los arbitros internacionales casi nunca estan en datos de club -> retorna 1.0 (neutro).
     f_arb, msg_arb = _factor_arbitro(arbitro)
     tarj_l = disc_l["tarjetas"] * f_arb
     tarj_v = disc_v["tarjetas"] * f_arb
@@ -107,11 +127,12 @@ def correr(nacion_local: str, nacion_visit: str,
     # --- 3. Montecarlo: 10.000 universos minuto a minuto ---
     res = SimuladorMontecarlo().simular_partido(parametros, n_simulaciones=n_sims)
 
-    _reporte(nacion_local, nacion_visit, xi_l, xi_v, pred, parametros, msg_arb, msg_cal, res)
+    res["msg_faltas_arbitro"] = msg_faltas  # para Telegram y log
+    _reporte(nacion_local, nacion_visit, xi_l, xi_v, pred, parametros, msg_arb, msg_cal, msg_faltas, res)
     return res  # para que el validador pueda registrar la prediccion
 
 
-def _reporte(loc, vis, xi_l, xi_v, pred, params, msg_arb, msg_cal, res) -> None:
+def _reporte(loc, vis, xi_l, xi_v, pred, params, msg_arb, msg_cal, msg_faltas, res) -> None:
     L = f"{loc}"; V = f"{vis}"
     print("=" * 60)
     print(f"  D-SOCCER | MOTOR MUNDIALISTA + MONTECARLO ({res['n']:,} sims)")
@@ -122,8 +143,13 @@ def _reporte(loc, vis, xi_l, xi_v, pred, params, msg_arb, msg_cal, res) -> None:
           f"(ataque {fl['ataque']:.2f} / defensa {fl['defensa']:.2f})")
     print(f"  XI {V}: {fv['reales']} reales + {fv['sombra']} sombra  "
           f"(ataque {fv['ataque']:.2f} / defensa {fv['defensa']:.2f})")
-    print(f"  Arbitro: {msg_arb}")
+    print(f"  Arbitro (tarjetas): {msg_arb}")
+    print(f"  Arbitro (faltas):   {msg_faltas}")
     print(f"  Mapeo a goles: {msg_cal}")
+    h = pred.get("hibrido", {})
+    if h.get("elo"):
+        print(f"  Hibrido (w={h['w']}): Elo {h['elo'][0]:.2f}-{h['elo'][1]:.2f}  |  "
+              f"jugadores {h['player'][0]:.2f}-{h['player'][1]:.2f}")
     print(f"  Tasas base -> goles {tuple(round(x,2) for x in params['goles'])} | "
           f"faltas {tuple(round(x,1) for x in params['faltas'])} | "
           f"tarjetas {tuple(round(x,2) for x in params['tarjetas'])}")
@@ -142,8 +168,11 @@ def _reporte(loc, vis, xi_l, xi_v, pred, params, msg_arb, msg_cal, res) -> None:
     filas = [
         ("Goles 1.5", res["over_1_5_goles"]), ("Goles 2.5", res["over_2_5_goles"]),
         ("Goles 3.5", res["over_3_5_goles"]),
+        ("Faltas 24.5", res["over_24_5_faltas"]), ("Faltas 27.5", res["over_27_5_faltas"]),
+        ("Faltas 30.5", res["over_30_5_faltas"]),
         ("Tarjetas 3.5", res["over_3_5_tarjetas"]), ("Tarjetas 4.5", res["over_4_5_tarjetas"]),
-        ("Corners 9.5", res["over_9_5_corners"]),
+        ("Corners 8.5", res["over_8_5_corners"]), ("Corners 9.5", res["over_9_5_corners"]),
+        ("Corners 10.5", res["over_10_5_corners"]),
     ]
     for nombre, p in filas:
         print(f"     {nombre:<14} over {p*100:5.1f}%  (cuota {_formato_cuota(p)}) | "

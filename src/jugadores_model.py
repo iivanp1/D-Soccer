@@ -78,6 +78,11 @@ GAP_AMP = 4.0   # cuanto amplifica la brecha de calidad a la compresion
 GAP_POW = 2.0   # no-linealidad: brechas grandes amplifican mucho mas que las chicas
 C_MAX = 1.7     # techo de seguridad de la compresion efectiva
 
+# Mapeo Elo->goles AJUSTADO con datos reales (11k internacionales >=2015, ver elo_history.py):
+# +400 puntos de Elo = +2.09 goles de ventaja. Reemplaza el multiplicador 2E inicial, que
+# sobre-diferenciaba (~3.2 goles/400).
+ELO_GOLES_POR_400 = 2.09
+
 
 def _norm(nombre: str) -> str:
     """Normaliza un nombre para emparejar (sin acentos, minusculas)."""
@@ -98,10 +103,21 @@ class JugadoresModel:
     def_ref: float = 1.0             # defensa agregada promedio de las selecciones
     compresion: float = 0.5          # cuanto se separan los equipos fuertes de la media
 
+    # --- Hibrido con Elo de selecciones (columna vertebral; arregla sub-diferenciacion) ---
+    elo: dict = field(default_factory=dict)   # {codigo: {overall, off, def}}
+    # Peso del Elo en el hibrido: lam = w*lam_elo + (1-w)*lam_player. 0.85 DATA-DRIVEN:
+    # validar_statsbomb (83-110 partidos reales) mostro que el Elo le gana al modelo de
+    # jugadores en 1X2 (acierto 82% vs 74%; optimo de Brier en w=1.0). Se deja 0.85 (no 1.0)
+    # para conservar ~15% del modelo de jugadores como senal para alineaciones rotadas, que
+    # la muestra de torneo (XI full) no mide. El player model sigue 100% activo para los
+    # mercados secundarios (tarjetas/faltas/corners via Montecarlo), donde el Elo no llega.
+    w_elo: float = 0.85
+
     _entrenado: bool = False
 
     # ------------------------------------------------------------------ #
-    def entrenar_jugadores(self, df: pd.DataFrame) -> "JugadoresModel":
+    def entrenar_jugadores(self, df: pd.DataFrame,
+                           ajuste_xg: dict | None = None) -> "JugadoresModel":
         d = df[df["minutos"] > 0].copy()
 
         # Posicion primaria (FW de "FW,MF") y recencia de temporada
@@ -144,6 +160,12 @@ class JugadoresModel:
         # Perfil ofensivo (tipo-xG): 0.7*npg_90 + 0.3*ast_90, ajustado por calidad de liga.
         npg_90 = agg["npg"] / agg["n90"]   # goles sin penal por 90 (xG realizado)
         ast_90 = agg["ast"] / agg["n90"]   # asistencias por 90
+        # Correccion por xG real (enriquecer_xg.py): regresa los goles realizados hacia el nivel
+        # que sugiere el xG internacional. Castiga al suertudo, premia al generador. Sin ajuste
+        # (None) -> factor 1.0 -> identico al comportamiento original (backward-compatible).
+        if ajuste_xg:
+            factores = pd.Series([ajuste_xg.get(_norm(p), 1.0) for p in agg.index], index=agg.index)
+            npg_90 = npg_90 * factores
         agg["of_raw"] = (W_NPG * npg_90 + W_AST_OF * ast_90) * agg["coef_eff"]
         agg["def_raw"] = ((agg["intc"] + agg["tkl"]) / agg["n90"]) * agg["coef_eff"]
 
@@ -185,7 +207,7 @@ class JugadoresModel:
         return self
 
     def disciplina_seleccion(self, lista_jugadores: list[str], nacion: str | None = None,
-                             completar_a: int = 11) -> dict:
+                             completar_a: int = 11, factor_faltas: float | None = None) -> dict:
         """Faltas y tarjetas esperadas de una seleccion, sumando la disciplina del XI.
 
         Cada jugador aporta sus faltas/tarjetas por 90; el equipo es la suma sobre los 11.
@@ -202,14 +224,21 @@ class JugadoresModel:
             n = completar_a - n_real
             faltas += [config.SHADOW_FALTAS_90] * n
             tarj += [config.SHADOW_TARJETAS_90] * n
-            return {"faltas": float(np.nansum(faltas)), "tarjetas": float(np.nansum(tarj))}
+            faltas_tot, tarj_tot = float(np.nansum(faltas)), float(np.nansum(tarj))
+        elif not faltas:
+            faltas_tot, tarj_tot = 11.0, 2.0  # respaldo
+        else:
+            # Sin nacion (legacy): escalamos a un XI completo segun los encontrados
+            escala = completar_a / n_real
+            faltas_tot = float(np.nansum(faltas)) * escala
+            tarj_tot = float(np.nansum(tarj)) * escala
 
-        if not faltas:
-            return {"faltas": 11.0, "tarjetas": 2.0}  # respaldo
-        # Sin nacion (legacy): escalamos a un XI completo segun los encontrados
-        escala = completar_a / n_real
-        return {"faltas": float(np.nansum(faltas)) * escala,
-                "tarjetas": float(np.nansum(tarj)) * escala}
+        # Calibracion club->internacional de FALTAS: factor data-driven (config.ESCALA_FALTAS_SELECCION
+        # = 1.21 base global). Si se pasa factor_faltas (de arbitros_faltas.py, con shrinkage
+        # bayesiano por historial del arbitro) se usa ese en su lugar. Backward-compatible:
+        # sin factor_faltas -> identico al comportamiento anterior.
+        escala = factor_faltas if factor_faltas is not None else config.ESCALA_FALTAS_SELECCION
+        return {"faltas": faltas_tot * escala, "tarjetas": tarj_tot}
 
     # ------------------------------------------------------------------ #
     def seleccion_probable(self, nacion: str, formacion=(1, 4, 3, 3),
@@ -303,29 +332,41 @@ class JugadoresModel:
         fv = self.construir_fuerza_seleccion(lineup_visitante, nacion_visitante)
 
         if self.base_real is not None:
-            # Mapeo CALIBRADO con COMPRESION DINAMICA por brecha de calidad.
-            # Centrado en el promedio de las selecciones (arregla el desajuste de escala)
-            # y nivel anclado a la media real del Mundial. La compresion 'c' crece con la
-            # brecha de fuerza: parejo -> c_base (ARG-FRA realista); asimetrico -> c sube y
-            # estira la ventaja del favorito (corrige la sub-diferenciacion). El nivel base
-            # se preserva: en gap=0, c=c_base y los ratios valen 1, asi que lambda=base_real.
+            # --- 1) Lambda del modelo de JUGADORES (forma actual + alineacion real) ---
+            # Centrado en el promedio de selecciones + compresion dinamica por brecha.
             fuerza_l = fl["ataque"] + fl["defensa"]
             fuerza_v = fv["ataque"] + fv["defensa"]
             gap = abs(fuerza_l - fuerza_v) / (self.atk_ref + self.def_ref)
             c = min(self.compresion + GAP_AMP * gap ** GAP_POW, C_MAX)
-            lam_l = self.base_real * (fl["ataque"] / self.atk_ref) ** c * (self.def_ref / fv["defensa"]) ** c
-            lam_v = self.base_real * (fv["ataque"] / self.atk_ref) ** c * (self.def_ref / fl["defensa"]) ** c
+            lam_l_player = self.base_real * (fl["ataque"] / self.atk_ref) ** c * (self.def_ref / fv["defensa"]) ** c
+            lam_v_player = self.base_real * (fv["ataque"] / self.atk_ref) ** c * (self.def_ref / fl["defensa"]) ** c
+
+            # --- 2) HIBRIDO: lam = w*lam_elo + (1-w)*lam_player ---
+            # El Elo de selecciones diferencia bien (aplasta la sub-diferenciacion); el
+            # modelo de jugadores aporta el ajuste por quien juega de verdad. Si no hay Elo
+            # para alguna seleccion, cae limpio al modelo de jugadores puro.
+            if self.elo and nacion_local in self.elo and nacion_visitante in self.elo:
+                lam_l_elo, lam_v_elo = self._calcular_lambda_elo(
+                    self.elo[nacion_local]["overall"], self.elo[nacion_visitante]["overall"], self.base_real)
+                w = self.w_elo
+                lam_l = w * lam_l_elo + (1 - w) * lam_l_player
+                lam_v = w * lam_v_elo + (1 - w) * lam_v_player
+                hibrido = {"w": w, "elo": (lam_l_elo, lam_v_elo), "player": (lam_l_player, lam_v_player)}
+            else:
+                lam_l, lam_v = lam_l_player, lam_v_player
+                hibrido = {"w": 0.0, "elo": None, "player": (lam_l_player, lam_v_player)}
         else:
             # Mapeo legacy (sin calibrar): infla los goles con XIs de alto rating.
             lam_l = BASE_GOLES * (fl["ataque"] / fv["defensa"]) ** DAMP
             lam_v = BASE_GOLES * (fv["ataque"] / fl["defensa"]) ** DAMP
+            hibrido = {"w": 0.0, "elo": None, "player": (lam_l, lam_v)}
 
         g = np.arange(max_goles + 1)
         m = np.outer(poisson.pmf(g, lam_l), poisson.pmf(g, lam_v))
         m /= m.sum()
 
         return {
-            "fuerza_local": fl, "fuerza_visitante": fv,
+            "fuerza_local": fl, "fuerza_visitante": fv, "hibrido": hibrido,
             "goles_esp_local": float(lam_l), "goles_esp_visitante": float(lam_v),
             "prob_local": float(np.tril(m, -1).sum()),
             "prob_empate": float(np.trace(m)),
@@ -370,6 +411,31 @@ class JugadoresModel:
         self.def_ref = params["def_ref"]
         self.compresion = params["compresion"]
         return self
+
+    def cargar_elo(self, elo: dict, w: float | None = None) -> "JugadoresModel":
+        """Inyecta los ratings Elo de selecciones (columna vertebral del hibrido).
+
+        Se recibe el dict ya cargado (lo carga mundial_engine via src.elo) para no acoplar
+        este modulo con el scraper y evitar imports circulares.
+        """
+        self.elo = elo or {}
+        if w is not None:
+            self.w_elo = float(w)
+        return self
+
+    @staticmethod
+    def _calcular_lambda_elo(elo_local: float, elo_visitante: float,
+                             base_real: float) -> tuple[float, float]:
+        """Goles esperados segun el Elo, con el mapeo CALIBRADO a datos reales.
+
+        Ajustado con 11k internacionales (>=2015, elo_history.py): cada 400 puntos de Elo
+        valen +2.09 goles de ventaja, con un total de ~2*base_real. Repartimos ese total
+        segun la supremacia (lineal en Elo). Es mas fiel que el 2E inicial, que
+        sobre-diferenciaba. Clamp a 0.15 para no dar goles negativos en goleadas extremas.
+        Partido parejo (mismo Elo) -> base_real cada uno.
+        """
+        supremacia = (ELO_GOLES_POR_400 / 400.0) * (elo_local - elo_visitante)
+        return max(0.15, base_real + supremacia / 2.0), max(0.15, base_real - supremacia / 2.0)
 
     def ranking_jugadores(self, perfil: str = "ofensivo", top: int = 15,
                           min_n90: float = 10) -> pd.DataFrame:
