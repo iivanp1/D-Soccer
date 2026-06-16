@@ -162,11 +162,12 @@ def enviar_reporte_props(info: dict, props: dict, top: list) -> bool:
     ]
 
     for j in top:
-        bar = "█" * int(j["lam"] + 0.5)
         fuente_icon = "🌍" if j["fuente"] == "intl" else "🏟️"
+        xg_base = j.get("xG_base", 0.0)
         msg.append(
             f"{fuente_icon} *{j['nombre']}* ({j['nacion']}) "
-            f"λ={j['lam']:.1f}  P(>1.5)={j['p_over_1_5']*100:.0f}%  "
+            f"λ={j['lam']:.1f}  xG={xg_base:.2f}  "
+            f"P(>1.5)={j['p_over_1_5']*100:.0f}%  "
             f"P(SOT≥1)={j['p_sot_1']*100:.0f}%"
         )
 

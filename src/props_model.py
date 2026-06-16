@@ -61,14 +61,17 @@ def prob_over_k(lam: float, k: float) -> float:
 
 
 # ------------------------------------------------------------------ #
-def _tasa_tiros_jugador(nombre_norm: str, pos1: str, datos_tiros: dict) -> tuple[float, float, str]:
-    """Retorna (tiros_90, sot_rate, fuente) para un jugador.
+def _tasa_tiros_jugador(nombre_norm: str, pos1: str,
+                        datos_tiros: dict) -> tuple[float, float, str, float]:
+    """Retorna (tiros_90, sot_rate, fuente, xg_per_shot) para un jugador.
 
     Jerarquia: intl_confirmado > club_escalado > shadow_por_posicion.
+    xg_per_shot: calidad promedio del tiro; fallback = conv_rate_xg global.
     """
     meta = datos_tiros.get("meta", {})
     escala = meta.get("escala_tiros_seleccion", 1.0)
     sot_default = meta.get("sot_rate_default", 0.333)
+    conv_rate = meta.get("conversion_rate_xg", meta.get("conversion_rate_intl", 0.091))
     shadow = meta.get("shadow_tiros_90", {"FW": 2.46, "MF": 1.33, "DF": 0.5, "GK": 0.1})
 
     jugadores = datos_tiros.get("jugadores", {})
@@ -76,14 +79,15 @@ def _tasa_tiros_jugador(nombre_norm: str, pos1: str, datos_tiros: dict) -> tuple
         j = jugadores[nombre_norm]
         n = j.get("n_intl", 0)
         min_intl = meta.get("min_partidos_intl", 3)
+        xg_per_shot = j.get("xg_per_shot_intl", conv_rate)
         if n >= min_intl and j["tiros_pp_intl"] > 0:
-            return j["tiros_pp_intl"], j.get("sot_rate", sot_default), "intl"
+            return j["tiros_pp_intl"], j.get("sot_rate", sot_default), "intl", xg_per_shot
         if j.get("tiros_90_club", 0) > 0:
-            return j["tiros_90_club"] * escala, j.get("sot_rate", sot_default), "club"
+            # sin historial intl de calidad: usamos media global como prior
+            return j["tiros_90_club"] * escala, j.get("sot_rate", sot_default), "club", conv_rate
 
-    # Shadow por posicion
     pos_key = pos1 if pos1 in shadow else "MF"
-    return shadow.get(pos_key, 1.0), sot_default, "shadow"
+    return shadow.get(pos_key, 1.0), sot_default, "shadow", conv_rate
 
 
 def _pos1(posicion: str) -> str:
@@ -101,7 +105,7 @@ def calcular_props_equipo(xi_names: list[str], nacion: str,
                                 "p_sot_1": ..., "fuente": ..., "pos": ...}}
     """
     meta = datos_tiros.get("meta", {})
-    conv_rate = meta.get("conversion_rate_intl", 0.091)
+    conv_rate = meta.get("conversion_rate_xg", meta.get("conversion_rate_intl", 0.091))
 
     lam_shots_team = max(LAMBDA_TEAM_MIN, min(LAMBDA_TEAM_MAX, lam_goles / conv_rate))
 
@@ -109,12 +113,12 @@ def calcular_props_equipo(xi_names: list[str], nacion: str,
     filas = []
     for nombre in xi_names:
         nrm = _norm(nombre)
-        # Posicion: buscar en jugadores_df (puede tener varias filas por temporada)
         sub = jugadores_df[jugadores_df["player"].apply(_norm) == nrm]
         pos = _pos1(sub.iloc[0]["posicion"] if not sub.empty else "MF")
-        tiros_90, sot_rate, fuente = _tasa_tiros_jugador(nrm, pos, datos_tiros)
+        tiros_90, sot_rate, fuente, xg_per_shot = _tasa_tiros_jugador(nrm, pos, datos_tiros)
         filas.append({"nombre": nombre, "nrm": nrm, "pos": pos,
-                      "tiros_90": tiros_90, "sot_rate": sot_rate, "fuente": fuente})
+                      "tiros_90": tiros_90, "sot_rate": sot_rate,
+                      "fuente": fuente, "xg_per_shot": xg_per_shot})
 
     if not filas:
         return {}
@@ -128,8 +132,10 @@ def calcular_props_equipo(xi_names: list[str], nacion: str,
         usage = max(USAGE_MIN, min(USAGE_MAX, f["tiros_90"] / sum_tiros))
         lam_j = lam_shots_team * usage
         lam_sot = lam_j * f["sot_rate"]
+        xG_base = round(lam_j * f["xg_per_shot"], 3)
         resultado[f["nombre"]] = {
             "lam": round(lam_j, 3),
+            "xG_base": xG_base,
             "p_over_0_5": round(prob_over_k(lam_j, 0.5), 3),
             "p_over_1_5": round(prob_over_k(lam_j, 1.5), 3),
             "p_over_2_5": round(prob_over_k(lam_j, 2.5), 3),
