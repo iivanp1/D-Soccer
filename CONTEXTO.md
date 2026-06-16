@@ -1,8 +1,9 @@
 # 📕 D-SOCCER — Documento de Contexto Completo
 
 > Documento de traspaso para retomar el proyecto en otro chat/sesión con contexto total.
-> Última actualización: junio 2026 — ingesta StatsBomb + xG + `w=0.85` data-driven (commit `b447996`,
-> rama `feature/api-football`). Próximo sprint: mercados secundarios (ver §11).
+> Última actualización: junio 2026 — **Fases 1A/1B/2/3 completas** (Árbitros Bayes + Player Props
+> Poisson + xG Enrichment). Commit `f559818`, rama `feature/api-football`. Próximo sprint: validar
+> mercados secundarios con datos StatsBomb (§11).
 
 ---
 
@@ -63,14 +64,19 @@ API-Football ────────▶ fixtures.py (XI, árbitro, cuotas) ─�
 | `fixtures.py` | Cliente API-Football (fixtures, árbitro, alineaciones, **cuotas**) + cruce de nombres (rapidfuzz) + auto-runner | ✅ |
 | `valor.py` | **Detector de valor**: EV = prob·cuota−1, rankea +EV (1X2 + O/U) | ✅ |
 | `ev_calculator.py` | Función pura `calcular_ev(prob, cuota)` | ✅ |
-| `telegram_alert.py` | Notificaciones push (solo `requests`, lee `.env`): reporte completo del partido | ✅ |
+| `telegram_alert.py` | Notificaciones push (solo `requests`, lee `.env`): **reporte completo del partido + alerta de Player Props** (formato por equipo con λ, xG_base, P(>1.5), P(SOT)) | ✅ |
 | `validacion.py` | Log de predicciones forward + cuotas + resultados + Brier vs **mercado**. Log **canónico (server) vs -dev (local)** por `D_SOCCER_CANONICAL` + comando `consolidar` (dedup por `fixture_id`) | ✅ |
 | `tunear_w.py` | Tunea **`w`** (Elo vs jugadores) sobre el harvest minimizando Brier + LOO. Carga el Elo (que `harvest.py` no hacía). Cero gasto de API | ✅ |
-| `ingesta_historica.py` | **Cosechador StatsBomb Open Data** (gratis, sin cuota): ~314 partidos de selecciones 2018-24 con XI real + **xG real** → SQLite `dsoccer_historico.db`. Aislado, idempotente por `match_id` | ✅ |
+| `ingesta_historica.py` | **Cosechador StatsBomb Open Data** (gratis, sin cuota): ~314 partidos de selecciones 2018-24 con XI real + **xG real** (`.statsbomb_xg` en shot events) → SQLite `dsoccer_historico.db`. Idempotente por `match_id` | ✅ |
 | `validar_statsbomb.py` | Tunea `w` sobre 83-110 partidos reales de StatsBomb (XI + outcomes). **Halló: Elo > jugadores en 1X2 (82% vs 74%)** → `w=0.85` | ✅ |
-| `enriquecer_xg.py` | Corrige `npg_90` con **xG real** (match difuso por nación) → `xg_ajuste.csv`. Premia generadores, castiga suertudos | ✅ |
+| `enriquecer_xg.py` | **Fase 3B**: corrige `npg_90` con xG real internacional (match difuso por nación) → `xg_ajuste.csv`. Factor=clamp((xG+K)/(G+K), 0.6, 1.6)^0.5. Cristiano +23%, Lukaku +26%, Musiala -19%, Gakpo -19% | ✅ |
+| `arbitros_faltas.py` | **Fase 1A**: factor de faltas por árbitro con Empirical Bayes (K=8) desde StatsBomb → `arbitros_faltas.json`. MAE +10.7% vs baseline. Letexier -10%, Zwayer -12% | ✅ |
+| `props_data.py` | **Fase 2/3A**: calibración offline tiros+xG → `tiros_intl.json`. Compute conv_rate_xg=0.121 (más estable que goles reales), xg_per_shot_intl por jugador, ESCALA_TIROS=0.822 | ✅ |
+| `props_lineups.py` | **Fase 2**: state machine de alineaciones (UNKNOWN→PENDING→CONFIRMED→PROPS_SENT). Max 3 API calls/fixture; una vez CONFIRMED, cero calls. Cache en disco | ✅ |
+| `props_model.py` | **Fase 2/3A**: Poisson usage-rate (λ_shots=λ_goles/conv_rate_xg; usage=tiros_intl/sum); agrega xG_base=λ_shots×xG_per_shot por jugador. Brier +13.9% vs baseline | ✅ |
+| `validar_props.py` | **Fase 2**: compuerta Brier para Player Props. Brier 0.1675 vs baseline 0.1944 → +13.9% pasada | ✅ |
 | `harvest.py` | Validación histórica (internacionales 2024 con alineaciones, ratings período-correctos) | ✅ |
-| `autorun.py` | **Punto de entrada del cron**: registra partidos 20-45 min antes (alineación real) + Telegram + actualiza resultados | ✅ |
+| `autorun.py` | **Cron** con AUDIT TRAIL: registra Props (20-120min antes) + Registro principal (20-45min) + Telegram + actualiza resultados. Loguea CADA fixture WC con su decisión | ✅ |
 | `demo.py` | Demo del modelo de clubes | ✅ |
 
 ---
@@ -120,6 +126,51 @@ con alineación confirmada). Hallazgos, en orden:
 **mercados secundarios** (tarjetas/faltas/córners vía Montecarlo) y los desvíos por alineación.
 - El modelo de jugadores aporta el ajuste por alineación real.
 
+### Árbitros por faltas — `arbitros_faltas.py` ✅ VALIDADO (Fase 1A)
+
+Factor de faltas por árbitro desde StatsBomb internacional (K=8 Empirical Bayes):
+```
+factor_shrunk = (n · factor_raw + 8 · 1.0) / (n + 8)
+```
+66 árbitros calibrados. Con n=5: 38% dato real, 62% prior global (no sobreajusta muestras chicas).
+Gate pasado: MAE **+10.7% vs baseline**.
+
+Separado del factor de tarjetas (`estilos_model`, datos de clubes). El árbitro aparece en
+el reporte Telegram como dos líneas distintas: "Árbitro (tarjetas): ..." y "Árbitro (faltas): ...".
+
+### Player Props — `props_model.py` ✅ VALIDADO (Fase 2 + 3A)
+
+Modelo Poisson con usage-rate por historial internacional real:
+```
+conv_rate_xg   = Σ(xg_jugador) / Σ(tiros)  = 0.121   (xG más estable que goles reales)
+λ_shots_team   = λ_goles_team / conv_rate_xg           (12-14 tiros/equipo; antes 16 — calibrado)
+usage_i        = tiros_pp_intl_i / Σ(tiros_pp_j)       (clamp: [1%, 35%])
+λ_shots_i      = λ_shots_team × usage_i
+xG_base_i      = λ_shots_i × xG_per_shot_i             (calidad de posición, DISPLAY solamente)
+P(tiros > k)   = 1 − Σ_{j=0}^{⌈k⌉} e^{−λ} · λ^j / j!
+```
+
+**conv_rate_xg vs conv_rate_goles**: el xG es el prior correcto (calibrado para predecir goles);
+los goles reales son el resultado ruidoso. El cambio bajó la estimación de tiros de 16.5 → 12.4
+por equipo/partido (el dato real de StatsBomb es 12.5). Ese es el origen de la mejora de Brier.
+
+**xG_base**: informa al apostador sobre la calidad de posición. Messi xG/tiro=0.202 (central,
+peligroso) vs Tchouameni xG/tiro=0.033 (tiros de lejos). Con λ_shots similar, el xG_base revela
+quién genera peligro real. Es un display metric, no cambia P(tiros > k).
+
+Gate pasado: Brier 0.1675 vs 0.1944 baseline → **+13.9%** (Fase 3A; Fase 2 sola fue +5.1%).
+
+### Pipeline robusto — `autorun.py` / `fixtures.py` ✅ (Fase 1B)
+
+Motivación: Belgium vs Egypt no fue notificado. Root cause: filtro de competición demasiado rígido.
+
+Soluciones:
+- `COMPETICIONES_WC` = set de variantes del nombre en la API (8 variantes conocidas).
+- AUDIT TRAIL por corrida: cada partido WC loguea su decisión con `grep "AUDIT" autorun.log`.
+- `_api_get()` con 3 reintentos, backoff exponencial, manejo de 429 (sleep 30/60/90s).
+- `autorun.log` rotativo (5MB × 3 backups).
+- `registrar_props()` corre ANTES que `registrar_proximos()` (ventana más amplia, 20-120min).
+
 ### Montecarlo — `montecarlo.py` ✅
 Juega 10.000 partidos minuto a minuto. **Factor Caos**: rojas debilitan, el que pierde
 arriesga. Agnóstico al modelo. Devuelve distribución completa de mercados.
@@ -133,16 +184,23 @@ arriesga. Agnóstico al modelo. Devuelve distribución completa de mercados.
 
 | Componente | Estado | Evidencia |
 |-----------|--------|-----------|
-| Goles clubes (Dixon-Coles) | ✅ **Validado** | Brier 0.587, miles de partidos |
-| Tarjetas/faltas/árbitro | ✅ **Validado** | MAE |
+| Goles clubes (Dixon-Coles) | ✅ **Validado** | Brier 0.587 vs 0.652 benchmark (+10%), 7 ligas |
+| Tarjetas/faltas/árbitro (clubes) | ✅ **Validado** | MAE faltas +6.8%, tarjetas +2.1% |
+| **Factor árbitro faltas (intl)** | ✅ **Validado** | MAE **+10.7%** vs global, LOO StatsBomb |
 | Montecarlo | ✅ Coherente | Consistente con Dixon-Coles |
-| Elo (columna vertebral) | ✅ Sólido | Acierta 76.6% de decididos (49k partidos) |
-| **Motor Mundialista (selecciones)** | 🟡 **Prior, en validación** | Híbrido Elo+jugadores ~= mercado en 1X2 |
-| LightGBM | ❌ Descartado | Perdió el backtest |
+| Elo (columna vertebral) | ✅ Sólido | 76.6% de decididos acertados (49k partidos) |
+| Motor Mundialista híbrido (w=0.85) | 🟡 **Prior en validación** | Brier LOO 0.575 (83 partidos) |
+| **Player Props Poisson + xG** | ✅ **Validado** | Brier **+13.9%** vs baseline (1018 jugador-partido) |
+| xG enrichment jugadores (npg_90) | ✅ Activo | Rankings ±15-25% en casos extremos; Brier global marginal |
+| LightGBM | ❌ Descartado | Perdió el backtest vs Dixon-Coles (0.612 vs 0.592) |
 
-**Honesto**: clubes = sólido. Selecciones = prior prometedor (con Elo diferencia bien) pero
-**falta validar con outcomes** (el server los acumula). El edge real NO es ganarle al 1X2 del
-mercado, sino mercados menos eficientes / soporte de decisión.
+**Honesto**: clubes = sólido. Selecciones en 1X2 = prior prometedor (Elo manda, w=0.85).
+El edge del modelo de jugadores + xG está en **Player Props** (+13.9%) y en **mercados secundarios**
+(faltas/tarjetas con alineación real) — esos mercados son menos eficientes que el 1X2.
+
+**Calibración de props**: el modelo sobreestima en valores altos (~20pp). Causa: validación
+usa goles reales como proxy de λ (muy volátiles). En producción con λ del engine (1.3-1.7) el
+efecto es más moderado. El aviso aparece en cada mensaje de Telegram.
 
 ---
 
@@ -236,27 +294,44 @@ python -m src.ingesta_historica --desde 2018 --export-csv   # cosecha StatsBomb 
 
 ## 10. BUGS / LIMITACIONES CONOCIDAS
 
-- Motor de selecciones: **validado en 1X2** con 83-110 partidos reales (ver §4). Ahí el **Elo gana**;
-  falta validar los **mercados secundarios** (el verdadero edge del modelo de jugadores).
-- `w = 0.85` **data-driven** (ya no provisional): el bottom-up no le gana al Elo en 1X2 (brecha de señal).
-- **xG real ya integrado** para selecciones (StatsBomb → `xg_ajuste.csv`): corrige a los goleadores de
-  racha en los ratings individuales. OJO: sigue sin xG de **CLUB** (FBref no lo expone).
-- **Córners** no se predice bien (lo dice el backtest).
-- Ratings **sombra** = priors (selecciones de liga local).
-- Cuota API plan gratis: **2025/2026 bloqueado** por liga/temporada (pero fecha/id de 2026 sí anda).
+- Motor de selecciones: **validado en 1X2** con 83 partidos reales (ver §4). Ahí el **Elo gana**;
+  falta validar los **mercados secundarios** (faltas/tarjetas/corners con alineación real).
+- `w = 0.85` data-driven: el bottom-up no le gana al Elo en 1X2 (brecha de señal, no de modelo).
+- **xG integrado en dos capas**: (a) `xg_ajuste.csv` corrige `npg_90` de jugadores para ratings de equipos;
+  (b) `conv_rate_xg + xG_base` en props corrige la estimación de tiros y añade calidad de posición.
+  OJO: sigue sin xG de **CLUB** (FBref no lo expone vía soccerdata).
+- **Player Props calibración**: el modelo sobreestima ~20pp en valores altos. Limitación inherente
+  a la muestra (pocos partidos intl por jugador). El ranking es válido; las probs son orientativas.
+- **Córners** no se predice bien (backtest reprobó con -0.9% MAE).
+- Ratings **sombra** = priors (selecciones de liga local sin FBref).
+- Cuota API plan gratis: 2025/2026 **solo por fecha/ID** (OK para el Mundial); detalle por liga bloqueado.
 
 ---
 
 ## 11. PRÓXIMOS PASOS (en orden)
 
-1. **(PRÓXIMA SESIÓN — primera tarea exacta)** Extender `src/ingesta_historica.py` para cosechar
-   **faltas** (evento `Foul Committed`), **córners** (`play_pattern`) y **tarjetas** (`Bad Behaviour`)
-   — hoy solo captura pases/remates/goles/xG/recuperaciones/intercepciones. Re-cosechar (gratis, sin cuota).
-2. **Validar los mercados secundarios** (`estilos_model` / `disciplina_seleccion`: faltas/tarjetas/
-   córners) contra esos datos reales → demostrar el valor del modelo de jugadores donde el Elo no llega.
-3. **Regenerar `xg_ajuste.csv` en el server** con los 314 partidos (el local se armó con 135).
-4. Refinamientos: **xA** para asistencias (re-cosechar key passes); **capa IA explicativa** (asesora,
-   no decide); seguir acumulando `predicciones_log.csv` (validación forward) + `python -m src.validacion reporte`.
+**Completado en sesiones anteriores:**
+- ✅ Fase 1A: Árbitros Bayes (faltas, MAE +10.7%)
+- ✅ Fase 1B: Pipeline robusto (AUDIT TRAIL, reintentos, ventanas)
+- ✅ Fase 2: Player Props Poisson (Brier +13.9%)
+- ✅ Fase 3A: xG en props (conv_rate_xg, xG_base, Telegram por equipo)
+- ✅ Fase 3B: xG en jugadores (xg_ajuste.csv, factor npg_90)
+
+**Próximo sprint:**
+1. **(Primera tarea)** Regenerar artefactos en el server tras `git pull`:
+   ```bash
+   python -m src.props_data       # conv_rate_xg, xg_per_shot (135 → 314 partidos)
+   python -m src.enriquecer_xg   # xg_ajuste.csv (135 → 314, ~900 jugadores)
+   python -m src.arbitros_faltas  # ~80-90 árbitros vs 66 locales
+   ```
+2. **Validar mercados secundarios** (faltas/tarjetas) con StatsBomb: `ingesta_historica.py`
+   ya captura faltas/tarjetas/corners por equipo (`equipo_partido_stats`). Falta el script
+   de validación contra `estilos_model` / `disciplina_seleccion` con XI real.
+3. **xA para asistencias**: re-cosechar key passes de StatsBomb (campo `key_pass_id`);
+   enriquecer `ast_90` en jugadores_model con xA real.
+4. **PR a main** (housekeeping): `feature/api-football` tiene 3+ commits grandes, todos probados.
+5. **Acumular predicciones_log.csv** en el server durante el Mundial → `python -m src.validacion reporte`
+   para medir el edge real vs mercado.
 
 ---
 

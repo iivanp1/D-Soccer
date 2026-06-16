@@ -169,7 +169,9 @@ def calcular_props_partido(info: dict, jugadores_df: pd.DataFrame,
         "meta": {
             "lam_goles_l": round(lam_l, 3),
             "lam_goles_v": round(lam_v, 3),
-            "conv_rate": datos_tiros.get("meta", {}).get("conversion_rate_intl", 0.091),
+            "conv_rate": datos_tiros.get("meta", {}).get(
+            "conversion_rate_xg",
+            datos_tiros.get("meta", {}).get("conversion_rate_intl", 0.091)),
         },
     }
 

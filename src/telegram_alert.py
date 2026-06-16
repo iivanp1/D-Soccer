@@ -143,43 +143,78 @@ def enviar_reporte_partido(info: dict, cuotas: dict | None) -> bool:
 
 
 def enviar_reporte_props(info: dict, props: dict, top: list) -> bool:
-    """Alerta de Player Props: tiros esperados por jugador, con ranking y aviso de calibracion.
+    """Alerta de Player Props: ~70-90min antes del KO, con XI confirmado.
 
-    Se envia ~70-80 min antes del KO, cuando el XI ya esta confirmado.
-    Solo incluye jugadores con historial real (fuente != shadow) y lam >= 1.0.
+    Muestra top 4 disparadores por equipo, separados. Para cada jugador:
+    λ (tiros esperados), xG (calidad de esas posiciones), P(>1.5 tiros), P(SOT>=1).
     """
     loc, vis = info.get("local", "?"), info.get("visitante", "?")
     meta = props.get("meta", {})
     lam_l = meta.get("lam_goles_l", 0)
     lam_v = meta.get("lam_goles_v", 0)
+    conv_rate = meta.get("conv_rate", 0.121)  # xG-based (mas preciso que goles reales)
+
+    # Minutos hasta el KO (si la fecha esta disponible)
+    ko_str = info.get("fecha", "")
+    min_str = ""
+    if ko_str:
+        try:
+            ko = datetime.fromisoformat(ko_str)
+            mins = (ko - datetime.now(timezone.utc)).total_seconds() / 60
+            if mins > 0:
+                min_str = f" · ~{mins:.0f}min"
+        except Exception:
+            pass
+
+    tiros_l = round(lam_l / conv_rate) if conv_rate > 0 else "?"
+    tiros_v = round(lam_v / conv_rate) if conv_rate > 0 else "?"
 
     msg = [
         f"🎯 *PLAYER PROPS — {loc} vs {vis}*",
-        f"_XI confirmados. Tiros totales esp.: {loc} ~{lam_l/meta.get('conv_rate',0.091):.0f}"
-        f"  |  {vis} ~{lam_v/meta.get('conv_rate',0.091):.0f}_",
+        f"_XI confirmados{min_str}_",
+        f"_{loc} ≈{tiros_l} tiros  ·  {vis} ≈{tiros_v} tiros esperados_",
         "",
-        "*Mas de 1.5 tiros — ranking por λ esperado:*",
     ]
 
-    for j in top:
-        fuente_icon = "🌍" if j["fuente"] == "intl" else "🏟️"
-        xg_base = j.get("xG_base", 0.0)
-        msg.append(
-            f"{fuente_icon} *{j['nombre']}* ({j['nacion']}) "
-            f"λ={j['lam']:.1f}  xG={xg_base:.2f}  "
-            f"P(>1.5)={j['p_over_1_5']*100:.0f}%  "
-            f"P(SOT≥1)={j['p_sot_1']*100:.0f}%"
-        )
+    # Top 4 por equipo, calculado directamente desde props (independiente del top global)
+    MIN_LAM = 0.8
+    TOP_N = 4
+
+    def _top_equipo(lado: str) -> list[dict]:
+        datos = props.get(lado, {})
+        nac = datos.get("nacion", "")
+        out = [
+            {"nombre": n, "nacion": nac, "lado": lado, **v}
+            for n, v in datos.get("jugadores", {}).items()
+            if v.get("fuente") != "shadow" and v.get("lam", 0) >= MIN_LAM
+        ]
+        return sorted(out, key=lambda x: x.get("p_over_1_5", 0), reverse=True)[:TOP_N]
+
+    for lado, titulo in [("local", loc), ("visitante", vis)]:
+        jugadores = _top_equipo(lado)
+        if not jugadores:
+            continue
+        msg.append(f"*{titulo} — top disparadores:*")
+        for j in jugadores:
+            fuente_icon = "🌍" if j["fuente"] == "intl" else "🏟️"
+            xg = j.get("xG_base", 0.0)
+            msg.append(
+                f"{fuente_icon} *{j['nombre']}*"
+                f"  λ={j['lam']:.1f}  xG={xg:.2f}"
+                f"  P(>1.5)={j['p_over_1_5']*100:.0f}%"
+                f"  P(SOT≥1)={j['p_sot_1']*100:.0f}%"
+            )
+        msg.append("")
 
     msg += [
-        "",
-        "🌍=historial intl  🏟️=datos club escalados",
-        "⚠️ _Prob. ORIENTATIVAS: el modelo sobreestima en valores altos (~20pp)._",
-        "_Usar λ como ranking de quien disparara mas, no como probabilidad exacta._",
-        "_Comparar siempre con la linea real de tu casa antes de apostar._",
+        "_λ = tiros esperados  ·  xG = goles de esas posiciones_",
+        "_Probs ORIENTATIVAS: sobreestima ~20pp en valores altos_",
+        "_Usar el ranking de λ/xG, no la prob. como valor exacto_",
+        "_Compara la linea de tu casa antes de apostar_",
+        "🌍 historial intl  ·  🏟️ datos club escalados",
     ]
 
-    return enviar_mensaje("\n".join(m for m in msg if m is not None))
+    return enviar_mensaje("\n".join(msg))
 
 
 def listar_chats() -> None:
