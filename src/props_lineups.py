@@ -1,6 +1,6 @@
 """State machine de alineaciones para Player Props.
 
-Gestiona el polling de lineups ANTES de la ventana de registro (60-120 min previos
+Gestiona el polling de lineups ANTES de la ventana de registro (20-90 min previos
 al KO) y los cachea en disco para que el resto del pipeline los reutilice sin llamadas
 a la API adicionales.
 
@@ -11,8 +11,8 @@ Estados por fixture:
   PROPS_SENT -> alerta de props ya enviada (no volver a mandar)
   ERROR      -> fallo 3+ veces seguidas -> abandonamos polling
 
-Budget de API: maximo 3 intentos por fixture (1 call/intento). Una vez CONFIRMED,
-cero llamadas adicionales: el resto del pipeline lee del disco.
+Budget de API: maximo MAX_INTENTOS intentos por fixture (1 call/intento). Una vez
+CONFIRMED, cero llamadas adicionales: el resto del pipeline lee del disco.
 
 Uso:
     from src.props_lineups import poll_y_cachear, get_lineups_confirmados
@@ -29,7 +29,11 @@ from src import config
 from src.fixtures import _codigo_nacion, alineaciones, armar_xi
 
 CACHE = config.RAIZ / "data" / "raw" / "api_cache"
-MAX_INTENTOS = 3  # max 3 API calls por fixture antes de marcar ERROR
+# Max API calls por fixture antes de marcar ERROR. Con la ventana de polling acotada a
+# 20-90 min (autorun.PROPS_MAX_ANTES) y cron cada ~15 min, hacen falta ~5-6 intentos para
+# cubrir toda la franja en que la API publica el XI. Con 3-4 partidos/dia son <30 calls/dia,
+# muy por debajo del limite del plan gratis (100/dia).
+MAX_INTENTOS = 6
 
 logger = logging.getLogger("dsoccer.props_lineups")
 

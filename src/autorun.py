@@ -46,6 +46,13 @@ COMPETICIONES_WC = {
 # Requiere cron FRECUENTE (cada ~15 min) para caer en la ventana de cada partido.
 MIN_ANTES = 20.0
 MAX_ANTES = 45.0
+# Ventana de polling de alineaciones para props: arranca antes que la de registro para
+# atrapar el XI apenas sale, pero con TECHO en 90 min (la API casi nunca publica antes).
+# Pollear a 120/105 min solo quemaba los MAX_INTENTOS en el vacio y dejaba el fixture en
+# ERROR justo cuando el XI iba a aparecer. Con techo 90 + MAX_INTENTOS=6 los intentos caen
+# en ~90/75/60/45/30/20 min y cubren la franja real de publicacion.
+PROPS_MIN_ANTES = 20.0
+PROPS_MAX_ANTES = 90.0
 CACHE = config.RAIZ / "data" / "raw" / "api_cache"
 LOG_FILE = config.RAIZ / "autorun.log"
 
@@ -164,10 +171,11 @@ def registrar_proximos() -> None:
 
 
 def registrar_props() -> None:
-    """Ventana 20-120 min: detecta WC matches, intenta confirmar XI y calcula Player Props.
+    """Ventana 20-90 min: detecta WC matches, intenta confirmar XI y calcula Player Props.
 
     Mas ancha que la ventana de registro (20-45 min) para capturar los lineups en cuanto
-    salen (~75 min antes). Budget: max 3 API calls por fixture, cero si ya CONFIRMED.
+    salen (~40-75 min antes), pero con techo 90 min para no quemar intentos antes de que
+    exista el XI. Budget: max MAX_INTENTOS API calls por fixture, cero si ya CONFIRMED.
     Solo envia el alerta de props UNA VEZ por fixture (estado PROPS_SENT en disco).
     """
     from src.props_lineups import get_estado, poll_y_cachear, marcar_props_sent
@@ -197,7 +205,7 @@ def registrar_props() -> None:
                 continue
 
             min_faltan = (ko - ahora).total_seconds() / 60.0
-            if not (20.0 <= min_faltan <= 120.0):
+            if not (PROPS_MIN_ANTES <= min_faltan <= PROPS_MAX_ANTES):
                 continue
 
             fid = f["fixture"]["id"]
