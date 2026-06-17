@@ -45,11 +45,13 @@ def _recipientes() -> list[str]:
     return list(dict.fromkeys(ids))  # dedupe preservando orden
 
 
-def enviar_mensaje(texto: str) -> bool:
-    """Envia un mensaje a TODOS los destinatarios. True si llego al menos a uno."""
+def enviar_mensaje(texto: str, chats: list[str] | None = None) -> bool:
+    """Envia un mensaje a TODOS los destinatarios (o solo a 'chats' si se pasa, util para
+    tests dirigidos). True si llego al menos a uno."""
     config.cargar_env()
     token = os.environ.get("TELEGRAM_TOKEN")
-    chats = _recipientes()
+    if chats is None:
+        chats = _recipientes()
     if not token or not chats:
         print("[telegram] falta TELEGRAM_TOKEN o no hay destinatarios (.env / suscriptores.txt)")
         return False
@@ -142,11 +144,13 @@ def enviar_reporte_partido(info: dict, cuotas: dict | None) -> bool:
     return enviar_mensaje("\n".join(msg))
 
 
-def enviar_reporte_props(info: dict, props: dict, top: list) -> bool:
+def enviar_reporte_props(info: dict, props: dict, top: list,
+                         solo_chat: str | None = None) -> bool:
     """Alerta de Player Props: ~70-90min antes del KO, con XI confirmado.
 
     Muestra top 4 disparadores por equipo, separados. Para cada jugador:
     λ (tiros esperados), xG (calidad de esas posiciones), P(>1.5 tiros), P(SOT>=1).
+    solo_chat: si se pasa, envia SOLO a ese chat_id (modo test, no a los suscriptores).
     """
     loc, vis = info.get("local", "?"), info.get("visitante", "?")
     meta = props.get("meta", {})
@@ -214,7 +218,7 @@ def enviar_reporte_props(info: dict, props: dict, top: list) -> bool:
         "🌍 historial intl  ·  🏟️ datos club escalados",
     ]
 
-    return enviar_mensaje("\n".join(msg))
+    return enviar_mensaje("\n".join(msg), chats=[solo_chat] if solo_chat else None)
 
 
 def listar_chats() -> None:

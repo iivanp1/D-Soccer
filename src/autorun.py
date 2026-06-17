@@ -263,11 +263,82 @@ def registrar_props() -> None:
                           fid, type(e).__name__, e)
 
 
+def probar_props(fixture_id: int) -> None:
+    """Dry-run de Player Props sobre CUALQUIER fixture (incluso ya jugado), sin esperar la
+    ventana del cron. Baja la alineacion real, corre el motor, calcula props y manda el
+    mensaje SOLO a tu TELEGRAM_CHAT_ID (no a los suscriptores). Valida la cadena e2e.
+
+    Uso: python -m src.autorun probar-props <fixture_id>
+    """
+    import os
+    import pandas as pd
+    from src.fixtures import alineaciones, armar_xi
+    from src.props_data import cargar as cargar_tiros
+    from src.props_model import calcular_props_partido, top_props
+    from src.mundial_engine import correr
+    from src.telegram_alert import enviar_reporte_props
+
+    datos_tiros = cargar_tiros()
+    if not datos_tiros:
+        print("[probar-props] falta tiros_intl.json -> corre python -m src.props_data")
+        return
+
+    info_api = _api_get("fixtures", {"id": fixture_id})
+    if not info_api:
+        print(f"[probar-props] fixture {fixture_id} no encontrado en la API")
+        return
+    f = info_api[0]
+    nom_l, nom_v = f["teams"]["home"]["name"], f["teams"]["away"]["name"]
+    cod_l, cod_v = _codigo_nacion(nom_l), _codigo_nacion(nom_v)
+    if not cod_l or not cod_v:
+        print(f"[probar-props] sin mapeo de nacion: {nom_l}={cod_l} {nom_v}={cod_v}")
+        return
+
+    lineups = alineaciones(fixture_id)
+    if not lineups:
+        print(f"[probar-props] la API aun no tiene alineaciones para {nom_l} vs {nom_v}")
+        return
+
+    dfj = pd.read_csv(config.DATA_PROC / "jugadores.csv")
+    xi_l, xi_v = [], []
+    for nom_api, nombres in lineups.items():
+        cod = _codigo_nacion(nom_api)
+        r = armar_xi(nombres, cod or "", dfj)
+        if cod == cod_l:
+            xi_l = r["xi_real"]
+        elif cod == cod_v:
+            xi_v = r["xi_real"]
+    print(f"[probar-props] XI mapeados: {nom_l} {len(xi_l)}/11 | {nom_v} {len(xi_v)}/11")
+
+    res_engine = correr(cod_l, cod_v, xi_l, xi_v, f["fixture"].get("referee"), n_sims=5000)
+    info_props = {
+        "xi_l": xi_l, "xi_v": xi_v, "cod_l": cod_l, "cod_v": cod_v,
+        "local": nom_l, "visitante": nom_v,
+        "fecha": f["fixture"]["date"], "res": res_engine,
+    }
+    props = calcular_props_partido(info_props, dfj, datos_tiros)
+    top = top_props(props)
+    if not top:
+        print("[probar-props] sin jugadores con lambda suficiente -> nada que mostrar")
+        return
+
+    solo = os.environ.get("TELEGRAM_CHAT_ID")
+    ok = enviar_reporte_props(info_props, props, top, solo_chat=solo)
+    print(f"[probar-props] {'ENVIADO' if ok else 'fallo el envio'} "
+          f"({len(top)} jugadores en top) -> solo a tu chat {solo}")
+
+
 def main() -> None:
     from src import config
     config.cargar_env()  # carga TELEGRAM_TOKEN/CHAT_ID (y API key si esta en .env)
     _setup_logging()
     cmd = sys.argv[1] if len(sys.argv) > 1 else "todo"
+    if cmd == "probar-props":
+        if len(sys.argv) < 3 or not sys.argv[2].isdigit():
+            print("Uso: python -m src.autorun probar-props <fixture_id>")
+            return
+        probar_props(int(sys.argv[2]))
+        return
     if cmd in ("todo", "actualizar"):
         try:
             actualizar_resultados()
