@@ -227,33 +227,25 @@ def registrar_props() -> None:
             if nuevo_status != "confirmed":
                 continue
 
-            # XI confirmado -> calcular props y enviar
+            # XI confirmado -> correr el motor con ese XI y enviar props.
+            # NO registramos aqui (eso es tarea de registrar_proximos): asi props nunca
+            # "registra primero" y suprime el reporte general del partido.
             try:
                 from src.props_lineups import get_lineups_confirmados
+                from src.mundial_engine import correr
                 lineups = get_lineups_confirmados(fid)
                 if not lineups:
                     continue
 
-                # Necesitamos lambda de goles: corremos el engine completo
-                from src.validacion import registrar
-                datos_reg = registrar(fid)  # registra si no estaba, devuelve None si ya estaba
-                if datos_reg is None:
-                    # Ya estaba registrado: buscar info del log
-                    log.info("props fid=%d: ya registrado, calculando props sin re-registrar", fid)
-                    from src.mundial_engine import correr
-                    res_engine = correr(cod_l, cod_v, lineups["xi_l"], lineups["xi_v"],
-                                        f["fixture"].get("referee"), n_sims=5000)
-                    info_props = {
-                        "xi_l": lineups["xi_l"], "xi_v": lineups["xi_v"],
-                        "cod_l": cod_l, "cod_v": cod_v,
-                        "local": nom_l, "visitante": nom_v,
-                        "fecha": f["fixture"]["date"],
-                        "res": res_engine,
-                    }
-                else:
-                    info_props = datos_reg["info"]
-                    info_props["xi_l"] = lineups["xi_l"]
-                    info_props["xi_v"] = lineups["xi_v"]
+                res_engine = correr(cod_l, cod_v, lineups["xi_l"], lineups["xi_v"],
+                                    f["fixture"].get("referee"), n_sims=5000)
+                info_props = {
+                    "xi_l": lineups["xi_l"], "xi_v": lineups["xi_v"],
+                    "cod_l": cod_l, "cod_v": cod_v,
+                    "local": nom_l, "visitante": nom_v,
+                    "fecha": f["fixture"]["date"],
+                    "res": res_engine,
+                }
 
                 props = calcular_props_partido(info_props, dfj, datos_tiros)
                 top = top_props(props)
@@ -284,8 +276,19 @@ def main() -> None:
                                                        type(e).__name__, e)
             print(f"[autorun] error en actualizar: {type(e).__name__}: {e}")
     if cmd in ("todo", "registrar"):
-        registrar_props()      # props primero: ventana mas amplia (20-120 min)
-        registrar_proximos()   # reporte completo: ventana 20-45 min
+        log = logging.getLogger("dsoccer.autorun")
+        # Reporte general PRIMERO (producto validado, ventana 20-45 min) y aislado: un
+        # fallo del path de props (mas nuevo) nunca debe tumbar el reporte general.
+        try:
+            registrar_proximos()   # reporte completo: ventana 20-45 min
+        except Exception as e:
+            log.error("error en registrar_proximos: %s: %s", type(e).__name__, e)
+            print(f"[autorun] error en registrar_proximos: {type(e).__name__}: {e}")
+        try:
+            registrar_props()      # player props: ventana 20-90 min
+        except Exception as e:
+            log.error("error en registrar_props: %s: %s", type(e).__name__, e)
+            print(f"[autorun] error en registrar_props: {type(e).__name__}: {e}")
 
 
 if __name__ == "__main__":
