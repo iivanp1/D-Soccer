@@ -264,9 +264,10 @@ def registrar_props() -> None:
 
 
 def probar_props(fixture_id: int) -> None:
-    """Dry-run de Player Props sobre CUALQUIER fixture (incluso ya jugado), sin esperar la
-    ventana del cron. Baja la alineacion real, corre el motor, calcula props y manda el
-    mensaje SOLO a tu TELEGRAM_CHAT_ID (no a los suscriptores). Valida la cadena e2e.
+    """Dry-run sobre CUALQUIER fixture (incluso ya jugado), sin esperar la ventana del cron.
+    Baja la alineacion (o cae al XI probable), corre el motor y manda a tu TELEGRAM_CHAT_ID
+    (no a los suscriptores) LOS DOS reportes igual que en produccion: el general (faltas/
+    1X2/EV vs mercado) y el de player props. Valida la cadena e2e.
 
     Uso: python -m src.autorun probar-props <fixture_id>
     """
@@ -276,7 +277,7 @@ def probar_props(fixture_id: int) -> None:
     from src.props_data import cargar as cargar_tiros
     from src.props_model import calcular_props_partido, top_props
     from src.mundial_engine import correr
-    from src.telegram_alert import enviar_reporte_props
+    from src.telegram_alert import enviar_reporte_partido, enviar_reporte_props
 
     datos_tiros = cargar_tiros()
     if not datos_tiros:
@@ -328,17 +329,31 @@ def probar_props(fixture_id: int) -> None:
         "xi_l": xi_l, "xi_v": xi_v, "cod_l": cod_l, "cod_v": cod_v,
         "local": nom_l, "visitante": nom_v,
         "fecha": f["fixture"]["date"], "res": res_engine,
+        "arbitro": f["fixture"].get("referee") or "",
     }
-    props = calcular_props_partido(info_props, dfj, datos_tiros)
-    top = top_props(props)
-    if not top:
-        print("[probar-props] sin jugadores con lambda suficiente -> nada que mostrar")
-        return
 
     solo = os.environ.get("TELEGRAM_CHAT_ID")
-    ok = enviar_reporte_props(info_props, props, top, solo_chat=solo)
-    print(f"[probar-props] {'ENVIADO' if ok else 'fallo el envio'} "
-          f"({len(top)} jugadores en top) -> solo a tu chat {solo}")
+
+    # 1) Reporte general (faltas/1X2/EV vs mercado) -- igual que registrar_proximos.
+    try:
+        from src.valor import cuotas_mercado
+        cuotas = cuotas_mercado(fixture_id)
+    except Exception as e:
+        cuotas = None
+        print(f"[probar-props] sin cuotas de mercado ({type(e).__name__}) -> reporte sin EV")
+    ok_g = enviar_reporte_partido(info_props, cuotas, solo_chat=solo)
+    print(f"[probar-props] reporte general: {'ENVIADO' if ok_g else 'fallo'} "
+          f"(EV vs mercado: {'si' if cuotas else 'sin cuotas'})")
+
+    # 2) Player props.
+    props = calcular_props_partido(info_props, dfj, datos_tiros)
+    top = top_props(props)
+    if top:
+        ok_p = enviar_reporte_props(info_props, props, top, solo_chat=solo)
+        print(f"[probar-props] props: {'ENVIADO' if ok_p else 'fallo'} ({len(top)} jugadores en top)")
+    else:
+        print("[probar-props] props: sin jugadores con lambda suficiente -> no se envia")
+    print(f"[probar-props] -> todo solo a tu chat {solo}")
 
 
 def main() -> None:

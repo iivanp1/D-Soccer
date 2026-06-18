@@ -94,7 +94,8 @@ def _horas_para(fecha_iso: str) -> str:
         return ""
 
 
-def enviar_reporte_partido(info: dict, cuotas: dict | None) -> bool:
+def enviar_reporte_partido(info: dict, cuotas: dict | None,
+                           solo_chat: str | None = None) -> bool:
     """Reporte COMPLETO de un partido para decidir desde el celular.
 
     Manda numeros del modelo (1X2, goles/faltas/tarjetas/corners) y, si hay cuotas, la
@@ -141,7 +142,7 @@ def enviar_reporte_partido(info: dict, cuotas: dict | None) -> bool:
             msg.append(f"{nombre}: @ {mkt['mejor']:.2f}  ->  EV {ev:+.0f}%")
         msg += ["_El 1X2 ≈ mercado: EV cerca de 0 es lo esperado, no busques ganarle aca._"]
 
-    return enviar_mensaje("\n".join(msg))
+    return enviar_mensaje("\n".join(msg), chats=[solo_chat] if solo_chat else None)
 
 
 def enviar_reporte_props(info: dict, props: dict, top: list,
