@@ -294,21 +294,34 @@ def probar_props(fixture_id: int) -> None:
         print(f"[probar-props] sin mapeo de nacion: {nom_l}={cod_l} {nom_v}={cod_v}")
         return
 
-    lineups = alineaciones(fixture_id)
-    if not lineups:
-        print(f"[probar-props] la API aun no tiene alineaciones para {nom_l} vs {nom_v}")
-        return
-
     dfj = pd.read_csv(config.DATA_PROC / "jugadores.csv")
     xi_l, xi_v = [], []
-    for nom_api, nombres in lineups.items():
-        cod = _codigo_nacion(nom_api)
-        r = armar_xi(nombres, cod or "", dfj)
-        if cod == cod_l:
-            xi_l = r["xi_real"]
-        elif cod == cod_v:
-            xi_v = r["xi_real"]
-    print(f"[probar-props] XI mapeados: {nom_l} {len(xi_l)}/11 | {nom_v} {len(xi_v)}/11")
+    lineups = alineaciones(fixture_id)
+    if lineups:
+        for nom_api, nombres in lineups.items():
+            cod = _codigo_nacion(nom_api)
+            r = armar_xi(nombres, cod or "", dfj)
+            if cod == cod_l:
+                xi_l = r["xi_real"]
+            elif cod == cod_v:
+                xi_v = r["xi_real"]
+
+    # Sin alineacion confirmada (falta >1h): caemos al XI probable por calidad, igual
+    # que mundial_engine. Asi se puede previsualizar props de cualquier partido futuro.
+    if not xi_l or not xi_v:
+        import json
+        from src.jugadores_model import JugadoresModel
+        from src.enriquecer_xg import cargar_ajuste
+        jm = JugadoresModel().entrenar_jugadores(dfj, ajuste_xg=cargar_ajuste())
+        cal = config.DATA_PROC / "calibracion.json"
+        if cal.exists():
+            jm.aplicar_calibracion(json.loads(cal.read_text(encoding="utf-8")))
+        if not xi_l:
+            xi_l = jm.seleccion_probable(cod_l)
+        if not xi_v:
+            xi_v = jm.seleccion_probable(cod_v)
+        print("[probar-props] sin alineacion confirmada -> XI PROBABLE por calidad")
+    print(f"[probar-props] XI: {nom_l} {len(xi_l)}/11 | {nom_v} {len(xi_v)}/11")
 
     res_engine = correr(cod_l, cod_v, xi_l, xi_v, f["fixture"].get("referee"), n_sims=5000)
     info_props = {
