@@ -263,13 +263,15 @@ def registrar_props() -> None:
                           fid, type(e).__name__, e)
 
 
-def probar_props(fixture_id: int) -> None:
+def probar_props(fixture_id: int, solo_yo: bool = True) -> None:
     """Dry-run sobre CUALQUIER fixture (incluso ya jugado), sin esperar la ventana del cron.
-    Baja la alineacion (o cae al XI probable), corre el motor y manda a tu TELEGRAM_CHAT_ID
-    (no a los suscriptores) LOS DOS reportes igual que en produccion: el general (faltas/
-    1X2/EV vs mercado) y el de player props. Valida la cadena e2e.
+    Baja la alineacion (o cae al XI probable), corre el motor y manda LOS DOS reportes igual
+    que en produccion: el general (faltas/1X2/EV vs mercado) y el de player props.
 
-    Uso: python -m src.autorun probar-props <fixture_id>
+    Por defecto envia SOLO a tu TELEGRAM_CHAT_ID (modo test). Con solo_yo=False manda a
+    TODOS los suscriptores (igual que el cron real).
+
+    Uso: python -m src.autorun probar-props <fixture_id> [--todos]
     """
     import os
     import pandas as pd
@@ -332,7 +334,9 @@ def probar_props(fixture_id: int) -> None:
         "arbitro": f["fixture"].get("referee") or "",
     }
 
-    solo = os.environ.get("TELEGRAM_CHAT_ID")
+    # solo_chat=None -> enviar_mensaje usa todos los destinatarios (suscriptores.txt + .env)
+    solo = os.environ.get("TELEGRAM_CHAT_ID") if solo_yo else None
+    destino = f"solo a tu chat {solo}" if solo_yo else "a TODOS los suscriptores"
 
     # 1) Reporte general (faltas/1X2/EV vs mercado) -- igual que registrar_proximos.
     try:
@@ -353,7 +357,7 @@ def probar_props(fixture_id: int) -> None:
         print(f"[probar-props] props: {'ENVIADO' if ok_p else 'fallo'} ({len(top)} jugadores en top)")
     else:
         print("[probar-props] props: sin jugadores con lambda suficiente -> no se envia")
-    print(f"[probar-props] -> todo solo a tu chat {solo}")
+    print(f"[probar-props] -> todo enviado {destino}")
 
 
 def main() -> None:
@@ -363,9 +367,9 @@ def main() -> None:
     cmd = sys.argv[1] if len(sys.argv) > 1 else "todo"
     if cmd == "probar-props":
         if len(sys.argv) < 3 or not sys.argv[2].isdigit():
-            print("Uso: python -m src.autorun probar-props <fixture_id>")
+            print("Uso: python -m src.autorun probar-props <fixture_id> [--todos]")
             return
-        probar_props(int(sys.argv[2]))
+        probar_props(int(sys.argv[2]), solo_yo="--todos" not in sys.argv)
         return
     if cmd in ("todo", "actualizar"):
         try:
