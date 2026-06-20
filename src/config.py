@@ -217,3 +217,32 @@ SHADOW_TARJETAS_90 = 0.18
 # Recalibrado, el modelo le gana al baseline en faltas (MAE 3.50 vs 3.67, +4.8%). Se aplica en
 # disciplina_seleccion. Las tarjetas NO se escalan (su media ya coincidia; ademas no hay senal).
 ESCALA_FALTAS_SELECCION = 1.21
+
+# =========================================================================== #
+#  ANCLA DE PINNACLE (ingenieria inversa de lambda desde el mercado sharp)
+# =========================================================================== #
+# Peso del lambda implicito de Pinnacle al mezclarlo con el lambda del modelo:
+#   lam_final = ALPHA * lam_pinnacle + (1 - ALPHA) * lam_modelo
+# 0.35 = el mercado corrige ~1/3 del lambda del modelo (reduce el error de calibracion de
+# goles) conservando 2/3 de senal propia (preserva el edge potencial; no copia al mercado).
+# TUNEABLE: subir acerca al mercado (menos edge, menos varianza); bajar confia mas en el
+# modelo. Wilkens 2026 (Bundesliga, 11 temporadas) encontro el optimo ~0.40 en ROI.
+ALPHA_ANCLA_PINNACLE = 0.35
+
+# =========================================================================== #
+#  CORRECCIONES DE GOLES PARA SELECCIONES (Montecarlo)
+# =========================================================================== #
+# ZIP (Zero-Inflated Poisson): fraccion de partidos que se declaran "estructuralmente
+# defensivos" (marcador topado en <=1 gol). Aplasta la sobre-prediccion de Over 2.5 en
+# torneos de selecciones (base real ~42% vs ~50% del Poisson; skill -10.7% medido).
+# DATA-DRIVEN (validar_statsbomb --tune-priors, n=132 period-correct): 0.15 lleva el Over 2.5
+# del modelo a EXACTAMENTE 42% (= tasa real de la muestra). El joint Brier sigue bajando a 0.20
+# (+0.2%) pero ahi sobrepasa la calibracion (39%); se elige 0.15 (calibrado, sin overshoot).
+PI_ZIP_SELECCIONES = 0.15
+
+# Dixon-Coles rho: correccion de correlacion de los marcadores bajos. rho<0 infla los empates
+# cerrados (0-0, 1-1) y desinfla las victorias por la minima (1-0, 0-1). DATA-DRIVEN
+# (validar_statsbomb --tune-priors): -0.20 es el optimo del Brier conjunto (mas negativo que el
+# -0.10/-0.15 tipico de clubes, consistente con el futbol de selecciones, mas defensivo; -0.27
+# y -0.35 ya empeoran). Reduccion conjunta (pi=0.15, rho=-0.20) +4.11% vs baseline sin correccion.
+RHO_DIXON_COLES = -0.20

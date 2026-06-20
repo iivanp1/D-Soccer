@@ -43,6 +43,12 @@ BONUS_VA_PERDIENDO = 0.12  # el que pierde arriesga mas: +12% de ataque
 PENAL_VA_GANANDO = 0.10    # el que gana se repliega: -10% de ataque
 FRAC_ROJA = 0.04         # ~4% de las tarjetas son rojas (reds/match ~0.15, cards/match ~4)
 
+# --- ZIP (Zero-Inflated Poisson): "modo defensivo estructural" ---
+# Goles totales esperados en un partido declarado estructuralmente defensivo por la mascara
+# ZIP. Topa el marcador en <=1 gol (0-0, 1-0, 0-1); ZIP_LAMBDA_DEF reparte 0 vs 1 gol via
+# P(1 gol) = lam/(1+lam). 0.75 -> ~43% de esos partidos tienen un gol, ~57% terminan 0-0.
+ZIP_LAMBDA_DEF = 0.75
+
 
 def construir_parametros(goles_local: float, goles_visitante: float,
                          tarjetas_local: float = 2.2, tarjetas_visitante: float = 2.2,
@@ -61,7 +67,11 @@ def construir_parametros(goles_local: float, goles_visitante: float,
 class SimuladorMontecarlo:
     semilla: int | None = 42
 
-    def simular_partido(self, parametros: dict, n_simulaciones: int = 10000) -> dict:
+    def simular_partido(self, parametros: dict, n_simulaciones: int = 10000,
+                        pi_zip: float = 0.0, rho: float = 0.0) -> dict:
+        """Simula el partido. pi_zip>0 inyecta partidos defensivos (ZIP, corrige Over 2.5 en
+        selecciones); rho!=0 aplica la correccion Dixon-Coles a los marcadores bajos en la
+        consolidacion. Ambos default 0.0 -> comportamiento original (clubes/Dixon-Coles)."""
         rng = np.random.default_rng(self.semilla)
         N = n_simulaciones
 
@@ -122,38 +132,82 @@ class SimuladorMontecarlo:
             corner_l += (rng.random(N) < cl_min).astype(np.int16)
             corner_v += (rng.random(N) < ca_min).astype(np.int16)
 
+        # --- ZIP (Zero-Inflated): inyecta partidos "estructuralmente defensivos" ---
+        # Con prob pi_zip un universo se declara defensivo y su marcador se topa en <=1 gol
+        # total (0-0, 1-0 o 0-1). Aplasta la sobre-prediccion de Over 2.5 en selecciones
+        # (base real ~42% vs ~50% del Poisson). Solo toca GOLES; faltas/tarjetas/corners
+        # quedan (un partido trabado puede tener muchas faltas). pi_zip=0 -> sin efecto.
+        if pi_zip > 0:
+            g_l_in, g_a_in = parametros["goles"]
+            tot_in = g_l_in + g_a_in
+            share_local = g_l_in / tot_in if tot_in > 0 else 0.5
+            idx = np.where(rng.random(N) < pi_zip)[0]
+            if idx.size:
+                goles_l[idx] = 0
+                goles_v[idx] = 0
+                # 0 vs 1 gol via tasa defensiva baja; el gol (si lo hay) va al mas fuerte.
+                p_un_gol = ZIP_LAMBDA_DEF / (1.0 + ZIP_LAMBDA_DEF)
+                con_gol = idx[rng.random(idx.size) < p_un_gol]
+                if con_gol.size:
+                    al_local = rng.random(con_gol.size) < share_local
+                    goles_l[con_gol[al_local]] = 1
+                    goles_v[con_gol[~al_local]] = 1
+
         return self._consolidar(goles_l, goles_v, amar_l + rojas_l, amar_v + rojas_v,
                                 rojas_l, rojas_v, faltas_l + faltas_v,
-                                corner_l + corner_v, N)
+                                corner_l + corner_v, N, rho=rho)
 
     # ------------------------------------------------------------------ #
-    def _consolidar(self, gl, gv, tl, tv, rl, rv, faltas_tot, corner_tot, N) -> dict:
-        """Consolida los 10.000 universos en una matriz de frecuencias."""
-        local = (gl > gv).mean()
-        empate = (gl == gv).mean()
-        visit = (gl < gv).mean()
+    def _consolidar(self, gl, gv, tl, tv, rl, rv, faltas_tot, corner_tot, N, rho=0.0) -> dict:
+        """Consolida los universos en frecuencias.
 
-        # Moda de marcadores (los mas frecuentes)
+        rho!=0 aplica la correccion Dixon-Coles a los marcadores bajos via REPONDERACION:
+        rho<0 infla los empates cerrados (0-0, 1-1) y desinfla las victorias por la minima
+        (1-0, 0-1). Solo afecta los mercados de GOLES (1X2, marcadores, over goles); faltas/
+        tarjetas/corners se consolidan sin reponderar. rho=0 -> frecuencias planas (original).
+        """
+        # --- Pesos Dixon-Coles (solo los 4 marcadores bajos); el resto pesa 1.0 ---
+        w = np.ones(N, dtype=float)
+        if rho != 0.0:
+            lam_h, lam_a = float(gl.mean()), float(gv.mean())
+            w[(gl == 0) & (gv == 0)] = max(0.0, 1.0 - lam_h * lam_a * rho)
+            w[(gl == 1) & (gv == 0)] = max(0.0, 1.0 + lam_a * rho)
+            w[(gl == 0) & (gv == 1)] = max(0.0, 1.0 + lam_h * rho)
+            w[(gl == 1) & (gv == 1)] = max(0.0, 1.0 - rho)
+        W = float(w.sum())
+
+        def wmean(arr) -> float:
+            """Media ponderada por DC. Con un array booleano da una proba; con goles, su media."""
+            return float((w * arr).sum() / W)
+
+        local = wmean(gl > gv)
+        empate = wmean(gl == gv)
+        visit = wmean(gl < gv)
+
+        # Moda de marcadores (ponderada por DC: acumula peso por scoreline)
         marcadores = {}
-        for a, b in zip(gl.tolist(), gv.tolist()):
-            marcadores[(a, b)] = marcadores.get((a, b), 0) + 1
+        for a, b, wi in zip(gl.tolist(), gv.tolist(), w.tolist()):
+            marcadores[(a, b)] = marcadores.get((a, b), 0.0) + wi
         top_marc = sorted(marcadores.items(), key=lambda kv: -kv[1])[:5]
 
         goles_tot = gl + gv
         tarj_tot = tl + tv
 
-        def over(arr, linea):
+        def over_g(linea):  # mercados de GOLES: ponderados por DC
+            return wmean(goles_tot > linea)
+
+        def over(arr, linea):  # mercados no-goles (faltas/tarjetas/corners): sin reponderar
             return float((arr > linea).mean())
 
         return {
             "n": N,
             "prob_local": float(local), "prob_empate": float(empate), "prob_visitante": float(visit),
-            "marcadores_top": [((a, b), c / N) for (a, b), c in top_marc],
-            "goles_esp": (float(gl.mean()), float(gv.mean())),
-            "over_0_5_goles": over(goles_tot, 0.5),
-            "over_1_5_goles": over(goles_tot, 1.5),
-            "over_2_5_goles": over(goles_tot, 2.5),
-            "over_3_5_goles": over(goles_tot, 3.5),
+            "marcadores_top": [((a, b), c / W) for (a, b), c in top_marc],
+            "goles_esp": (wmean(gl), wmean(gv)),
+            "over_0_5_goles": over_g(0.5),
+            "over_1_5_goles": over_g(1.5),
+            "over_2_5_goles": over_g(2.5),
+            "over_3_5_goles": over_g(3.5),
             "tarjetas_esp": float(tarj_tot.mean()),
             "over_2_5_tarjetas": over(tarj_tot, 2.5),
             "over_3_5_tarjetas": over(tarj_tot, 3.5),

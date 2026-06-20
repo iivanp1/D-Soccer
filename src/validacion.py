@@ -82,28 +82,34 @@ def registrar(fixture_id: int) -> None:
     if info is None:
         return
     r = info["res"]
+    # OPCION (c): loguear el MODELO PURO (sin ancla de mercado) para que el CLV y la validacion
+    # historica midan el edge del modelo, no la linea de Pinnacle que le inyectamos. Las alertas
+    # y el EV (autorun/telegram) usan el anclado. Sin ancla -> no hay 'pure' -> r ya es el puro.
+    r_log = r.get("pure", r)
     fila = {
         "fixture_id": fixture_id, "fecha": info["fecha"],
         "local": info["local"], "visitante": info["visitante"],
         "cod_l": info["cod_l"], "cod_v": info["cod_v"], "arbitro": info["arbitro"] or "",
-        "prob_local": round(r["prob_local"], 4), "prob_empate": round(r["prob_empate"], 4),
-        "prob_visitante": round(r["prob_visitante"], 4),
-        "goles_esp_l": round(r["goles_esp"][0], 3), "goles_esp_v": round(r["goles_esp"][1], 3),
-        "over_2_5": round(r["over_2_5_goles"], 4),
+        "prob_local": round(r_log["prob_local"], 4), "prob_empate": round(r_log["prob_empate"], 4),
+        "prob_visitante": round(r_log["prob_visitante"], 4),
+        "goles_esp_l": round(r_log["goles_esp"][0], 3), "goles_esp_v": round(r_log["goles_esp"][1], 3),
+        "over_2_5": round(r_log["over_2_5_goles"], 4),
         "gl_real": "", "gv_real": "", "resultado_real": "",
         "brier_modelo": "", "brier_bench": "", "brier_mercado": "",
         "registrado_en": datetime.now(timezone.utc).isoformat(timespec="seconds"),
         "fuente": "canonico" if _es_canonico() else "dev",
     }
     # Cuotas al registrar: la MEJOR (lo que tomas) y la de Pinnacle (sharp, para CLV/EV).
-    mkt = None
+    # Reusa el mercado que ya bajo el ancla (correr_partido_auto) para no gastar otra request.
+    mkt = info.get("cuotas")
 
     def _g(m, k, campo):
         return round(m[k][campo], 2) if m and m.get(k) and m[k].get(campo) else ""
 
     try:
-        from src.valor import cuotas_mercado
-        mkt = cuotas_mercado(fixture_id)
+        if mkt is None:
+            from src.valor import cuotas_mercado
+            mkt = cuotas_mercado(fixture_id)
         fila["cuota_l"], fila["cuota_e"], fila["cuota_v"] = (
             _g(mkt, "Home", "mejor"), _g(mkt, "Draw", "mejor"), _g(mkt, "Away", "mejor"))
         fila["pin_l"], fila["pin_e"], fila["pin_v"] = (

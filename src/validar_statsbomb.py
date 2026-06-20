@@ -37,7 +37,13 @@ from src.backtest import brier_score
 from src.enriquecer_xg import cargar_ajuste
 from src.fixtures import _codigo_nacion, armar_xi
 from src.jugadores_model import JugadoresModel, _norm
+from src.montecarlo import ZIP_LAMBDA_DEF
 from src.tunear_w import GRID, W_ACTUAL
+
+# Grids del tuneo de priors (rangos pedidos por el usuario). alpha (ancla Pinnacle) NO entra:
+# necesita cuotas de mercado por partido historico y StatsBomb no las tiene (ver tunear_priors).
+PI_GRID = [0.05, 0.075, 0.10, 0.125, 0.15]
+RHO_GRID = [-0.08, -0.10, -0.12, -0.14, -0.16, -0.18, -0.20]
 
 DB = config.DATA_PROC / "dsoccer_historico.db"
 SEASONS_CLUB = ["2324", "2024"]            # forma de club disponible hasta ~mediados de 2024
@@ -272,8 +278,149 @@ def escanear_mercados(solo_2024: bool = False) -> None:
           f"Edge vs MERCADO solo lo confirma el CLV forward.)")
 
 
+def _ajustar_matriz(mat: np.ndarray, lam_l: float, lam_v: float,
+                    pi_zip: float, rho: float) -> np.ndarray:
+    """Aplica ZIP + Dixon-Coles a una matriz Poisson normalizada. Replica ANALITICA (exacta, sin
+    ruido MC) de lo que hace el Montecarlo: ZIP mezcla (1-pi)*Poisson + pi*Z con Z topado en <=1 gol
+    (0-0/1-0/0-1, reparto 0-vs-1 via ZIP_LAMBDA_DEF, el gol al mas fuerte); DC reponddera los 4
+    marcadores bajos (rho<0 infla 0-0/1-1, desinfla 1-0/0-1) y renormaliza."""
+    m = mat.copy()
+    if pi_zip > 0:
+        p_un = ZIP_LAMBDA_DEF / (1.0 + ZIP_LAMBDA_DEF)  # P(1 gol | defensivo)
+        tot = lam_l + lam_v
+        share = lam_l / tot if tot > 0 else 0.5
+        m = (1.0 - pi_zip) * m
+        m[0, 0] += pi_zip * (1.0 - p_un)
+        m[1, 0] += pi_zip * p_un * share
+        m[0, 1] += pi_zip * p_un * (1.0 - share)
+    if rho != 0.0:
+        m[0, 0] *= (1.0 - lam_l * lam_v * rho)
+        m[1, 0] *= (1.0 + lam_v * rho)
+        m[0, 1] *= (1.0 + lam_l * rho)
+        m[1, 1] *= (1.0 - rho)
+    s = m.sum()
+    return m / s if s > 0 else m
+
+
+def _brier_conjunto(mat: np.ndarray, real: str, over_real: int) -> tuple[float, float]:
+    """(Brier 1X2 3-way one-hot [0-2], Brier O/U 2.5 binario 2-comp [0-2]). La suma es el objetivo.
+    Ambos en la misma escala 0-2 para que pi (mueve O/U) y rho (mueve 1X2) pesen parejo."""
+    p_h = float(np.tril(mat, -1).sum())
+    p_d = float(np.trace(mat))
+    p_a = float(np.triu(mat, 1).sum())
+    b1 = brier_score(p_h, p_d, p_a, real)
+    p_under = float(mat[0, 0] + mat[0, 1] + mat[0, 2] + mat[1, 0] + mat[1, 1] + mat[2, 0])
+    p_over = 1.0 - p_under
+    b_ou = (p_over - over_real) ** 2 + (p_under - (1 - over_real)) ** 2
+    return b1, b_ou
+
+
+def tunear_priors(solo_2024: bool = False) -> None:
+    """Grid search de PI_ZIP_SELECCIONES x RHO_DIXON_COLES sobre StatsBomb, minimizando el Brier
+    conjunto (1X2 + O/U 2.5) del MODELO PURO (sin ancla; w=0.85 produccion). alpha (ancla Pinnacle)
+    NO se tunea aca: necesita cuotas de mercado por partido y StatsBomb no las tiene -> se tunea
+    forward con predicciones_log (pin_*/cierre_*). Las lambdas por partido se precomputan una vez."""
+    if not DB.exists():
+        print(f"No existe {DB.name}. Corre: python -m src.ingesta_historica --desde 2023")
+        return
+    jm, dfj = _modelo()
+    con = sqlite3.connect(DB)
+    muestra, meta = _muestra(con, dfj, solo_2024)
+    con.close()
+    muestra = [m for m in muestra if m["gl"] is not None and m["gv"] is not None]
+    if not muestra:
+        print("Muestra vacia (¿la DB no tiene torneos 2023/2024?).")
+        return
+
+    w = jm.w_elo  # produccion (0.85). Lado jugadores (w=0) y Elo (w=1) se precomputan una vez.
+    jm.w_elo = 0.0
+    pl = [jm.predecir_partido_mundial(m["xi_l"], m["xi_v"], m["cl"], m["cv"]) for m in muestra]
+    jm.w_elo = 1.0
+    pe = [jm.predecir_partido_mundial(m["xi_l"], m["xi_v"], m["cl"], m["cv"]) for m in muestra]
+    jm.w_elo = w
+
+    g = np.arange(11)
+    base = []  # (mat_poisson_normalizada, lam_l, lam_v, real, over_real)
+    for a, b, m in zip(pl, pe, muestra):
+        lam_l = w * b["goles_esp_local"] + (1 - w) * a["goles_esp_local"]
+        lam_v = w * b["goles_esp_visitante"] + (1 - w) * a["goles_esp_visitante"]
+        mat = np.outer(_pois(g, lam_l), _pois(g, lam_v))
+        mat /= mat.sum()
+        base.append((mat, lam_l, lam_v, m["real"], 1 if (m["gl"] + m["gv"]) >= 3 else 0))
+
+    n = len(base)
+
+    def score(pi: float, rho: float) -> tuple[float, float, float, float]:
+        """(joint, brier_1x2, brier_ou, prob_over_media) sobre la muestra."""
+        b1 = bou = pov = 0.0
+        for mat, ll, lv, real, ov in base:
+            adj = _ajustar_matriz(mat, ll, lv, pi, rho)
+            x1, xo = _brier_conjunto(adj, real, ov)
+            b1 += x1; bou += xo
+            pov += float(adj[0, 0] + adj[0, 1] + adj[0, 2] + adj[1, 0] + adj[1, 1] + adj[2, 0])
+        return (b1 + bou) / n, b1 / n, bou / n, 1.0 - pov / n
+
+    # Tensor de Brier conjunto para grid + LOO
+    B = np.empty((n, len(PI_GRID), len(RHO_GRID)))
+    for i, (mat, ll, lv, real, ov) in enumerate(base):
+        for j, pi in enumerate(PI_GRID):
+            for k, rho in enumerate(RHO_GRID):
+                x1, xo = _brier_conjunto(_ajustar_matriz(mat, ll, lv, pi, rho), real, ov)
+                B[i, j, k] = x1 + xo
+
+    media = B.mean(axis=0)
+    jstar, kstar = np.unravel_index(int(np.argmin(media)), media.shape)
+    pi_opt, rho_opt = PI_GRID[jstar], RHO_GRID[kstar]
+
+    base_j, base_1, base_ou, base_pov = score(0.0, 0.0)
+    cur_j, cur_1, cur_ou, cur_pov = score(config.PI_ZIP_SELECCIONES, config.RHO_DIXON_COLES)
+    opt_j, opt_1, opt_ou, opt_pov = score(pi_opt, rho_opt)
+    over_real = float(np.mean([b[4] for b in base]))  # tasa de Over 2.5 real en la muestra
+
+    # LOO (fuera de muestra): para cada partido, el (pi,rho) optimo de los OTROS, evaluado en el.
+    col = B.sum(axis=0)
+    loo = float(np.mean([B[i].flatten()[int(np.argmin((col - B[i]).flatten()))] for i in range(n)]))
+
+    print("=" * 66)
+    print(f"  TUNEO DE PRIORS (ZIP pi x Dixon-Coles rho)  |  n={n} partidos StatsBomb")
+    print(f"  ({'solo 2024' if solo_2024 else '2024 + AFCON23'}, period-correct; w={w} produccion)")
+    print(f"  Objetivo: Brier CONJUNTO (1X2 3-way + O/U 2.5), ambos en escala 0-2")
+    print("=" * 66)
+
+    print(f"\n  Grid del Brier conjunto (filas pi, columnas rho):")
+    print("        " + "".join(f"{r:>8.2f}" for r in RHO_GRID))
+    for j, pi in enumerate(PI_GRID):
+        celdas = "".join(
+            (f"{media[j,k]:>8.4f}" if (j, k) != (jstar, kstar) else f"{media[j,k]:>7.4f}*")
+            for k in range(len(RHO_GRID)))
+        print(f"  {pi:>5.3f} {celdas}")
+    print("  (* = optimo)")
+
+    print(f"\n  {'config':<26}{'joint':>9}{'1X2':>9}{'O/U':>9}{'P(over)':>9}")
+    print(f"  {'baseline (0, 0)':<26}{base_j:>9.4f}{base_1:>9.4f}{base_ou:>9.4f}{base_pov*100:>8.0f}%")
+    print(f"  {'actual (%.3f, %.2f)' % (config.PI_ZIP_SELECCIONES, config.RHO_DIXON_COLES):<26}"
+          f"{cur_j:>9.4f}{cur_1:>9.4f}{cur_ou:>9.4f}{cur_pov*100:>8.0f}%")
+    print(f"  {'OPTIMO (%.3f, %.2f)' % (pi_opt, rho_opt):<26}"
+          f"{opt_j:>9.4f}{opt_1:>9.4f}{opt_ou:>9.4f}{opt_pov*100:>8.0f}%")
+    print(f"  {'(over REAL en la muestra)':<26}{'':>27}{over_real*100:>8.0f}%")
+
+    red = (1 - opt_j / base_j) * 100 if base_j > 0 else 0
+    print(f"\n  Reduccion del Brier conjunto (optimo vs baseline): {red:+.2f}%")
+    print(f"  LOO (optimo fuera de muestra): {loo:.4f}  -> "
+          f"{'GENERALIZA (mejor que baseline)' if loo < base_j else 'NO generaliza (ruido)'}")
+    en_borde = pi_opt in (PI_GRID[0], PI_GRID[-1]) or rho_opt in (RHO_GRID[0], RHO_GRID[-1])
+    if en_borde:
+        print(f"  [!] El optimo cae en el BORDE del grid -> el verdadero optimo puede estar mas alla.")
+    print(f"\n  ALPHA_ANCLA_PINNACLE: NO tuneable aca (StatsBomb sin cuotas). Se mantiene 0.35;")
+    print(f"  tunear forward con predicciones_log (pin_*/cierre_*) cuando haya muestra de WC.")
+    print(f"\n  GANADORES -> PI_ZIP_SELECCIONES={pi_opt}  RHO_DIXON_COLES={rho_opt}")
+    print(f"  (n={n}: muestra seria. pi/rho son CALIBRACION 1-D c/u -> bajo riesgo de overfit.)")
+
+
 def main() -> None:
-    if "--mercados" in sys.argv:
+    if "--tune-priors" in sys.argv:
+        tunear_priors(solo_2024="--solo-2024" in sys.argv)
+    elif "--mercados" in sys.argv:
         escanear_mercados(solo_2024="--solo-2024" in sys.argv)
     else:
         tunear(solo_2024="--solo-2024" in sys.argv)
