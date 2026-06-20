@@ -32,7 +32,7 @@ from datetime import datetime, timedelta, timezone
 
 from src import config
 from src.fixtures import _api_get, _codigo_nacion
-from src.validacion import actualizar_resultados, registrar
+from src.validacion import actualizar_resultados, capturar_cierres, registrar
 
 # Filtro de competicion: todas las variantes conocidas del nombre en API-Football.
 # Agregar variantes aqui si la API cambia el nombre en algun matchday.
@@ -392,6 +392,11 @@ def main() -> None:
         except Exception as e:
             log.error("error en registrar_props: %s: %s", type(e).__name__, e)
             print(f"[autorun] error en registrar_props: {type(e).__name__}: {e}")
+        try:
+            capturar_cierres()     # cuota de cierre (Pinnacle) para CLV: ventana 0-35 min
+        except Exception as e:
+            log.error("error en capturar_cierres: %s: %s", type(e).__name__, e)
+            print(f"[autorun] error en capturar_cierres: {type(e).__name__}: {e}")
 
 
 if __name__ == "__main__":
