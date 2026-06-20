@@ -25,12 +25,12 @@ Uso:
 from __future__ import annotations
 
 import json
+import math
 import sqlite3
 import sys
 
 import numpy as np
 import pandas as pd
-from scipy.stats import poisson
 
 from src import config
 from src.backtest import brier_score
@@ -50,6 +50,15 @@ SB_OVERRIDES = {
     "angola": "ANG", "mozambique": "MOZ", "zambia": "ZAM", "gambia": "GAM",
     "burkina faso": "BFA", "south korea": "KOR",
 }
+
+
+_FACT = np.array([math.factorial(k) for k in range(20)], dtype=float)
+
+
+def _pois(g: np.ndarray, lam: float) -> np.ndarray:
+    """Poisson pmf vectorizada SIN scipy (para correr en el venv minimo del server, que no
+    tiene scipy). g = array de enteros 0..k; pmf(k) = e^-lam * lam^k / k!."""
+    return np.exp(-lam) * np.power(float(lam), g) / _FACT[g]
 
 
 def _cod(nombre_sb: str) -> str | None:
@@ -116,7 +125,7 @@ def _matriz_brier(jm: JugadoresModel, muestra: list[dict]) -> np.ndarray:
         for k, w in enumerate(GRID):
             lam_l = w * le[0] + (1 - w) * lp[0]
             lam_v = w * le[1] + (1 - w) * lp[1]
-            mat = np.outer(poisson.pmf(g, lam_l), poisson.pmf(g, lam_v))
+            mat = np.outer(_pois(g, lam_l), _pois(g, lam_v))
             mat /= mat.sum()
             B[i, k] = brier_score(float(np.tril(mat, -1).sum()), float(np.trace(mat)),
                                   float(np.triu(mat, 1).sum()), m["real"])
@@ -221,7 +230,7 @@ def escanear_mercados(solo_2024: bool = False) -> None:
     for a, b, m in zip(pl, pe, muestra):
         lam_l = w * b["goles_esp_local"] + (1 - w) * a["goles_esp_local"]
         lam_v = w * b["goles_esp_visitante"] + (1 - w) * a["goles_esp_visitante"]
-        mat = np.outer(poisson.pmf(g, lam_l), poisson.pmf(g, lam_v))
+        mat = np.outer(_pois(g, lam_l), _pois(g, lam_v))
         mat /= mat.sum()
         p1x2.append((float(np.tril(mat, -1).sum()), float(np.trace(mat)), float(np.triu(mat, 1).sum())))
         real1x2.append(m["real"])
