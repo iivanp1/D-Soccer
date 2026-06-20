@@ -61,12 +61,15 @@ def prob_over_k(lam: float, k: float) -> float:
 
 
 # ------------------------------------------------------------------ #
-def _tasa_tiros_jugador(nombre_norm: str, pos1: str,
-                        datos_tiros: dict) -> tuple[float, float, str, float]:
+def _tasa_tiros_jugador(nombre_norm: str, pos1: str, datos_tiros: dict,
+                        club_fallback: tuple[float, float] = (0.0, 0.0)
+                        ) -> tuple[float, float, str, float]:
     """Retorna (tiros_90, sot_rate, fuente, xg_per_shot) para un jugador.
 
-    Jerarquia: intl_confirmado > club_escalado > shadow_por_posicion.
-    xg_per_shot: calidad promedio del tiro; fallback = conv_rate_xg global.
+    Jerarquia: intl_confirmado > club_escalado(json) > club_fallback(FBref) > shadow.
+    club_fallback (tiros_90, sot_rate) viene de FBref directo: rescata a jugadores que
+    NO estan en tiros_intl.json por no haber jugado los torneos StatsBomb (Noruega,
+    Uzbekistan, etc.), pero que SI tienen datos de club. xg_per_shot: fallback = conv_rate.
     """
     meta = datos_tiros.get("meta", {})
     escala = meta.get("escala_tiros_seleccion", 1.0)
@@ -86,6 +89,13 @@ def _tasa_tiros_jugador(nombre_norm: str, pos1: str,
             # sin historial intl de calidad: usamos media global como prior
             return j["tiros_90_club"] * escala, j.get("sot_rate", sot_default), "club", conv_rate
 
+    # Fallback: tasa de club desde FBref (jugador fuera de tiros_intl.json). Escalada
+    # club->seleccion igual que el tier "club" del json. Esto hace que props funcione
+    # para selecciones del Mundial que no jugaron los torneos StatsBomb 2018-2024.
+    t90_club, sot_club = club_fallback
+    if t90_club > 0:
+        return t90_club * escala, sot_club if sot_club > 0 else sot_default, "club", conv_rate
+
     pos_key = pos1 if pos1 in shadow else "MF"
     return shadow.get(pos_key, 1.0), sot_default, "shadow", conv_rate
 
@@ -93,6 +103,18 @@ def _tasa_tiros_jugador(nombre_norm: str, pos1: str,
 def _pos1(posicion: str) -> str:
     """Posicion primaria ('FW,MF' -> 'FW')."""
     return posicion.split(",")[0].split("-")[0] if posicion else "MF"
+
+
+def _club_rate_fbref(sub: pd.DataFrame) -> tuple[float, float]:
+    """(tiros_90, sot_rate) desde la fila FBref del jugador (temporada con mas minutos).
+    Fallback para jugadores fuera de tiros_intl.json. (0,0) si no hay datos suficientes."""
+    if sub.empty or sub["noventas"].max() < 3:
+        return 0.0, 0.0
+    row = sub.loc[sub["minutos"].idxmax()]
+    n90, tiros, arco = float(row["noventas"]), float(row["tiros"]), float(row["tiros_arco"])
+    if n90 <= 0 or tiros <= 0:
+        return 0.0, 0.0
+    return tiros / n90, arco / tiros
 
 
 # ------------------------------------------------------------------ #
@@ -115,7 +137,8 @@ def calcular_props_equipo(xi_names: list[str], nacion: str,
         nrm = _norm(nombre)
         sub = jugadores_df[jugadores_df["player"].apply(_norm) == nrm]
         pos = _pos1(sub.iloc[0]["posicion"] if not sub.empty else "MF")
-        tiros_90, sot_rate, fuente, xg_per_shot = _tasa_tiros_jugador(nrm, pos, datos_tiros)
+        club_fb = _club_rate_fbref(sub)
+        tiros_90, sot_rate, fuente, xg_per_shot = _tasa_tiros_jugador(nrm, pos, datos_tiros, club_fb)
         filas.append({"nombre": nombre, "nrm": nrm, "pos": pos,
                       "tiros_90": tiros_90, "sot_rate": sot_rate,
                       "fuente": fuente, "xg_per_shot": xg_per_shot})
@@ -124,6 +147,15 @@ def calcular_props_equipo(xi_names: list[str], nacion: str,
         return {}
 
     sum_tiros = sum(f["tiros_90"] for f in filas)
+    # Si el XI mapea menos de 11 (selecciones con poca cobertura FBref, ej. Australia 3/11),
+    # los jugadores NO mapeados igual consumen volumen de tiros. Sin esto, los pocos mapeados
+    # absorben todo -> usage al tope (0.35) -> lambda inflada (defensores con lambda ~4). Padear
+    # el denominador con los faltantes al ritmo sombra de un mediocampista reparte realista; los
+    # pocos mapeados caen a usage sensato (y si quedan bajo el umbral, no se reportan, que es lo
+    # honesto: no tenemos data para nombrar al disparador de ese equipo).
+    shadow = meta.get("shadow_tiros_90", {"FW": 2.46, "MF": 1.33, "DF": 0.5, "GK": 0.1})
+    n_falt = max(0, 11 - len(filas))
+    sum_tiros += n_falt * shadow.get("MF", 1.33)
     if sum_tiros <= 0:
         sum_tiros = 1.0
 

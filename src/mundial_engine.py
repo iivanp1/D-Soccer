@@ -62,7 +62,9 @@ def _formato_cuota(prob: float) -> str:
 
 def correr(nacion_local: str, nacion_visit: str,
            xi_local: list[str] | None, xi_visit: list[str] | None,
-           arbitro: str | None, n_sims: int = 10000) -> None:
+           arbitro: str | None, n_sims: int = 10000,
+           ancla_pinnacle: tuple[float, float] | None = None,
+           alpha_ancla: float | None = None) -> None:
     # --- 1. Motor Mundialista: ratings de jugadores -> tasas base ---
     df_j = pd.read_csv(config.DATA_PROC / "jugadores.csv")
     from src.enriquecer_xg import cargar_ajuste  # correccion por xG real (si xg_ajuste.csv existe)
@@ -112,27 +114,59 @@ def correr(nacion_local: str, nacion_visit: str,
     tarj_l = disc_l["tarjetas"] * f_arb
     tarj_v = disc_v["tarjetas"] * f_arb
 
+    # --- Ancla de Pinnacle: interpola los goles del modelo hacia el lambda del mercado ---
+    #     lam_final = alpha * lam_pinnacle + (1 - alpha) * lam_modelo  (ver src/valor.py)
+    gl_modelo, gv_modelo = pred["goles_esp_local"], pred["goles_esp_visitante"]
+    gl, gv = gl_modelo, gv_modelo
+    msg_ancla = "sin ancla de mercado (modelo puro)"
+    if ancla_pinnacle:
+        a = alpha_ancla if alpha_ancla is not None else config.ALPHA_ANCLA_PINNACLE
+        pl, pv = ancla_pinnacle
+        gl = a * pl + (1 - a) * gl_modelo
+        gv = a * pv + (1 - a) * gv_modelo
+        msg_ancla = (f"Pinnacle alpha={a:.2f}: lam_pin {pl:.2f}-{pv:.2f} -> "
+                     f"goles {gl:.2f}-{gv:.2f} (modelo solo: {gl_modelo:.2f}-{gv_modelo:.2f})")
+
     # --- Corners: reparto heuristico segun fuerza ofensiva ---
     at_l, at_v = pred["fuerza_local"]["ataque"], pred["fuerza_visitante"]["ataque"]
     corners_l = CORNERS_TOTAL_BASE * at_l / (at_l + at_v)
     corners_v = CORNERS_TOTAL_BASE * at_v / (at_l + at_v)
 
     parametros = construir_parametros(
-        goles_local=pred["goles_esp_local"], goles_visitante=pred["goles_esp_visitante"],
+        goles_local=gl, goles_visitante=gv,
         tarjetas_local=tarj_l, tarjetas_visitante=tarj_v,
         faltas_local=disc_l["faltas"], faltas_visitante=disc_v["faltas"],
         corners_local=corners_l, corners_visitante=corners_v,
     )
 
     # --- 3. Montecarlo: 10.000 universos minuto a minuto ---
-    res = SimuladorMontecarlo().simular_partido(parametros, n_simulaciones=n_sims)
+    # ZIP (pi_zip) aplasta el Over 2.5; Dixon-Coles (rho) corrige los marcadores bajos.
+    sim = SimuladorMontecarlo()
+    res = sim.simular_partido(parametros, n_simulaciones=n_sims,
+                              pi_zip=config.PI_ZIP_SELECCIONES, rho=config.RHO_DIXON_COLES)
+
+    # OPCION (c): si hubo ancla de mercado, computamos TAMBIEN el modelo PURO (sin ancla) y lo
+    # adjuntamos como res["pure"]. validacion.registrar loguea ESE (CLV/Brier-vs-mercado deben
+    # medir el edge del MODELO, no la linea del mercado que le inyectamos). Las alertas y el EV
+    # usan el anclado (res). Mismo seed -> comparacion pareada (mismos universos, distinto lambda).
+    if ancla_pinnacle:
+        params_puro = construir_parametros(
+            goles_local=gl_modelo, goles_visitante=gv_modelo,
+            tarjetas_local=tarj_l, tarjetas_visitante=tarj_v,
+            faltas_local=disc_l["faltas"], faltas_visitante=disc_v["faltas"],
+            corners_local=corners_l, corners_visitante=corners_v,
+        )
+        res["pure"] = sim.simular_partido(params_puro, n_simulaciones=n_sims,
+                                          pi_zip=config.PI_ZIP_SELECCIONES, rho=config.RHO_DIXON_COLES)
 
     res["msg_faltas_arbitro"] = msg_faltas  # para Telegram y log
-    _reporte(nacion_local, nacion_visit, xi_l, xi_v, pred, parametros, msg_arb, msg_cal, msg_faltas, res)
+    res["msg_ancla"] = msg_ancla            # para Telegram, valor.py y log
+    _reporte(nacion_local, nacion_visit, xi_l, xi_v, pred, parametros, msg_arb, msg_cal,
+             msg_faltas, msg_ancla, res)
     return res  # para que el validador pueda registrar la prediccion
 
 
-def _reporte(loc, vis, xi_l, xi_v, pred, params, msg_arb, msg_cal, msg_faltas, res) -> None:
+def _reporte(loc, vis, xi_l, xi_v, pred, params, msg_arb, msg_cal, msg_faltas, msg_ancla, res) -> None:
     L = f"{loc}"; V = f"{vis}"
     print("=" * 60)
     print(f"  D-SOCCER | MOTOR MUNDIALISTA + MONTECARLO ({res['n']:,} sims)")
@@ -150,6 +184,7 @@ def _reporte(loc, vis, xi_l, xi_v, pred, params, msg_arb, msg_cal, msg_faltas, r
     if h.get("elo"):
         print(f"  Hibrido (w={h['w']}): Elo {h['elo'][0]:.2f}-{h['elo'][1]:.2f}  |  "
               f"jugadores {h['player'][0]:.2f}-{h['player'][1]:.2f}")
+    print(f"  Ancla mercado: {msg_ancla}")
     print(f"  Tasas base -> goles {tuple(round(x,2) for x in params['goles'])} | "
           f"faltas {tuple(round(x,1) for x in params['faltas'])} | "
           f"tarjetas {tuple(round(x,2) for x in params['tarjetas'])}")

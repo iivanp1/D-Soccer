@@ -202,6 +202,34 @@ El edge del modelo de jugadores + xG está en **Player Props** (+13.9%) y en **m
 usa goles reales como proxy de λ (muy volátiles). En producción con λ del engine (1.3-1.7) el
 efecto es más moderado. El aviso aparece en cada mensaje de Telegram.
 
+### ⚠️ Las tres verdades incómodas (leer antes de apostar)
+
+1. **"Le gana al benchmark" ≠ "le gana al mercado" ≠ "es rentable".** El +10% del Dixon-Coles es
+   contra **frecuencias históricas** (vara baja). Ganarle a las base rates NO demuestra rentabilidad.
+   Solo "Brier modelo < Brier mercado, sostenido, en muestra grande, neto de margen" se acerca, y eso
+   **todavía no está demostrado** para selecciones. La comparación que importa es vs MERCADO (`reporte`).
+2. **El Motor Mundialista (selecciones) es un PRIOR sin validar — y es el del Mundial.** Para clubes
+   Dixon-Coles está validado; para selecciones, el edge en 1X2 es una **hipótesis** (lo gana el Elo).
+   El "valor" que el detector marque a favor de un underdog suele ser **nuestro sesgo, no valor real**.
+3. **La muestra nunca va a alcanzar.** Confirmar un edge de 2-3% necesita **cientos** de apuestas; el
+   Mundial entero son 104 partidos. La validación por P&L va a quedar ruidosa sí o sí.
+
+### Instrumentación para medir edge de verdad (jun 2026, commit bc5a1a5)
+
+- **CLV (closing line value)** — `validacion.py`: el proxy de edge **más rápido y de menor varianza**
+  (responde en semanas, no en cientos de apuestas). El cron captura la línea de cierre de Pinnacle
+  (`capturar_cierres`); `reporte` mide si la cuota tomada le gana al cierre sharp. **CLV+ sostenido = edge.**
+- **Reliability diagram** — `validacion.py reporte`: prob predicha vs frecuencia observada por bin.
+  Expone la **sobreconfianza** en los bins altos (donde viven las apuestas de "valor" = EV fantasma);
+  el Brier solo no lo muestra (mezcla calibración y resolución).
+- **Detector vs sharp de-marginada** — `valor.py`: compara el modelo contra **Pinnacle de-marginado**
+  (no contra el outlier que más paga, que infla el EV por sesgo de selección). Separa **EV-modelo**
+  (tu edge, hipótesis) de **line-shopping** (mejor cuota mal preciada vs sharp, independiente del modelo).
+
+**Regla práctica**: el detector da hipótesis; el **CLV las confirma o las mata**. No apostar mercados
+sin edge demostrado (Over/Under totales: validado como impredecible). El edge real, si existe, está en
+faltas (intl, +4.8%) y player props — no en el 1X2 ni en Over 2.5.
+
 ---
 
 ## 6. DATOS / REGISTROS (`data/`)

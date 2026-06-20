@@ -36,7 +36,9 @@ DEV = "predicciones_log_dev.csv"
 COLUMNAS = [
     "fixture_id", "fecha", "local", "visitante", "cod_l", "cod_v", "arbitro",
     "prob_local", "prob_empate", "prob_visitante", "goles_esp_l", "goles_esp_v", "over_2_5",
-    "cuota_l", "cuota_e", "cuota_v",  # mejores cuotas 1X2 del mercado al registrar
+    "cuota_l", "cuota_e", "cuota_v",        # mejores cuotas 1X2 al registrar (lo que TOMAS)
+    "pin_l", "pin_e", "pin_v",              # cuotas Pinnacle (sharp) al registrar
+    "cierre_l", "cierre_e", "cierre_v",     # cuotas Pinnacle (sharp) cerca del KO -> CLV
     "gl_real", "gv_real", "resultado_real", "brier_modelo", "brier_bench", "brier_mercado",
     "registrado_en", "fuente",  # metadata: permite consolidar logs sin duplicar (clave fixture_id)
 ]
@@ -80,29 +82,41 @@ def registrar(fixture_id: int) -> None:
     if info is None:
         return
     r = info["res"]
+    # OPCION (c): loguear el MODELO PURO (sin ancla de mercado) para que el CLV y la validacion
+    # historica midan el edge del modelo, no la linea de Pinnacle que le inyectamos. Las alertas
+    # y el EV (autorun/telegram) usan el anclado. Sin ancla -> no hay 'pure' -> r ya es el puro.
+    r_log = r.get("pure", r)
     fila = {
         "fixture_id": fixture_id, "fecha": info["fecha"],
         "local": info["local"], "visitante": info["visitante"],
         "cod_l": info["cod_l"], "cod_v": info["cod_v"], "arbitro": info["arbitro"] or "",
-        "prob_local": round(r["prob_local"], 4), "prob_empate": round(r["prob_empate"], 4),
-        "prob_visitante": round(r["prob_visitante"], 4),
-        "goles_esp_l": round(r["goles_esp"][0], 3), "goles_esp_v": round(r["goles_esp"][1], 3),
-        "over_2_5": round(r["over_2_5_goles"], 4),
+        "prob_local": round(r_log["prob_local"], 4), "prob_empate": round(r_log["prob_empate"], 4),
+        "prob_visitante": round(r_log["prob_visitante"], 4),
+        "goles_esp_l": round(r_log["goles_esp"][0], 3), "goles_esp_v": round(r_log["goles_esp"][1], 3),
+        "over_2_5": round(r_log["over_2_5_goles"], 4),
         "gl_real": "", "gv_real": "", "resultado_real": "",
         "brier_modelo": "", "brier_bench": "", "brier_mercado": "",
         "registrado_en": datetime.now(timezone.utc).isoformat(timespec="seconds"),
         "fuente": "canonico" if _es_canonico() else "dev",
     }
-    # Capturar las mejores cuotas 1X2 del mercado al momento de registrar
-    mkt = None
+    # Cuotas al registrar: la MEJOR (lo que tomas) y la de Pinnacle (sharp, para CLV/EV).
+    # Reusa el mercado que ya bajo el ancla (correr_partido_auto) para no gastar otra request.
+    mkt = info.get("cuotas")
+
+    def _g(m, k, campo):
+        return round(m[k][campo], 2) if m and m.get(k) and m[k].get(campo) else ""
+
     try:
-        from src.valor import cuotas_mercado
-        mkt = cuotas_mercado(fixture_id)
-        fila["cuota_l"] = round(mkt["Home"]["mejor"], 2) if mkt and mkt.get("Home") else ""
-        fila["cuota_e"] = round(mkt["Draw"]["mejor"], 2) if mkt and mkt.get("Draw") else ""
-        fila["cuota_v"] = round(mkt["Away"]["mejor"], 2) if mkt and mkt.get("Away") else ""
+        if mkt is None:
+            from src.valor import cuotas_mercado
+            mkt = cuotas_mercado(fixture_id)
+        fila["cuota_l"], fila["cuota_e"], fila["cuota_v"] = (
+            _g(mkt, "Home", "mejor"), _g(mkt, "Draw", "mejor"), _g(mkt, "Away", "mejor"))
+        fila["pin_l"], fila["pin_e"], fila["pin_v"] = (
+            _g(mkt, "Home", "pinnacle"), _g(mkt, "Draw", "pinnacle"), _g(mkt, "Away", "pinnacle"))
     except Exception:
-        fila["cuota_l"] = fila["cuota_e"] = fila["cuota_v"] = ""
+        for c in ("cuota_l", "cuota_e", "cuota_v", "pin_l", "pin_e", "pin_v"):
+            fila[c] = ""
 
     log = pd.concat([log, pd.DataFrame([fila])], ignore_index=True)
     _guardar(log)
@@ -159,6 +173,47 @@ def actualizar_resultados() -> None:
     print(f"\nActualizados {actualizados} resultados.")
 
 
+def capturar_cierres() -> None:
+    """Captura la cuota de CIERRE (Pinnacle 1X2) de los partidos registrados por empezar.
+
+    Se llama seguido desde el cron; SOBREESCRIBE hasta el KO, asi queda la ultima linea
+    pre-partido (lo mas cerca del cierre). Habilita medir CLV: si la cuota que tomaste
+    (best al registrar) le gano a la linea de cierre sharp -> evidencia de edge, con MUCHA
+    menos varianza que esperar el P&L de cientos de apuestas (responde en semanas)."""
+    from src.valor import cuotas_mercado
+
+    log = _cargar()
+    if log.empty:
+        print("[cierres] log vacio.")
+        return
+    for c in ("cierre_l", "cierre_e", "cierre_v", "resultado_real"):
+        if c in log.columns:
+            log[c] = log[c].astype("object")
+    ahora = datetime.now(timezone.utc)
+    n = 0
+    for idx, fila in log.iterrows():
+        if str(fila.get("resultado_real") or "") not in ("", "nan"):
+            continue  # ya jugado
+        try:
+            ko = datetime.fromisoformat(str(fila["fecha"]))
+        except (ValueError, TypeError):
+            continue
+        min_ko = (ko - ahora).total_seconds() / 60
+        if not (0 < min_ko <= 35):  # ventana de cierre: ultima media hora antes del KO
+            continue
+        mkt = cuotas_mercado(int(fila["fixture_id"]))
+        if not mkt:
+            continue
+        for col, k in (("cierre_l", "Home"), ("cierre_e", "Draw"), ("cierre_v", "Away")):
+            o = mkt[k].get("pinnacle") if mkt.get(k) else None
+            if o:
+                log.at[idx, col] = round(o, 2)
+        n += 1
+    if n:
+        _guardar(log)
+    print(f"[cierres] {n} cuotas de cierre (Pinnacle) actualizadas")
+
+
 def reporte() -> None:
     """Metricas agregadas sobre las predicciones que ya tienen resultado."""
     log = _cargar()
@@ -197,7 +252,106 @@ def reporte() -> None:
             print(f"  -> el modelo LE GANA al mercado (edge!). Confirmar con mas muestra.")
         else:
             print(f"  -> el mercado es mejor (lo esperable). El edge esta en mercados 2rios.")
-    print(f"\n  (Muestra chica: con <15-20 partidos esto es ruido. Seguir acumulando.)")
+
+    _reporte_clv(log)       # CLV: el proxy de edge mas rapido (menor varianza)
+    _reliability(hechos)    # calibracion: prob predicha vs frecuencia observada
+
+    print(f"\n  (Muestra chica: con <15-20 partidos esto es ruido. CLV (arriba) responde mas")
+    print(f"   rapido que el P&L, pero igual: un edge de 2-3% necesita CIENTOS de apuestas.)")
+
+
+def _reporte_clv(log: pd.DataFrame) -> None:
+    """CLV del PICK del modelo: por partido, el modelo 'apuesta' el resultado donde mas
+    discrepa HACIA ARRIBA de la sharp al registrar; medimos si la cuota tomada (best) le
+    gana a la linea de CIERRE sharp de-marginada. CLV+ sostenido = edge real."""
+    from src.valor import _demargin
+    import math
+    import statistics
+
+    def _nums(f, cols):
+        """Parsea cols a float; None si alguna falta/NaN (float(nan) NO lanza -> hay que chequear)."""
+        out = []
+        for c in cols:
+            try:
+                x = float(f[c])
+            except (ValueError, TypeError, KeyError):
+                return None
+            if math.isnan(x):
+                return None
+            out.append(x)
+        return out
+
+    clvs, beats, usados = [], 0, 0
+    for _, f in log.iterrows():
+        best = _nums(f, ("cuota_l", "cuota_e", "cuota_v"))
+        pin_reg = _nums(f, ("pin_l", "pin_e", "pin_v"))
+        pin_clo = _nums(f, ("cierre_l", "cierre_e", "cierre_v"))
+        p_mod = _nums(f, ("prob_local", "prob_empate", "prob_visitante"))
+        if not (best and pin_reg and pin_clo and p_mod):
+            continue
+        sharp_reg, sharp_clo = _demargin(pin_reg), _demargin(pin_clo)
+        if not sharp_reg or not sharp_clo or any(b <= 0 for b in best):
+            continue
+        edges = [p_mod[i] - sharp_reg[i] for i in range(3)]  # donde el modelo le gana a la sharp
+        i = max(range(3), key=lambda k: edges[k])
+        if edges[i] <= 0:
+            continue  # el modelo no discrepa hacia arriba en ningun lado -> no apuesta
+        clvs.append(best[i] * sharp_clo[i] - 1.0)          # cuota tomada vs prob justa de cierre
+        beats += int(best[i] > 1.0 / sharp_clo[i])
+        usados += 1
+
+    print("\n  --- CLV (closing line value) ---")
+    if not clvs:
+        print("  Aun sin datos de CLV (faltan cuotas Pinnacle de registro Y cierre).")
+        print("  Se llena solo: el cron captura el cierre ~0-35min antes del KO desde ahora.")
+        return
+    media = statistics.mean(clvs)
+    print(f"  Partidos con CLV medible      : {usados}")
+    print(f"  CLV medio del pick del modelo : {media*100:+.2f}%")
+    print(f"  Picks que batieron el cierre  : {beats}/{usados} ({beats/usados*100:.0f}%)")
+    if media > 0:
+        print("  -> CLV POSITIVO: el modelo anticipa el movimiento de linea (senal de edge real).")
+    else:
+        print("  -> CLV no positivo: el modelo NO le gana al cierre (sin edge demostrado aun).")
+
+
+def _reliability(hechos: pd.DataFrame, n_bins: int = 5) -> None:
+    """Reliability diagram (texto): agrupa TODAS las prob 1X2 predichas en bins y compara la
+    prob media predicha vs la frecuencia observada. Si predicho > observado en los bins altos
+    -> SOBRECONFIANZA, justo donde viven las apuestas de 'valor' (= EV fantasma). El Brier
+    solo no lo muestra: mezcla calibracion y resolucion."""
+    if hechos.empty:
+        return
+    real_idx = hechos["resultado_real"].map({"H": 0, "D": 1, "A": 2})
+    cols = ["prob_local", "prob_empate", "prob_visitante"]
+    pares = []  # (prob_predicha, ocurrio 0/1) -- 3 por partido
+    for (_, f), ri in zip(hechos.iterrows(), real_idx):
+        for j, c in enumerate(cols):
+            try:
+                pares.append((float(f[c]), int(j == ri)))
+            except (ValueError, TypeError):
+                pass
+    if not pares:
+        return
+    print("\n  --- Reliability diagram (calibracion 1X2) ---")
+    print(f"  {'bin':<12}{'pred':>7}{'obs':>7}{'n':>5}")
+    ancho = 1.0 / n_bins
+    for b in range(n_bins):
+        lo, hi = b * ancho, (b + 1) * ancho
+        grupo = [(p, o) for p, o in pares
+                 if lo <= p < hi or (b == n_bins - 1 and p >= hi)]
+        if not grupo:
+            continue
+        pred = sum(p for p, _ in grupo) / len(grupo)
+        obs = sum(o for _, o in grupo) / len(grupo)
+        flag = ""
+        if len(grupo) >= 5:
+            if pred - obs > 0.10:
+                flag = "  <- SOBRECONFIA"
+            elif obs - pred > 0.10:
+                flag = "  <- subconfia"
+        print(f"  [{lo:.1f}-{hi:.1f})  {pred*100:6.1f}%{obs*100:6.1f}%{len(grupo):>5}{flag}")
+    print(f"  (n={len(pares)} probs de {len(hechos)} partidos; <~30 por bin = ruidoso.)")
 
 
 def consolidar(archivos: list[str], salida: str = "predicciones_consolidado.csv") -> None:
@@ -241,21 +395,23 @@ def consolidar(archivos: list[str], salida: str = "predicciones_consolidado.csv"
 
 def main() -> None:
     if len(sys.argv) < 2:
-        print("Uso: python -m src.validacion [registrar <id> | actualizar | reporte | "
-              "consolidar [logs...]]")
+        print("Uso: python -m src.validacion [registrar <id> | actualizar | cierres | "
+              "reporte | consolidar [logs...]]")
         return
     cmd = sys.argv[1]
     if cmd == "registrar" and len(sys.argv) >= 3:
         registrar(int(sys.argv[2]))
     elif cmd == "actualizar":
         actualizar_resultados()
+    elif cmd == "cierres":
+        capturar_cierres()
     elif cmd == "reporte":
         reporte()
     elif cmd == "consolidar":
         consolidar(sys.argv[2:] or [CANONICO, DEV])
     else:
-        print("Comando no reconocido. Uso: registrar <id> | actualizar | reporte | "
-              "consolidar [logs...]")
+        print("Comando no reconocido. Uso: registrar <id> | actualizar | cierres | "
+              "reporte | consolidar [logs...]")
 
 
 if __name__ == "__main__":

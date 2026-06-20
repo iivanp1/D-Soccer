@@ -212,11 +212,16 @@ def _codigo_nacion(nombre_api: str) -> str | None:
     return PAIS_API_A_CODIGO.get(n)
 
 
-def correr_partido_auto(fixture_id: int, n_sims: int = 10000) -> None:
+def correr_partido_auto(fixture_id: int, n_sims: int = 10000,
+                        anclar: bool = True, ancla: tuple[float, float] | None = None) -> None:
     """Pipeline 100% automatico: baja fixture + arbitro + alineaciones de API-Football,
     empareja los nombres con el dataset y se lo pasa al motor. Sin tipear nada.
 
     Si las alineaciones aun no estan (faltan >1h), cae al XI por calidad (seleccion_probable).
+
+    Ancla de Pinnacle: si anclar=True (default) y no se pasa una 'ancla' precomputada,
+    baja las cuotas sharp y deduce el lambda implicito del mercado para interpolar los
+    goles del modelo (ver src/valor.py). Si Pinnacle no cotiza el partido -> modelo puro.
     """
     from src.mundial_engine import correr
 
@@ -252,13 +257,30 @@ def correr_partido_auto(fixture_id: int, n_sims: int = 10000) -> None:
     else:
         print("  (alineaciones aun no disponibles -> uso XI por calidad)")
 
+    # 2b. Ancla de Pinnacle: deduce el lambda implicito del mercado (si no vino precomputada).
+    # Guardamos el mercado bajado para que el caller (validacion.registrar) lo REUSE sin
+    # volver a pegarle a /odds (ahorra cuota; plan gratis = 100 req/dia).
+    mercado_ancla = None
+    if ancla is None and anclar:
+        try:
+            from src.valor import cuotas_mercado, lambda_pinnacle
+            mercado_ancla = cuotas_mercado(fixture_id)
+            ancla = lambda_pinnacle(mercado_ancla)
+        except Exception as e:
+            logger.warning("ancla Pinnacle no disponible para %s: %s", fixture_id, e)
+            ancla = None
+    if ancla:
+        print(f"  Ancla Pinnacle: lam {ancla[0]:.2f}-{ancla[1]:.2f}")
+    elif anclar:
+        print("  (Pinnacle no cotiza este fixture -> sin ancla, modelo puro)")
+
     # 3. Al motor (correr completa con sombra los que falten)
     print()
-    res = correr(cod_l, cod_v, xi_l, xi_v, arbitro, n_sims)
+    res = correr(cod_l, cod_v, xi_l, xi_v, arbitro, n_sims, ancla_pinnacle=ancla)
     return {
         "fixture_id": fixture_id, "fecha": f["fixture"]["date"],
         "local": nom_l, "visitante": nom_v, "cod_l": cod_l, "cod_v": cod_v,
-        "arbitro": arbitro, "res": res,
+        "arbitro": arbitro, "res": res, "cuotas": mercado_ancla,
     }
 
 

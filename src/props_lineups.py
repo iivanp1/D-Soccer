@@ -1,6 +1,6 @@
 """State machine de alineaciones para Player Props.
 
-Gestiona el polling de lineups ANTES de la ventana de registro (60-120 min previos
+Gestiona el polling de lineups ANTES de la ventana de registro (20-90 min previos
 al KO) y los cachea en disco para que el resto del pipeline los reutilice sin llamadas
 a la API adicionales.
 
@@ -11,8 +11,8 @@ Estados por fixture:
   PROPS_SENT -> alerta de props ya enviada (no volver a mandar)
   ERROR      -> fallo 3+ veces seguidas -> abandonamos polling
 
-Budget de API: maximo 3 intentos por fixture (1 call/intento). Una vez CONFIRMED,
-cero llamadas adicionales: el resto del pipeline lee del disco.
+Budget de API: maximo MAX_INTENTOS intentos por fixture (1 call/intento). Una vez
+CONFIRMED, cero llamadas adicionales: el resto del pipeline lee del disco.
 
 Uso:
     from src.props_lineups import poll_y_cachear, get_lineups_confirmados
@@ -29,7 +29,11 @@ from src import config
 from src.fixtures import _codigo_nacion, alineaciones, armar_xi
 
 CACHE = config.RAIZ / "data" / "raw" / "api_cache"
-MAX_INTENTOS = 3  # max 3 API calls por fixture antes de marcar ERROR
+# Max API calls por fixture antes de marcar ERROR. Con la ventana de polling acotada a
+# 20-90 min (autorun.PROPS_MAX_ANTES) y cron cada ~15 min, hacen falta ~5-6 intentos para
+# cubrir toda la franja en que la API publica el XI. Con 3-4 partidos/dia son <30 calls/dia,
+# muy por debajo del limite del plan gratis (100/dia).
+MAX_INTENTOS = 6
 
 logger = logging.getLogger("dsoccer.props_lineups")
 
@@ -114,18 +118,25 @@ def poll_y_cachear(fixture_id: int, nom_l: str, nom_v: str,
                     fixture_id, est["poll_count"], MAX_INTENTOS)
         return "pending"
 
-    # Lineups disponibles: mapear nombres API -> FBref via armar_xi
+    # alineaciones() ya devuelve {nombre_equipo: [nombres_jugadores]} (no la respuesta
+    # cruda de la API). Mapeamos cada equipo a su codigo y armamos el XI con armar_xi.
     dfj = pd.read_csv(config.DATA_PROC / "jugadores.csv")
     xi_l, xi_v = [], []
-    for equipo_data in lineups:
-        nom_api = equipo_data.get("team", {}).get("name", "")
+    for nom_api, nombres in lineups.items():
         cod = _codigo_nacion(nom_api)
-        nombres = [p["player"]["name"] for p in equipo_data.get("startXI", [])]
         r = armar_xi(nombres, cod or "", dfj)
         if cod == cod_l:
             xi_l = r["xi_real"]
         elif cod == cod_v:
             xi_v = r["xi_real"]
+
+    # Si la API aun no publico el XI de AMBOS equipos, seguimos en pending y reintentamos.
+    if not xi_l or not xi_v:
+        est["status"] = "pending"
+        _set_estado(fixture_id, est)
+        logger.info("props fid=%d: XI incompleto (%d local, %d visit) -> pending",
+                    fixture_id, len(xi_l), len(xi_v))
+        return "pending"
 
     est["xi_l"] = xi_l
     est["xi_v"] = xi_v
