@@ -76,11 +76,12 @@ def _titulares(con, match_id: int, equipo: str) -> list[str]:
 def _muestra(con, dfj: pd.DataFrame, solo_2024: bool) -> tuple[list[dict], dict]:
     seasons = ("2024",) if solo_2024 else SEASONS_SB
     placeholders = ",".join("?" * len(seasons))
-    q = (f"SELECT match_id, equipo_local, equipo_visitante, resultado, season "
+    q = (f"SELECT match_id, equipo_local, equipo_visitante, resultado, "
+         f"goles_local, goles_visitante, season "
          f"FROM partidos WHERE season IN ({placeholders})")
     muestra, sin_mapeo = [], {}
     reales = 0
-    for mid, local, visit, real, season in con.execute(q, seasons):
+    for mid, local, visit, real, gl, gv, season in con.execute(q, seasons):
         if real not in ("H", "D", "A"):
             continue
         cl, cv = _cod(local), _cod(visit)
@@ -92,7 +93,8 @@ def _muestra(con, dfj: pd.DataFrame, solo_2024: bool) -> tuple[list[dict], dict]
         xi_l = armar_xi(_titulares(con, mid, local), cl, dfj)["xi_real"]
         xi_v = armar_xi(_titulares(con, mid, visit), cv, dfj)["xi_real"]
         reales += len(xi_l) + len(xi_v)
-        muestra.append({"cl": cl, "cv": cv, "xi_l": xi_l, "xi_v": xi_v, "real": real})
+        muestra.append({"cl": cl, "cv": cv, "xi_l": xi_l, "xi_v": xi_v, "real": real,
+                        "gl": gl, "gv": gv})
     meta = {"sin_mapeo": sin_mapeo,
             "xi_real_prom": reales / (2 * len(muestra)) if muestra else 0}
     return muestra, meta
@@ -167,8 +169,105 @@ def tunear(solo_2024: bool = False) -> None:
     print(f"\n  (n={len(muestra)}: muestra seria. AFCON23 tiene fuga LEVE; --solo-2024 = limpio.)")
 
 
+BENCH_1X2 = (0.40, 0.27, 0.33)  # benchmark naive (mismo que validacion.py)
+
+
+def _calibracion(pares: list[tuple[float, int]], n_bins: int = 5) -> None:
+    """Mini tabla de calibracion: bin de prob predicha vs frecuencia observada (y conteo)."""
+    ancho = 1.0 / n_bins
+    print(f"    {'bin':<11}{'pred':>7}{'obs':>7}{'n':>6}")
+    for b in range(n_bins):
+        lo, hi = b * ancho, (b + 1) * ancho
+        gr = [(p, y) for p, y in pares if lo <= p < hi or (b == n_bins - 1 and p >= hi)]
+        if not gr:
+            continue
+        pred = sum(p for p, _ in gr) / len(gr)
+        obs = sum(y for _, y in gr) / len(gr)
+        flag = ""
+        if len(gr) >= 8 and pred - obs > 0.10:
+            flag = "  <- sobreconfia"
+        elif len(gr) >= 8 and obs - pred > 0.10:
+            flag = "  <- subconfia"
+        print(f"    [{lo:.1f}-{hi:.1f})  {pred*100:6.1f}%{obs*100:6.1f}%{len(gr):>6}{flag}")
+
+
+def escanear_mercados(solo_2024: bool = False) -> None:
+    """EDGE RETROSPECTIVO por mercado sobre StatsBomb (sin cuotas): mide si la prediccion de
+    cada mercado tiene RESOLUCION (discrimina mejor que la base rate) y CALIBRACION -- la
+    precondicion de que pueda existir edge. Usa w=W_ACTUAL (produccion). 1X2 y Over/Under 2.5.
+    No mide edge vs MERCADO (eso es forward, con CLV); mide si el mercado es predecible."""
+    if not DB.exists():
+        print(f"No existe {DB.name}. Corre: python -m src.ingesta_historica --desde 2023")
+        return
+    jm, dfj = _modelo()
+    con = sqlite3.connect(DB)
+    muestra, meta = _muestra(con, dfj, solo_2024)
+    con.close()
+    muestra = [m for m in muestra if m["gl"] is not None and m["gv"] is not None]
+    if not muestra:
+        print("Muestra vacia (¿la DB no tiene torneos 2023/2024?).")
+        return
+
+    # Usa el w de PRODUCCION (default del modelo, hoy 0.85), NO el W_ACTUAL viejo de tunear_w.
+    w = jm.w_elo
+    # precompute lado jugadores (w=0) y lado Elo (w=1) una vez; despues mezcla lineal.
+    jm.w_elo = 0.0
+    pl = [jm.predecir_partido_mundial(m["xi_l"], m["xi_v"], m["cl"], m["cv"]) for m in muestra]
+    jm.w_elo = 1.0
+    pe = [jm.predecir_partido_mundial(m["xi_l"], m["xi_v"], m["cl"], m["cv"]) for m in muestra]
+    g = np.arange(11)
+
+    p1x2, real1x2, pover, realover = [], [], [], []
+    for a, b, m in zip(pl, pe, muestra):
+        lam_l = w * b["goles_esp_local"] + (1 - w) * a["goles_esp_local"]
+        lam_v = w * b["goles_esp_visitante"] + (1 - w) * a["goles_esp_visitante"]
+        mat = np.outer(poisson.pmf(g, lam_l), poisson.pmf(g, lam_v))
+        mat /= mat.sum()
+        p1x2.append((float(np.tril(mat, -1).sum()), float(np.trace(mat)), float(np.triu(mat, 1).sum())))
+        real1x2.append(m["real"])
+        p_under = float(sum(mat[i, j] for i in range(11) for j in range(11) if i + j <= 2))
+        pover.append(1.0 - p_under)
+        realover.append(1 if (m["gl"] + m["gv"]) >= 3 else 0)
+
+    n = len(muestra)
+    print("=" * 64)
+    print(f"  ESCANEO DE MERCADOS (retrospectivo, StatsBomb)  |  n={n}, w={w}")
+    print(f"  XI real cruzado: {meta['xi_real_prom']:.1f}/11 (resto -> sombra)")
+    print("=" * 64)
+
+    # --- 1X2 ---
+    bs_mod = float(np.mean([brier_score(*p, r) for p, r in zip(p1x2, real1x2)]))
+    bs_ben = float(np.mean([brier_score(*BENCH_1X2, r) for r in real1x2]))
+    mejora = (1 - bs_mod / bs_ben) * 100 if bs_ben > 0 else 0
+    print(f"\n  [1X2]  Brier modelo {bs_mod:.4f}  vs benchmark naive {bs_ben:.4f}  "
+          f"({'RESOLUCION +%.1f%%' % mejora if bs_mod < bs_ben else 'sin mejora'})")
+    print("  (OJO: vs benchmark, NO vs mercado. El Elo ya ~= mercado en 1X2; aca solo se ve")
+    print("   que el modelo discrimina mejor que las frecuencias base.)")
+    idx = {"H": 0, "D": 1, "A": 2}
+    _calibracion([(p[j], int(idx[r] == j)) for p, r in zip(p1x2, real1x2) for j in range(3)])
+
+    # --- Over/Under 2.5 goles ---
+    base = float(np.mean(realover))
+    bs_mod_ou = float(np.mean([(p - y) ** 2 for p, y in zip(pover, realover)]))
+    bs_base = float(np.mean([(base - y) ** 2 for y in realover]))
+    skill = (1 - bs_mod_ou / bs_base) * 100 if bs_base > 0 else 0
+    print(f"\n  [Over/Under 2.5 goles]  base rate over: {base*100:.0f}%  (over real en la muestra)")
+    print(f"     Brier modelo {bs_mod_ou:.4f}  vs base-rate constante {bs_base:.4f}  -> skill {skill:+.1f}%")
+    if bs_mod_ou < bs_base:
+        print("     -> el modelo DISCRIMINA over/under: hay resolucion -> vale testear forward vs sharp.")
+    else:
+        print("     -> el modelo NO discrimina over/under: SIN resolucion -> no apostar totales.")
+    _calibracion(list(zip(pover, realover)))
+    print(f"\n  (Binary Brier de O/U NO es comparable al 3-way de 1X2: comparar modelo vs su baseline.)")
+    print(f"  (n={n}: {'muestra seria' if n >= 80 else 'muestra chica, leer con pinzas'}. "
+          f"Edge vs MERCADO solo lo confirma el CLV forward.)")
+
+
 def main() -> None:
-    tunear(solo_2024="--solo-2024" in sys.argv)
+    if "--mercados" in sys.argv:
+        escanear_mercados(solo_2024="--solo-2024" in sys.argv)
+    else:
+        tunear(solo_2024="--solo-2024" in sys.argv)
 
 
 if __name__ == "__main__":
