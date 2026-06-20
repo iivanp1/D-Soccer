@@ -174,6 +174,14 @@ data/
 - El sistema predice 1X2 + goles + faltas + tarjetas + **Player Props (tiros/xG/SOT)** por jugador.
 - Avisa por Telegram ~30-40min antes (reporte partido) y ~70-90min antes (props con XI confirmado).
 - Edge validado: faltas MAE +10.7% · props Brier +13.9% · 1X2 ≈ mercado (Elo backbone).
+
+> ⚠️ **Honestidad antes de apostar** (ver CONTEXTO.md §5): ganarle al benchmark ≠ ganarle al mercado
+> ≠ ser rentable. El Motor de **selecciones** es un PRIOR sin validar (el edge en 1X2 es hipótesis;
+> lo gana el Elo). Mercados de **Over/Under totales NO tienen edge** (validado impredecible). Para medir
+> edge de verdad se agregó instrumentación (commit `bc5a1a5`): **CLV** (proxy más rápido y de menor
+> varianza, `validacion.py`), **reliability diagram** (calibración, expone sobreconfianza), y **detector
+> vs Pinnacle de-marginado** (separa edge-modelo de line-shopping; ya no marca valor por el outlier que
+> más paga). Regla: el detector da hipótesis, **el CLV las confirma o las mata.**
 - [x] **12. Compresión dinámica por brecha de calidad** (corrige la sub-diferenciación en
       partidos asimétricos): la compresión `c` deja de ser fija; crece de forma no-lineal con
       la brecha de fuerza (`c = c_base + GAP_AMP·gap^2`, cap `C_MAX`). Parejo → c_base (ARG-FRA
