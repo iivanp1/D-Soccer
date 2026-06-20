@@ -147,6 +147,15 @@ def calcular_props_equipo(xi_names: list[str], nacion: str,
         return {}
 
     sum_tiros = sum(f["tiros_90"] for f in filas)
+    # Si el XI mapea menos de 11 (selecciones con poca cobertura FBref, ej. Australia 3/11),
+    # los jugadores NO mapeados igual consumen volumen de tiros. Sin esto, los pocos mapeados
+    # absorben todo -> usage al tope (0.35) -> lambda inflada (defensores con lambda ~4). Padear
+    # el denominador con los faltantes al ritmo sombra de un mediocampista reparte realista; los
+    # pocos mapeados caen a usage sensato (y si quedan bajo el umbral, no se reportan, que es lo
+    # honesto: no tenemos data para nombrar al disparador de ese equipo).
+    shadow = meta.get("shadow_tiros_90", {"FW": 2.46, "MF": 1.33, "DF": 0.5, "GK": 0.1})
+    n_falt = max(0, 11 - len(filas))
+    sum_tiros += n_falt * shadow.get("MF", 1.33)
     if sum_tiros <= 0:
         sum_tiros = 1.0
 
