@@ -116,28 +116,47 @@ def cuotas_mercado(fixture_id: int) -> dict | None:
 #  goles). Se invierte resolviendo el problema inverso de Poisson por minimos
 #  cuadrados (no hay forma cerrada).
 # =========================================================================== #
-def invertir_pinnacle_1x2(sharp_1x2: list[float] | None,
-                          max_goals: int = 10) -> tuple[float, float] | None:
+def _matriz_kn(lam_h: float, lam_a: float, frac3: float, max_goals: int = 10) -> np.ndarray:
+    """Matriz de marcadores bajo bivariate Poisson Karlis-Ntzoufras (X=W1+W3, Y=W2+W3).
+
+    lambda3 = frac3 * min(lam_h, lam_a); las MARGINALES se preservan. frac3=0 -> Poisson
+    independiente clasico. Es el MISMO modelo generativo que simula el Montecarlo (frac3),
+    asi inversion y simulacion son consistentes (sin doble correccion).
+    """
+    g = np.arange(max_goals + 1)
+    l3 = frac3 * min(lam_h, lam_a)
+    l1, l2 = max(lam_h - l3, 1e-9), max(lam_a - l3, 1e-9)
+    p1, p2, p3 = poisson.pmf(g, l1), poisson.pmf(g, l2), poisson.pmf(g, l3)
+    m = np.zeros((max_goals + 1, max_goals + 1))
+    for k in range(max_goals + 1):
+        if p3[k] < 1e-12:
+            break
+        m[k:, k:] += p3[k] * np.outer(p1[:max_goals + 1 - k], p2[:max_goals + 1 - k])
+    return m / m.sum()
+
+
+def invertir_pinnacle_1x2(sharp_1x2: list[float] | None, max_goals: int = 10,
+                          frac3: float | None = None) -> tuple[float, float] | None:
     """Deduce (lam_local, lam_visitante) implicitos del 1X2 de-marginado de Pinnacle.
 
-    Minimiza el MSE entre el 1X2 de un Poisson bivariado (goles independientes) y las
-    tres probabilidades de Pinnacle. Devuelve None si el input es invalido.
+    Minimiza el MSE entre el 1X2 del modelo generativo (bivariate Poisson KN, el mismo que
+    simula el motor) y las tres probabilidades de Pinnacle. Devuelve None si el input es
+    invalido. frac3=None -> usa config.FRAC3_GOLES_COMUNES (produccion).
     """
     if not sharp_1x2 or len(sharp_1x2) != 3 or any(p is None for p in sharp_1x2):
         return None
     s = float(sum(sharp_1x2))
     if s <= 0:
         return None
+    if frac3 is None:
+        from src import config
+        frac3 = config.FRAC3_GOLES_COMUNES
     p_h, p_d, p_a = (p / s for p in sharp_1x2)  # re-normaliza por las dudas
-    goals = np.arange(max_goals + 1)
-
-    def _probs(log_lams: np.ndarray) -> tuple[float, float, float]:
-        lam_h, lam_a = np.exp(log_lams)
-        m = np.outer(poisson.pmf(goals, lam_h), poisson.pmf(goals, lam_a))
-        return float(np.tril(m, -1).sum()), float(np.trace(m)), float(np.triu(m, 1).sum())
 
     def _loss(log_lams: np.ndarray) -> float:
-        ph, pd_, pa = _probs(log_lams)
+        lam_h, lam_a = np.exp(log_lams)
+        m = _matriz_kn(lam_h, lam_a, frac3, max_goals)
+        ph, pd_, pa = float(np.tril(m, -1).sum()), float(np.trace(m)), float(np.triu(m, 1).sum())
         return (ph - p_h) ** 2 + (pd_ - p_d) ** 2 + (pa - p_a) ** 2
 
     r = minimize(_loss, np.log([1.3, 1.1]), method="Nelder-Mead",
@@ -151,6 +170,8 @@ def invertir_pinnacle_ou(p_over: float | None, linea: float = 2.5) -> float | No
     """Deduce el lambda_TOTAL implicito de la prob Over de-marginada de Pinnacle.
 
     Under = (total de goles <= floor(linea)). Resuelve 1 - CDF_Poisson(k; lam) = p_over.
+    (Se usa solo como semilla del re-escalado KN de lambda_pinnacle; el ajuste final del
+    total se hace bajo el modelo KN completo para consistencia con la simulacion.)
     """
     if p_over is None or not (0.0 < p_over < 1.0):
         return None
@@ -165,25 +186,37 @@ def invertir_pinnacle_ou(p_over: float | None, linea: float = 2.5) -> float | No
     return float(np.clip(r.x[0], 2 * _LAM_MIN, 2 * _LAM_MAX))
 
 
-def lambda_pinnacle(mercado: dict | None) -> tuple[float, float] | None:
+def lambda_pinnacle(mercado: dict | None, frac3: float | None = None) -> tuple[float, float] | None:
     """De la salida de cuotas_mercado() deduce el ancla (lam_local, lam_visit) de Pinnacle.
 
-    Usa el 1X2 para el REPARTO local/visita; si hay O/U, re-escala el total al lambda_total
-    implicito del Over (senal mas robusta para la magnitud de goles). None si no hay 1X2 sharp.
+    El 1X2 da el REPARTO local/visita; si hay O/U, se re-escala el total para que el modelo
+    KN reproduzca la prob Over del mercado (busqueda 1-D bajo el MISMO modelo generativo que
+    simula el motor -> sin doble correccion). None si no hay 1X2 sharp.
     """
     if not mercado:
         return None
-    lam = invertir_pinnacle_1x2(mercado.get("sharp_1x2"))
+    if frac3 is None:
+        from src import config
+        frac3 = config.FRAC3_GOLES_COMUNES
+    lam = invertir_pinnacle_1x2(mercado.get("sharp_1x2"), frac3=frac3)
     if lam is None:
         return None
     lam_h, lam_a = lam
     sou = mercado.get("sharp_ou")
-    if sou:
-        lam_tot_ou = invertir_pinnacle_ou(sou[0])  # sou[0] = p_over de-marginada
-        tot = lam_h + lam_a
-        if lam_tot_ou and tot > 1e-6:
-            escala = lam_tot_ou / tot
-            lam_h, lam_a = lam_h * escala, lam_a * escala
+    if sou and sou[0] and 0.0 < sou[0] < 1.0:
+        p_over = sou[0]
+
+        def _loss_esc(le: np.ndarray) -> float:
+            s = float(np.exp(le[0]))
+            m = _matriz_kn(lam_h * s, lam_a * s, frac3)
+            p_under = float(sum(m[i, j] for i in range(3) for j in range(3) if i + j <= 2))
+            return (1.0 - p_under - p_over) ** 2
+
+        r = minimize(_loss_esc, [0.0], method="Nelder-Mead",
+                     options={"xatol": 1e-6, "fatol": 1e-14, "maxiter": 500})
+        esc = float(np.exp(r.x[0]))
+        if 0.5 < esc < 2.0:  # sanity: si el O/U pide algo absurdo, quedarse con el 1X2
+            lam_h, lam_a = lam_h * esc, lam_a * esc
     return round(lam_h, 3), round(lam_a, 3)
 
 
@@ -269,27 +302,30 @@ def analizar_valor(fixture_id: int) -> None:
 def _self_test_ancla() -> None:
     """Prueba OFFLINE (sin API) la ingenieria inversa: round-trip lambda -> 1X2 -> lambda.
 
-    Genera el 1X2/OU de Poisson de un lambda CONOCIDO y verifica que la inversion lo
-    recupere. Si el error es chico, la matematica del ancla es correcta.
+    Genera el 1X2/OU del modelo KN (frac3 de produccion) con un lambda CONOCIDO y verifica
+    que la inversion lo recupere. Si el error es chico, la matematica del ancla es correcta
+    Y la inversion es consistente con el modelo que simula el motor.
     """
-    print("=== SELF-TEST ancla Pinnacle (round-trip lambda) ===\n")
-    goals = np.arange(11)
+    from src import config
+    frac3 = config.FRAC3_GOLES_COMUNES
+    print(f"=== SELF-TEST ancla Pinnacle (round-trip lambda, KN frac3={frac3}) ===\n")
     casos = [(1.80, 1.00), (1.35, 1.35), (2.40, 0.70), (1.10, 1.60)]
     ok = True
     for lam_h, lam_a in casos:
-        m = np.outer(poisson.pmf(goals, lam_h), poisson.pmf(goals, lam_a))
+        m = _matriz_kn(lam_h, lam_a, frac3)
         p_h, p_d, p_a = float(np.tril(m, -1).sum()), float(np.trace(m)), float(np.triu(m, 1).sum())
-        rec = invertir_pinnacle_1x2([p_h, p_d, p_a])
+        rec = invertir_pinnacle_1x2([p_h, p_d, p_a], frac3=frac3)
         err = max(abs(rec[0] - lam_h), abs(rec[1] - lam_a))
-        # Tambien probamos la magnitud via O/U (lambda_total).
-        p_over = 1.0 - float(poisson.cdf(2, lam_h + lam_a))
-        lam_tot = invertir_pinnacle_ou(p_over)
-        err_tot = abs(lam_tot - (lam_h + lam_a))
-        flag = "OK " if (err < 0.02 and err_tot < 0.02) else "XX "
+        # Round-trip completo via lambda_pinnacle (1X2 + OU sintetico del mismo modelo).
+        p_under = float(sum(m[i, j] for i in range(3) for j in range(3) if i + j <= 2))
+        merc = {"sharp_1x2": [p_h, p_d, p_a], "sharp_ou": [1 - p_under, p_under]}
+        lp = lambda_pinnacle(merc, frac3=frac3)
+        err_lp = max(abs(lp[0] - lam_h), abs(lp[1] - lam_a))
+        flag = "OK " if (err < 0.02 and err_lp < 0.03) else "XX "
         ok = ok and flag == "OK "
         print(f"  {flag} real ({lam_h:.2f},{lam_a:.2f})  1X2[{p_h:.3f}/{p_d:.3f}/{p_a:.3f}]"
-              f"  -> recuperado ({rec[0]:.3f},{rec[1]:.3f})  err {err:.4f}"
-              f"  | OU lam_tot {lam_tot:.3f} err {err_tot:.4f}")
+              f"  -> 1x2 ({rec[0]:.3f},{rec[1]:.3f}) err {err:.4f}"
+              f"  | +OU ({lp[0]:.3f},{lp[1]:.3f}) err {err_lp:.4f}")
     # Mezcla (interpolacion del motor) a modo ilustrativo.
     alpha = 0.35
     lam_mod, lam_pin = (1.20, 1.20), (1.85, 0.95)

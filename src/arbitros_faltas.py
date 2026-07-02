@@ -107,15 +107,16 @@ def cargar(path: Path = SALIDA) -> dict:
         return {}
 
 
-def factor_faltas(arbitro: str | None, datos: dict) -> tuple[float, str]:
+def factor_faltas(arbitro: str | None, datos: dict, escala: float | None = None) -> tuple[float, str]:
     """Retorna (factor_final, descripcion) para el arbitro dado.
 
-    factor_final ya incluye ESCALA_FALTAS_SELECCION (1.21). Listo para pasar
-    directamente a disciplina_seleccion(factor_faltas=...).
-    Si el arbitro es desconocido o datos esta vacio, devuelve (1.21, descripcion)
+    factor_final ya incluye la escala club->internacional (default ESCALA_FALTAS_SELECCION;
+    mundial_engine pasa ESCALA_FALTAS_WC, calibrada al nivel real de un Mundial). Listo para
+    pasar directamente a disciplina_seleccion(factor_faltas=...).
+    Si el arbitro es desconocido o datos esta vacio, devuelve (escala, descripcion)
     -> comportamiento identico al anterior.
     """
-    base = config.ESCALA_FALTAS_SELECCION
+    base = escala if escala is not None else config.ESCALA_FALTAS_SELECCION
     if not datos or not arbitro:
         return base, f"arbitro no especificado -> escala global ({base:.2f}x)"
 
