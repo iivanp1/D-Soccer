@@ -232,17 +232,34 @@ ALPHA_ANCLA_PINNACLE = 0.35
 # =========================================================================== #
 #  CORRECCIONES DE GOLES PARA SELECCIONES (Montecarlo)
 # =========================================================================== #
-# ZIP (Zero-Inflated Poisson): fraccion de partidos que se declaran "estructuralmente
-# defensivos" (marcador topado en <=1 gol). Aplasta la sobre-prediccion de Over 2.5 en
-# torneos de selecciones (base real ~42% vs ~50% del Poisson; skill -10.7% medido).
-# DATA-DRIVEN (validar_statsbomb --tune-priors, n=132 period-correct): 0.15 lleva el Over 2.5
-# del modelo a EXACTAMENTE 42% (= tasa real de la muestra). El joint Brier sigue bajando a 0.20
-# (+0.2%) pero ahi sobrepasa la calibracion (39%); se elige 0.15 (calibrado, sin overshoot).
-PI_ZIP_SELECCIONES = 0.15
+# RETIRADO (jul 2026): el ZIP hard-cap y el rho de Dixon-Coles calibraban los AGREGADOS
+# (over 42%, empates 34%) pero con la COMPOSICION invertida: metian la masa de empates en el
+# 0-0 (18.9% modelo vs 12.1% real, y 8-11% en Mundiales) cuando la realidad la pone en el 1-1
+# (17.4% real vs 10.5% modelo). Ademas el ZIP DOBLE-corregia en modo anclado (pisoteaba el
+# total que ya traia el mercado). Reemplazados por FRAC3 (bivariate Poisson) + GAMMA (abajo).
+# Los parametros pi_zip/rho siguen existiendo en montecarlo (default 0) para experimentar.
+PI_ZIP_SELECCIONES = 0.0
+RHO_DIXON_COLES = 0.0
 
-# Dixon-Coles rho: correccion de correlacion de los marcadores bajos. rho<0 infla los empates
-# cerrados (0-0, 1-1) y desinfla las victorias por la minima (1-0, 0-1). DATA-DRIVEN
-# (validar_statsbomb --tune-priors): -0.20 es el optimo del Brier conjunto (mas negativo que el
-# -0.10/-0.15 tipico de clubes, consistente con el futbol de selecciones, mas defensivo; -0.27
-# y -0.35 ya empeoran). Reduccion conjunta (pi=0.15, rho=-0.20) +4.11% vs baseline sin correccion.
-RHO_DIXON_COLES = -0.20
+# BIVARIATE POISSON (Karlis-Ntzoufras 2003): goles correlacionados via componente comun.
+#   X = W1 + W3, Y = W2 + W3, con lambda3 = FRAC3 * min(lam_l, lam_v)  (marginales intactas).
+# Es el modelo profesional estandar para el exceso de empates: sube la DIAGONAL (1-1, 2-2)
+# -no solo el 0-0 como el ZIP- y baja el over via la correlacion positiva. CALIBRACION:
+# el grid del Brier es PLANO (0.20-0.55 empatan dentro del ruido, n=132), asi que decide la
+# calibracion por-partido: 0.20 da 0-0 ~10%, 1-1 ~13%, empate ~30%, over ~44% (rangos reales:
+# WC22 10.9/7.8/23.4/47, muestra 2024 12.1/17.4/34.8/42) SIN inflar los lambda de la inversion
+# del ancla (frac3 alto obliga a lambdas absurdos para reproducir el empate del mercado, que
+# es internamente consistente con correlacion BAJA). El Factor Caos del Montecarlo ya agrega
+# ~+2pp de empates encima (el que pierde arriesga), parte de la correlacion real.
+FRAC3_GOLES_COMUNES = 0.20
+
+# Deflactor de goles del MODELO PURO (sin ancla de mercado) para selecciones: el bottom-up
+# genera ~2.85 goles/partido vs 2.69 real WC22 / ~2.45 torneos 2024. gamma=0.92 es el punto
+# medio multi-torneo (la muestra 2024 pedia 0.88 pero un Mundial es mas ofensivo que
+# Euro+AFCON). NO se aplica al lambda anclado (el mercado ya trae el total correcto).
+GAMMA_GOLES_SELECCIONES = 0.92
+
+# Escala de faltas especifica del MUNDIAL (WC 2022 real: 13.9 faltas/equipo sobre 64 partidos
+# vs 11.9 del modelo pre-escala -> 1.17). La global 1.21 quedo calibrada al mix de torneos
+# 2023-24 (AFCON/Copa America inflan; Euro baja). mundial_engine usa ESTA para el WC.
+ESCALA_FALTAS_WC = 1.17

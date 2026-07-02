@@ -101,9 +101,10 @@ def correr(nacion_local: str, nacion_visit: str,
 
     # --- 2. Arbitro: factor para FALTAS (StatsBomb intl, shrinkage bayesiano) ---
     #        + factor para TARJETAS (EstilosModel, datos de club -> siempre neutro para intl)
+    # Escala del MUNDIAL (1.17, WC22 real) en vez de la global 1.21 (mix con AFCON/Copa).
     from src.arbitros_faltas import cargar as _cargar_arb, factor_faltas as _get_factor_faltas
     _datos_arb = _cargar_arb()
-    f_faltas, msg_faltas = _get_factor_faltas(arbitro, _datos_arb)
+    f_faltas, msg_faltas = _get_factor_faltas(arbitro, _datos_arb, escala=config.ESCALA_FALTAS_WC)
 
     disc_l = jm.disciplina_seleccion(xi_l, nacion_local, factor_faltas=f_faltas)
     disc_v = jm.disciplina_seleccion(xi_v, nacion_visit, factor_faltas=f_faltas)
@@ -114,9 +115,14 @@ def correr(nacion_local: str, nacion_visit: str,
     tarj_l = disc_l["tarjetas"] * f_arb
     tarj_v = disc_v["tarjetas"] * f_arb
 
+    # --- Deflactor gamma del modelo puro: el bottom-up genera ~2.85 goles/partido vs
+    #     2.69 real (WC22) / ~2.45 (torneos 2024). Se aplica ANTES del blend con el ancla
+    #     para que ambos lambdas esten en niveles calibrados. ---
+    gl_modelo = pred["goles_esp_local"] * config.GAMMA_GOLES_SELECCIONES
+    gv_modelo = pred["goles_esp_visitante"] * config.GAMMA_GOLES_SELECCIONES
+
     # --- Ancla de Pinnacle: interpola los goles del modelo hacia el lambda del mercado ---
     #     lam_final = alpha * lam_pinnacle + (1 - alpha) * lam_modelo  (ver src/valor.py)
-    gl_modelo, gv_modelo = pred["goles_esp_local"], pred["goles_esp_visitante"]
     gl, gv = gl_modelo, gv_modelo
     msg_ancla = "sin ancla de mercado (modelo puro)"
     if ancla_pinnacle:
@@ -140,10 +146,12 @@ def correr(nacion_local: str, nacion_visit: str,
     )
 
     # --- 3. Montecarlo: 10.000 universos minuto a minuto ---
-    # ZIP (pi_zip) aplasta el Over 2.5; Dixon-Coles (rho) corrige los marcadores bajos.
+    # frac3 = bivariate Poisson (goles correlacionados): sube 1-1/2-2 y baja el over sin
+    # inflar el 0-0 (reemplaza al ZIP/rho retirados; config los deja en 0).
     sim = SimuladorMontecarlo()
     res = sim.simular_partido(parametros, n_simulaciones=n_sims,
-                              pi_zip=config.PI_ZIP_SELECCIONES, rho=config.RHO_DIXON_COLES)
+                              pi_zip=config.PI_ZIP_SELECCIONES, rho=config.RHO_DIXON_COLES,
+                              frac3=config.FRAC3_GOLES_COMUNES)
 
     # OPCION (c): si hubo ancla de mercado, computamos TAMBIEN el modelo PURO (sin ancla) y lo
     # adjuntamos como res["pure"]. validacion.registrar loguea ESE (CLV/Brier-vs-mercado deben
@@ -157,7 +165,9 @@ def correr(nacion_local: str, nacion_visit: str,
             corners_local=corners_l, corners_visitante=corners_v,
         )
         res["pure"] = sim.simular_partido(params_puro, n_simulaciones=n_sims,
-                                          pi_zip=config.PI_ZIP_SELECCIONES, rho=config.RHO_DIXON_COLES)
+                                          pi_zip=config.PI_ZIP_SELECCIONES,
+                                          rho=config.RHO_DIXON_COLES,
+                                          frac3=config.FRAC3_GOLES_COMUNES)
 
     res["msg_faltas_arbitro"] = msg_faltas  # para Telegram y log
     res["msg_ancla"] = msg_ancla            # para Telegram, valor.py y log
@@ -212,6 +222,15 @@ def _reporte(loc, vis, xi_l, xi_v, pred, params, msg_arb, msg_cal, msg_faltas, m
     for nombre, p in filas:
         print(f"     {nombre:<14} over {p*100:5.1f}%  (cuota {_formato_cuota(p)}) | "
               f"under {(1-p)*100:5.1f}%  (cuota {_formato_cuota(1-p)})")
+
+    print("\n  -- Handicap asiatico y especiales (para parleys) ---------")
+    print(f"     Ambos anotan (BTTS): si {res['btts']*100:5.1f}% (cuota {_formato_cuota(res['btts'])}) | "
+          f"no {(1-res['btts'])*100:5.1f}% (cuota {_formato_cuota(1-res['btts'])})")
+    for linea, p in res["ah_local"].items():
+        print(f"     {loc} {linea:<6} cubre {p*100:5.1f}%  (cuota {_formato_cuota(p)}) | "
+              f"{vis} {(-float(linea)):+.1f} {(1-p)*100:5.1f}% (cuota {_formato_cuota(1-p)})")
+    print(f"     Anota {loc}: {res['over_0_5_local']*100:.1f}% | 2+ goles {loc}: {res['over_1_5_local']*100:.1f}% | "
+          f"Anota {vis}: {res['over_0_5_visit']*100:.1f}% | 2+ {vis}: {res['over_1_5_visit']*100:.1f}%")
     print(f"\n     Prob. de alguna roja: {res['prob_alguna_roja']*100:.1f}%   "
           f"Goles esp.: {res['goles_esp'][0]:.2f}-{res['goles_esp'][1]:.2f}")
     print("=" * 60)

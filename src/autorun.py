@@ -326,7 +326,20 @@ def probar_props(fixture_id: int, solo_yo: bool = True) -> None:
         print("[probar-props] sin alineacion confirmada -> XI PROBABLE por calidad")
     print(f"[probar-props] XI: {nom_l} {len(xi_l)}/11 | {nom_v} {len(xi_v)}/11")
 
-    res_engine = correr(cod_l, cod_v, xi_l, xi_v, f["fixture"].get("referee"), n_sims=5000)
+    # Ancla de Pinnacle: bajamos las cuotas UNA vez, deducimos el lambda del mercado y lo pasamos
+    # al motor (ZIP+rho ya van automaticos via config). 'cuotas' se reusa para el EV (sin re-fetch).
+    cuotas = ancla = None
+    try:
+        from src.valor import cuotas_mercado, lambda_pinnacle
+        cuotas = cuotas_mercado(fixture_id)
+        ancla = lambda_pinnacle(cuotas)
+    except Exception as e:
+        print(f"[probar-props] sin cuotas/ancla ({type(e).__name__}) -> reporte sin EV ni ancla")
+    if ancla:
+        print(f"[probar-props] ancla Pinnacle: lam {ancla[0]:.2f}-{ancla[1]:.2f}")
+
+    res_engine = correr(cod_l, cod_v, xi_l, xi_v, f["fixture"].get("referee"),
+                        n_sims=5000, ancla_pinnacle=ancla)
     info_props = {
         "xi_l": xi_l, "xi_v": xi_v, "cod_l": cod_l, "cod_v": cod_v,
         "local": nom_l, "visitante": nom_v,
@@ -339,12 +352,6 @@ def probar_props(fixture_id: int, solo_yo: bool = True) -> None:
     destino = f"solo a tu chat {solo}" if solo_yo else "a TODOS los suscriptores"
 
     # 1) Reporte general (faltas/1X2/EV vs mercado) -- igual que registrar_proximos.
-    try:
-        from src.valor import cuotas_mercado
-        cuotas = cuotas_mercado(fixture_id)
-    except Exception as e:
-        cuotas = None
-        print(f"[probar-props] sin cuotas de mercado ({type(e).__name__}) -> reporte sin EV")
     ok_g = enviar_reporte_partido(info_props, cuotas, solo_chat=solo)
     print(f"[probar-props] reporte general: {'ENVIADO' if ok_g else 'fallo'} "
           f"(EV vs mercado: {'si' if cuotas else 'sin cuotas'})")

@@ -68,15 +68,27 @@ class SimuladorMontecarlo:
     semilla: int | None = 42
 
     def simular_partido(self, parametros: dict, n_simulaciones: int = 10000,
-                        pi_zip: float = 0.0, rho: float = 0.0) -> dict:
-        """Simula el partido. pi_zip>0 inyecta partidos defensivos (ZIP, corrige Over 2.5 en
-        selecciones); rho!=0 aplica la correccion Dixon-Coles a los marcadores bajos en la
-        consolidacion. Ambos default 0.0 -> comportamiento original (clubes/Dixon-Coles)."""
+                        pi_zip: float = 0.0, rho: float = 0.0, frac3: float = 0.0) -> dict:
+        """Simula el partido.
+
+        frac3>0 activa el BIVARIATE POISSON (Karlis-Ntzoufras): una fraccion de los goles es
+        COMUN a ambos equipos (lambda3 = frac3*min(lam_l, lam_v); las marginales no cambian).
+        Modela el "ida y vuelta" real: sube los empates con goles (1-1, 2-2) y baja el over,
+        que es el patron empirico de selecciones que el Poisson independiente no captura.
+        pi_zip (ZIP hard-cap) y rho (Dixon-Coles) quedan disponibles para experimentar pero
+        estan RETIRADOS de produccion (distorsionaban el 0-0). Defaults 0.0 = clubes intactos.
+        """
         rng = np.random.default_rng(self.semilla)
         N = n_simulaciones
 
         # Tasas por minuto (tasa_partido / 90). Cap a <1 por seguridad.
-        gl_min, ga_min = (np.array(parametros["goles"]) / MINUTOS)
+        # Con frac3, el componente comun lambda3 se RESTA de las tasas individuales para
+        # preservar las marginales: E[goles_l] = (lam_l - l3) + l3 = lam_l.
+        gl_par, ga_par = parametros["goles"]
+        l3 = frac3 * min(gl_par, ga_par) if frac3 > 0 else 0.0
+        gl_min = max(gl_par - l3, 1e-9) / MINUTOS
+        ga_min = max(ga_par - l3, 1e-9) / MINUTOS
+        l3_min = l3 / MINUTOS
         tl_min, ta_min = (np.array(parametros["tarjetas"]) / MINUTOS)
         fl_min, fa_min = (np.array(parametros["faltas"]) / MINUTOS)
         cl_min, ca_min = (np.array(parametros["corners"]) / MINUTOS)
@@ -112,6 +124,14 @@ class SimuladorMontecarlo:
             # --- Goles: un "dado" por universo ---
             goles_l += (rng.random(N) < np.clip(tasa_gol_l, 0, 1)).astype(np.int16)
             goles_v += (rng.random(N) < np.clip(tasa_gol_v, 0, 1)).astype(np.int16)
+
+            # --- Componente comun (bivariate Poisson): "minuto de ida y vuelta" ---
+            # Con prob l3_min ambos equipos anotan: genera la correlacion positiva que
+            # concentra masa en la diagonal (1-1, 2-2) sin tocar las marginales.
+            if l3_min > 0:
+                ev3 = rng.random(N) < l3_min
+                goles_l += ev3.astype(np.int16)
+                goles_v += ev3.astype(np.int16)
 
             # --- Tarjetas: si ocurre, decidimos si es roja (expulsion) ---
             ev_card_l = rng.random(N) < tl_min
@@ -199,6 +219,12 @@ class SimuladorMontecarlo:
         def over(arr, linea):  # mercados no-goles (faltas/tarjetas/corners): sin reponderar
             return float((arr > linea).mean())
 
+        # --- Handicap asiatico (medias lineas, sin push): P(el LOCAL cubre la linea) ---
+        # Convencion: local -1.5 cubre si gana por 2+; local +0.5 cubre si gana o empata.
+        margen = gl.astype(np.int32) - gv.astype(np.int32)
+        ah_local = {f"{linea:+.1f}": wmean(margen + linea > 0)
+                    for linea in (-2.5, -1.5, -0.5, 0.5, 1.5, 2.5)}
+
         return {
             "n": N,
             "prob_local": float(local), "prob_empate": float(empate), "prob_visitante": float(visit),
@@ -208,6 +234,13 @@ class SimuladorMontecarlo:
             "over_1_5_goles": over_g(1.5),
             "over_2_5_goles": over_g(2.5),
             "over_3_5_goles": over_g(3.5),
+            # --- Mercados para parleys/handicaps ---
+            "btts": wmean((gl > 0) & (gv > 0)),          # ambos anotan
+            "ah_local": ah_local,                          # handicap asiatico (medias lineas)
+            "over_0_5_local": wmean(gl > 0.5),            # totales por equipo
+            "over_1_5_local": wmean(gl > 1.5),
+            "over_0_5_visit": wmean(gv > 0.5),
+            "over_1_5_visit": wmean(gv > 1.5),
             "tarjetas_esp": float(tarj_tot.mean()),
             "over_2_5_tarjetas": over(tarj_tot, 2.5),
             "over_3_5_tarjetas": over(tarj_tot, 3.5),

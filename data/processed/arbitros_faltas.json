@@ -1,405 +1,471 @@
 {
   "meta": {
-    "n_equipos": 270,
-    "media_global": 14.5,
+    "n_equipos": 396,
+    "media_global": 14.32,
     "k_arb": 8
   },
   "arbitros": {
     "abdel aziz mohamed bouh": {
       "n": 2,
       "media": 15.5,
-      "factor_raw": 1.0687,
-      "factor_shrunk": 1.0137
+      "factor_raw": 1.0827,
+      "factor_shrunk": 1.0165
     },
     "abdulkadir artan": {
       "n": 2,
       "media": 12.0,
-      "factor_raw": 0.8274,
-      "factor_shrunk": 0.9655
+      "factor_raw": 0.8382,
+      "factor_shrunk": 0.9676
+    },
+    "abdulrahman ibrahim al jassim": {
+      "n": 4,
+      "media": 14.0,
+      "factor_raw": 0.978,
+      "factor_shrunk": 0.9927
     },
     "abongile tom": {
       "n": 6,
       "media": 16.17,
-      "factor_raw": 1.1147,
-      "factor_shrunk": 1.0491
+      "factor_raw": 1.1293,
+      "factor_shrunk": 1.0554
     },
     "alexis herrera": {
       "n": 2,
       "media": 19.0,
-      "factor_raw": 1.31,
-      "factor_shrunk": 1.062
+      "factor_raw": 1.3272,
+      "factor_shrunk": 1.0654
     },
     "alhadi allaou mahamat": {
       "n": 4,
       "media": 12.5,
-      "factor_raw": 0.8618,
-      "factor_shrunk": 0.9539
+      "factor_raw": 0.8732,
+      "factor_shrunk": 0.9577
+    },
+    "alireza faghani": {
+      "n": 4,
+      "media": 11.5,
+      "factor_raw": 0.8033,
+      "factor_shrunk": 0.9344
     },
     "amin mohamed omar": {
       "n": 6,
       "media": 12.0,
-      "factor_raw": 0.8274,
-      "factor_shrunk": 0.926
+      "factor_raw": 0.8382,
+      "factor_shrunk": 0.9307
     },
     "andres matonte": {
-      "n": 4,
-      "media": 13.25,
-      "factor_raw": 0.9136,
-      "factor_shrunk": 0.9712
+      "n": 6,
+      "media": 12.33,
+      "factor_raw": 0.8615,
+      "factor_shrunk": 0.9407
     },
     "anthony taylor": {
+      "n": 10,
+      "media": 13.0,
+      "factor_raw": 0.9081,
+      "factor_shrunk": 0.9489
+    },
+    "antonio miguel mateu lahoz": {
       "n": 6,
-      "media": 14.0,
-      "factor_raw": 0.9653,
-      "factor_shrunk": 0.9851
+      "media": 19.5,
+      "factor_raw": 1.3621,
+      "factor_shrunk": 1.1552
     },
     "artur manuel ribeiro soares dias": {
       "n": 6,
       "media": 9.33,
-      "factor_raw": 0.6435,
-      "factor_shrunk": 0.8472
+      "factor_raw": 0.652,
+      "factor_shrunk": 0.8508
+    },
+    "bakary papa gassama": {
+      "n": 2,
+      "media": 13.5,
+      "factor_raw": 0.943,
+      "factor_shrunk": 0.9886
     },
     "bamlak tessema weyesa": {
       "n": 6,
       "media": 11.33,
-      "factor_raw": 0.7814,
-      "factor_shrunk": 0.9063
+      "factor_raw": 0.7917,
+      "factor_shrunk": 0.9107
     },
     "bouchra karboubi": {
       "n": 2,
       "media": 18.5,
-      "factor_raw": 1.2755,
-      "factor_shrunk": 1.0551
+      "factor_raw": 1.2923,
+      "factor_shrunk": 1.0585
     },
     "cesar arturo ramos palazuelos": {
-      "n": 6,
-      "media": 16.0,
-      "factor_raw": 1.1032,
-      "factor_shrunk": 1.0442
+      "n": 14,
+      "media": 14.43,
+      "factor_raw": 1.0079,
+      "factor_shrunk": 1.005
+    },
+    "chris beath": {
+      "n": 2,
+      "media": 14.5,
+      "factor_raw": 1.0129,
+      "factor_shrunk": 1.0026
     },
     "clement turpin": {
-      "n": 6,
+      "n": 12,
       "media": 11.83,
-      "factor_raw": 0.8159,
-      "factor_shrunk": 0.9211
+      "factor_raw": 0.8266,
+      "factor_shrunk": 0.896
     },
     "cristian marcelo garay reyes": {
       "n": 2,
       "media": 14.0,
-      "factor_raw": 0.9653,
-      "factor_shrunk": 0.9931
+      "factor_raw": 0.978,
+      "factor_shrunk": 0.9956
     },
     "dahane beida": {
       "n": 6,
       "media": 14.5,
-      "factor_raw": 0.9997,
-      "factor_shrunk": 0.9999
+      "factor_raw": 1.0129,
+      "factor_shrunk": 1.0055
     },
     "daniel nii ayi laryea": {
       "n": 2,
       "media": 13.0,
-      "factor_raw": 0.8963,
-      "factor_shrunk": 0.9793
+      "factor_raw": 0.9081,
+      "factor_shrunk": 0.9816
     },
     "daniel siebert": {
-      "n": 4,
-      "media": 13.25,
-      "factor_raw": 0.9136,
-      "factor_shrunk": 0.9712
+      "n": 8,
+      "media": 14.5,
+      "factor_raw": 1.0129,
+      "factor_shrunk": 1.0064
     },
     "daniele orsato": {
-      "n": 8,
-      "media": 15.0,
-      "factor_raw": 1.0342,
-      "factor_shrunk": 1.0171
+      "n": 14,
+      "media": 15.5,
+      "factor_raw": 1.0827,
+      "factor_shrunk": 1.0526
     },
     "danny desmond makkelie": {
-      "n": 4,
-      "media": 17.0,
-      "factor_raw": 1.1721,
-      "factor_shrunk": 1.0574
+      "n": 8,
+      "media": 14.75,
+      "factor_raw": 1.0303,
+      "factor_shrunk": 1.0152
     },
     "dario herrera": {
       "n": 4,
       "media": 18.75,
-      "factor_raw": 1.2928,
-      "factor_shrunk": 1.0976
+      "factor_raw": 1.3098,
+      "factor_shrunk": 1.1033
     },
     "djindo louis houngnandande": {
       "n": 2,
       "media": 13.5,
-      "factor_raw": 0.9308,
-      "factor_shrunk": 0.9862
+      "factor_raw": 0.943,
+      "factor_shrunk": 0.9886
     },
     "edina alves batista": {
       "n": 2,
       "media": 16.5,
-      "factor_raw": 1.1376,
-      "factor_shrunk": 1.0275
+      "factor_raw": 1.1526,
+      "factor_shrunk": 1.0305
     },
     "facundo tello figueroa": {
-      "n": 4,
-      "media": 12.5,
-      "factor_raw": 0.8618,
-      "factor_shrunk": 0.9539
+      "n": 10,
+      "media": 12.0,
+      "factor_raw": 0.8382,
+      "factor_shrunk": 0.9101
     },
     "felix zwayer": {
       "n": 8,
       "media": 11.12,
-      "factor_raw": 0.767,
-      "factor_shrunk": 0.8835
+      "factor_raw": 0.7771,
+      "factor_shrunk": 0.8886
+    },
+    "fernando andres rapallini": {
+      "n": 6,
+      "media": 16.33,
+      "factor_raw": 1.1409,
+      "factor_shrunk": 1.0604
     },
     "francois letexier": {
       "n": 8,
       "media": 11.5,
-      "factor_raw": 0.7929,
-      "factor_shrunk": 0.8965
+      "factor_raw": 0.8033,
+      "factor_shrunk": 0.9017
     },
     "glenn nyberg": {
       "n": 6,
       "media": 10.67,
-      "factor_raw": 0.7354,
-      "factor_shrunk": 0.8866
+      "factor_raw": 0.7451,
+      "factor_shrunk": 0.8908
     },
     "gustavo tejera": {
       "n": 2,
       "media": 19.5,
-      "factor_raw": 1.3445,
-      "factor_shrunk": 1.0689
+      "factor_raw": 1.3621,
+      "factor_shrunk": 1.0724
     },
     "halil umut meler": {
       "n": 6,
       "media": 15.33,
-      "factor_raw": 1.0572,
-      "factor_shrunk": 1.0245
+      "factor_raw": 1.0711,
+      "factor_shrunk": 1.0305
     },
     "ibrahim mutaz": {
       "n": 8,
       "media": 17.5,
-      "factor_raw": 1.2066,
-      "factor_shrunk": 1.1033
+      "factor_raw": 1.2224,
+      "factor_shrunk": 1.1112
     },
     "ismail elfath": {
-      "n": 2,
-      "media": 7.5,
-      "factor_raw": 0.5171,
-      "factor_shrunk": 0.9034
+      "n": 8,
+      "media": 13.88,
+      "factor_raw": 0.9692,
+      "factor_shrunk": 0.9846
     },
     "issa sy": {
       "n": 6,
       "media": 16.0,
-      "factor_raw": 1.1032,
-      "factor_shrunk": 1.0442
+      "factor_raw": 1.1177,
+      "factor_shrunk": 1.0504
     },
     "istvan kovacs": {
       "n": 4,
       "media": 12.75,
-      "factor_raw": 0.8791,
-      "factor_shrunk": 0.9597
+      "factor_raw": 0.8906,
+      "factor_shrunk": 0.9635
     },
     "ivan arcides barton cisneros": {
-      "n": 2,
-      "media": 12.5,
-      "factor_raw": 0.8618,
-      "factor_shrunk": 0.9724
+      "n": 8,
+      "media": 13.0,
+      "factor_raw": 0.9081,
+      "factor_shrunk": 0.954
     },
     "ivan kruzliak": {
       "n": 4,
       "media": 13.75,
-      "factor_raw": 0.948,
-      "factor_shrunk": 0.9827
+      "factor_raw": 0.9605,
+      "factor_shrunk": 0.9868
     },
     "jalal jayed": {
       "n": 2,
       "media": 17.0,
-      "factor_raw": 1.1721,
-      "factor_shrunk": 1.0344
+      "factor_raw": 1.1875,
+      "factor_shrunk": 1.0375
+    },
+    "janny sikazwe": {
+      "n": 2,
+      "media": 13.0,
+      "factor_raw": 0.9081,
+      "factor_shrunk": 0.9816
     },
     "jean jacques ndala ngambo": {
       "n": 6,
       "media": 15.17,
-      "factor_raw": 1.0457,
-      "factor_shrunk": 1.0196
+      "factor_raw": 1.0594,
+      "factor_shrunk": 1.0255
     },
     "jesus gil manzano": {
       "n": 2,
       "media": 18.0,
-      "factor_raw": 1.2411,
-      "factor_shrunk": 1.0482
+      "factor_raw": 1.2574,
+      "factor_shrunk": 1.0515
     },
     "jesus valenzuela saez": {
-      "n": 4,
-      "media": 16.25,
-      "factor_raw": 1.1204,
-      "factor_shrunk": 1.0401
+      "n": 8,
+      "media": 14.12,
+      "factor_raw": 0.9867,
+      "factor_shrunk": 0.9933
     },
     "juan gabriel benitez": {
       "n": 2,
       "media": 15.5,
-      "factor_raw": 1.0687,
-      "factor_shrunk": 1.0137
+      "factor_raw": 1.0827,
+      "factor_shrunk": 1.0165
     },
     "kevin ortega": {
       "n": 2,
       "media": 13.5,
-      "factor_raw": 0.9308,
-      "factor_shrunk": 0.9862
+      "factor_raw": 0.943,
+      "factor_shrunk": 0.9886
     },
     "mahmood ali mahmood ismail": {
       "n": 6,
       "media": 17.0,
-      "factor_raw": 1.1721,
-      "factor_shrunk": 1.0738
+      "factor_raw": 1.1875,
+      "factor_shrunk": 1.0804
     },
     "marco guida": {
       "n": 4,
       "media": 13.25,
-      "factor_raw": 0.9136,
-      "factor_shrunk": 0.9712
+      "factor_raw": 0.9256,
+      "factor_shrunk": 0.9752
     },
     "mario alberto escobar toca": {
-      "n": 4,
-      "media": 15.5,
-      "factor_raw": 1.0687,
-      "factor_shrunk": 1.0229
+      "n": 6,
+      "media": 13.5,
+      "factor_raw": 0.943,
+      "factor_shrunk": 0.9756
+    },
+    "matthew conger": {
+      "n": 2,
+      "media": 12.0,
+      "factor_raw": 0.8382,
+      "factor_shrunk": 0.9676
     },
     "maurizio mariani": {
       "n": 6,
       "media": 14.67,
-      "factor_raw": 1.0112,
-      "factor_shrunk": 1.0048
+      "factor_raw": 1.0245,
+      "factor_shrunk": 1.0105
     },
     "michael oliver": {
-      "n": 8,
-      "media": 13.25,
-      "factor_raw": 0.9136,
-      "factor_shrunk": 0.9568
+      "n": 14,
+      "media": 16.43,
+      "factor_raw": 1.1476,
+      "factor_shrunk": 1.0939
+    },
+    "mohamed abdulla hassan mohd": {
+      "n": 2,
+      "media": 12.5,
+      "factor_raw": 0.8732,
+      "factor_shrunk": 0.9746
     },
     "mohamed adel elsaid": {
       "n": 4,
       "media": 20.5,
-      "factor_raw": 1.4134,
-      "factor_shrunk": 1.1378
+      "factor_raw": 1.432,
+      "factor_shrunk": 1.144
     },
     "mohamed adel hussein": {
       "n": 2,
       "media": 13.0,
-      "factor_raw": 0.8963,
-      "factor_shrunk": 0.9793
+      "factor_raw": 0.9081,
+      "factor_shrunk": 0.9816
     },
     "mohamed maarouf eid mansour": {
       "n": 2,
       "media": 14.5,
-      "factor_raw": 0.9997,
-      "factor_shrunk": 0.9999
+      "factor_raw": 1.0129,
+      "factor_shrunk": 1.0026
     },
     "mustapha ghorbal": {
-      "n": 4,
-      "media": 17.25,
-      "factor_raw": 1.1894,
-      "factor_shrunk": 1.0631
+      "n": 8,
+      "media": 15.0,
+      "factor_raw": 1.0478,
+      "factor_shrunk": 1.0239
     },
     "omar abdulkadir artan": {
       "n": 4,
       "media": 16.25,
-      "factor_raw": 1.1204,
-      "factor_shrunk": 1.0401
+      "factor_raw": 1.1351,
+      "factor_shrunk": 1.045
     },
     "pacifique ndabihawenimana": {
       "n": 2,
       "media": 16.0,
-      "factor_raw": 1.1032,
-      "factor_shrunk": 1.0206
+      "factor_raw": 1.1177,
+      "factor_shrunk": 1.0235
     },
     "patrice tanguy mebiame": {
       "n": 2,
       "media": 13.5,
-      "factor_raw": 0.9308,
-      "factor_shrunk": 0.9862
+      "factor_raw": 0.943,
+      "factor_shrunk": 0.9886
     },
     "peter waweru kamaku": {
       "n": 2,
       "media": 17.0,
-      "factor_raw": 1.1721,
-      "factor_shrunk": 1.0344
+      "factor_raw": 1.1875,
+      "factor_shrunk": 1.0375
     },
     "piero maza gomez": {
       "n": 6,
       "media": 13.83,
-      "factor_raw": 0.9538,
-      "factor_shrunk": 0.9802
+      "factor_raw": 0.9663,
+      "factor_shrunk": 0.9856
     },
     "pierre ghislain atcho": {
       "n": 4,
       "media": 21.25,
-      "factor_raw": 1.4651,
-      "factor_shrunk": 1.155
+      "factor_raw": 1.4844,
+      "factor_shrunk": 1.1615
     },
     "raphael claus": {
-      "n": 4,
-      "media": 14.75,
-      "factor_raw": 1.017,
-      "factor_shrunk": 1.0057
+      "n": 8,
+      "media": 15.0,
+      "factor_raw": 1.0478,
+      "factor_shrunk": 1.0239
     },
     "redouane jiyed": {
       "n": 4,
       "media": 18.0,
-      "factor_raw": 1.2411,
-      "factor_shrunk": 1.0804
+      "factor_raw": 1.2574,
+      "factor_shrunk": 1.0858
     },
     "samir guezzaz": {
       "n": 2,
       "media": 16.0,
-      "factor_raw": 1.1032,
-      "factor_shrunk": 1.0206
+      "factor_raw": 1.1177,
+      "factor_shrunk": 1.0235
     },
     "samuel uwikunda": {
       "n": 4,
       "media": 13.75,
-      "factor_raw": 0.948,
-      "factor_shrunk": 0.9827
+      "factor_raw": 0.9605,
+      "factor_shrunk": 0.9868
     },
     "sandro scharer": {
       "n": 4,
       "media": 10.5,
-      "factor_raw": 0.724,
-      "factor_shrunk": 0.908
+      "factor_raw": 0.7335,
+      "factor_shrunk": 0.9112
     },
     "slavko vincic": {
-      "n": 6,
-      "media": 13.67,
-      "factor_raw": 0.9423,
-      "factor_shrunk": 0.9753
+      "n": 10,
+      "media": 14.1,
+      "factor_raw": 0.9849,
+      "factor_shrunk": 0.9916
+    },
+    "stephanie frappart": {
+      "n": 2,
+      "media": 6.5,
+      "factor_raw": 0.454,
+      "factor_shrunk": 0.8908
     },
     "szymon marciniak": {
+      "n": 10,
+      "media": 14.4,
+      "factor_raw": 1.0059,
+      "factor_shrunk": 1.0033
+    },
+    "victor miguel de freitas gomes": {
       "n": 4,
-      "media": 13.5,
-      "factor_raw": 0.9308,
-      "factor_shrunk": 0.9769
+      "media": 9.25,
+      "factor_raw": 0.6461,
+      "factor_shrunk": 0.882
     },
     "wilmar alexander roldan perez": {
       "n": 4,
       "media": 15.75,
-      "factor_raw": 1.0859,
-      "factor_shrunk": 1.0286
+      "factor_raw": 1.1002,
+      "factor_shrunk": 1.0334
     },
     "wilton pereira sampaio": {
-      "n": 4,
-      "media": 16.0,
-      "factor_raw": 1.1032,
-      "factor_shrunk": 1.0344
+      "n": 12,
+      "media": 14.0,
+      "factor_raw": 0.978,
+      "factor_shrunk": 0.9868
     },
     "yael falcon perez": {
       "n": 2,
       "media": 15.5,
-      "factor_raw": 1.0687,
-      "factor_shrunk": 1.0137
+      "factor_raw": 1.0827,
+      "factor_shrunk": 1.0165
     },
     "youcef gamouh": {
       "n": 2,
       "media": 16.5,
-      "factor_raw": 1.1376,
-      "factor_shrunk": 1.0275
+      "factor_raw": 1.1526,
+      "factor_shrunk": 1.0305
     }
   }
 }
