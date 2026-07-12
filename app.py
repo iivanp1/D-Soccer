@@ -39,7 +39,15 @@ st.markdown("""
     color: #38bdf8; padding: .4rem 0 1rem 0;
   }
   div[data-testid="stPageLink"] {
-    background: transparent; border-radius: 8px; padding: 2px 4px;
+    background: transparent; border-radius: 8px;
+  }
+  div[data-testid="stPageLink"] a {
+    display: flex; align-items: center; width: 100%;
+    padding: 8px 14px; border-radius: 8px;
+    text-decoration: none;
+  }
+  div[data-testid="stPageLink"] a:hover {
+    background: #1e293b;
   }
   div[data-testid="stPageLink"] p {
     font-weight: 600; font-size: .95rem;
