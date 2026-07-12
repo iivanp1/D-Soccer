@@ -30,7 +30,9 @@ LIGAS = {
 # Mas temporadas = mas historia, pero la forma reciente pesa mas (ver decaimiento
 # temporal en dixon_coles.py). 3-4 temporadas suele ser un buen balance.
 # 2526 agregada (jul 2026) para cruzar tiros/corners con el xG de Understat (clubes 2026-27).
-TEMPORADAS = ["2223", "2324", "2425", "2526"]
+# 2627 agregada ANTES de que exista: _descargar_csv maneja el 404 con gracia (skip), asi el
+# cron semanal del server la empieza a llenar solo cuando football-data la publique en agosto.
+TEMPORADAS = ["2223", "2324", "2425", "2526", "2627"]
 
 # --- Columnas que nos interesan y su nombre limpio ---
 # (las dejamos en ingles corto porque son estandar en football-data.co.uk)
