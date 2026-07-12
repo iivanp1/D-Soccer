@@ -40,8 +40,12 @@ from src.jugadores_model import JugadoresModel, _norm
 from src.montecarlo import ZIP_LAMBDA_DEF
 from src.tunear_w import GRID, W_ACTUAL
 
-# Grids del tuneo de priors (rangos pedidos por el usuario). alpha (ancla Pinnacle) NO entra:
-# necesita cuotas de mercado por partido historico y StatsBomb no las tiene (ver tunear_priors).
+# Grids del tuneo de priors del modelo de goles NUEVO (bivariate Poisson + deflactor).
+# gamma = deflactor del total del modelo puro; frac3 = correlacion KN (goles comunes).
+# alpha (ancla Pinnacle) NO entra: necesita cuotas por partido y StatsBomb no las tiene.
+GAMMA_GRID = [0.85, 0.88, 0.90, 0.92, 0.95, 1.00]
+FRAC3_GRID = [0.0, 0.10, 0.20, 0.30, 0.40, 0.55]
+# Grids legacy del mundo ZIP/rho (retirado; se conservan por si se quiere re-explorar).
 PI_GRID = [0.05, 0.075, 0.10, 0.125, 0.15]
 RHO_GRID = [-0.08, -0.10, -0.12, -0.14, -0.16, -0.18, -0.20]
 
@@ -69,6 +73,21 @@ def _pois(g: np.ndarray, lam: float) -> np.ndarray:
 
 def _cod(nombre_sb: str) -> str | None:
     return SB_OVERRIDES.get(_norm(nombre_sb)) or _codigo_nacion(nombre_sb)
+
+
+def _matriz_kn(lam_l: float, lam_v: float, frac3: float, G: int = 11) -> np.ndarray:
+    """Bivariate Poisson Karlis-Ntzoufras SIN scipy (misma matematica que valor._matriz_kn,
+    pero con la pmf local _pois para correr en el venv minimo del server)."""
+    g = np.arange(G)
+    l3 = frac3 * min(lam_l, lam_v)
+    l1, l2 = max(lam_l - l3, 1e-9), max(lam_v - l3, 1e-9)
+    p1, p2, p3 = _pois(g, l1), _pois(g, l2), _pois(g, l3)
+    M = np.zeros((G, G))
+    for k in range(G):
+        if p3[k] < 1e-12:
+            break
+        M[k:, k:] += p3[k] * np.outer(p1[:G - k], p2[:G - k])
+    return M / M.sum()
 
 
 def _modelo() -> tuple[JugadoresModel, pd.DataFrame]:
@@ -232,12 +251,15 @@ def escanear_mercados(solo_2024: bool = False) -> None:
     pe = [jm.predecir_partido_mundial(m["xi_l"], m["xi_v"], m["cl"], m["cv"]) for m in muestra]
     g = np.arange(11)
 
+    # Modelo de PRODUCCION completo: deflactor gamma + bivariate Poisson (frac3), igual
+    # que mundial_engine en modo puro. Antes esto media el Poisson independiente crudo.
+    gamma = config.GAMMA_GOLES_SELECCIONES
+    frac3 = config.FRAC3_GOLES_COMUNES
     p1x2, real1x2, pover, realover = [], [], [], []
     for a, b, m in zip(pl, pe, muestra):
-        lam_l = w * b["goles_esp_local"] + (1 - w) * a["goles_esp_local"]
-        lam_v = w * b["goles_esp_visitante"] + (1 - w) * a["goles_esp_visitante"]
-        mat = np.outer(_pois(g, lam_l), _pois(g, lam_v))
-        mat /= mat.sum()
+        lam_l = gamma * (w * b["goles_esp_local"] + (1 - w) * a["goles_esp_local"])
+        lam_v = gamma * (w * b["goles_esp_visitante"] + (1 - w) * a["goles_esp_visitante"])
+        mat = _matriz_kn(lam_l, lam_v, frac3)
         p1x2.append((float(np.tril(mat, -1).sum()), float(np.trace(mat)), float(np.triu(mat, 1).sum())))
         real1x2.append(m["real"])
         p_under = float(sum(mat[i, j] for i in range(11) for j in range(11) if i + j <= 2))
@@ -316,10 +338,11 @@ def _brier_conjunto(mat: np.ndarray, real: str, over_real: int) -> tuple[float, 
 
 
 def tunear_priors(solo_2024: bool = False) -> None:
-    """Grid search de PI_ZIP_SELECCIONES x RHO_DIXON_COLES sobre StatsBomb, minimizando el Brier
-    conjunto (1X2 + O/U 2.5) del MODELO PURO (sin ancla; w=0.85 produccion). alpha (ancla Pinnacle)
-    NO se tunea aca: necesita cuotas de mercado por partido y StatsBomb no las tiene -> se tunea
-    forward con predicciones_log (pin_*/cierre_*). Las lambdas por partido se precomputan una vez."""
+    """Grid search de GAMMA (deflactor) x FRAC3 (bivariate Poisson) sobre StatsBomb, minimizando
+    el Brier conjunto (1X2 + O/U 2.5) del MODELO PURO (sin ancla; w=0.85 produccion) y mostrando
+    la calibracion de MARCADORES (0-0/1-1/empate/over) que el Brier solo no revela (leccion del
+    ZIP: optimizaba el agregado con la composicion invertida). alpha (ancla Pinnacle) NO se tunea
+    aca: necesita cuotas por partido y StatsBomb no las tiene -> forward con predicciones_log."""
     if not DB.exists():
         print(f"No existe {DB.name}. Corre: python -m src.ingesta_historica --desde 2023")
         return
@@ -339,82 +362,79 @@ def tunear_priors(solo_2024: bool = False) -> None:
     pe = [jm.predecir_partido_mundial(m["xi_l"], m["xi_v"], m["cl"], m["cv"]) for m in muestra]
     jm.w_elo = w
 
-    g = np.arange(11)
-    base = []  # (mat_poisson_normalizada, lam_l, lam_v, real, over_real)
+    lams = []  # (lam_l_sin_gamma, lam_v_sin_gamma, real, over_real, es_00, es_11, es_emp)
     for a, b, m in zip(pl, pe, muestra):
         lam_l = w * b["goles_esp_local"] + (1 - w) * a["goles_esp_local"]
         lam_v = w * b["goles_esp_visitante"] + (1 - w) * a["goles_esp_visitante"]
-        mat = np.outer(_pois(g, lam_l), _pois(g, lam_v))
-        mat /= mat.sum()
-        base.append((mat, lam_l, lam_v, m["real"], 1 if (m["gl"] + m["gv"]) >= 3 else 0))
+        lams.append((lam_l, lam_v, m["real"], 1 if (m["gl"] + m["gv"]) >= 3 else 0))
 
-    n = len(base)
+    n = len(lams)
+    real_00 = float(np.mean([1 if (m["gl"], m["gv"]) == (0, 0) else 0 for m in muestra]))
+    real_11 = float(np.mean([1 if (m["gl"], m["gv"]) == (1, 1) else 0 for m in muestra]))
+    real_emp = float(np.mean([1 if m["real"] == "D" else 0 for m in muestra]))
+    over_real = float(np.mean([x[3] for x in lams]))
 
-    def score(pi: float, rho: float) -> tuple[float, float, float, float]:
-        """(joint, brier_1x2, brier_ou, prob_over_media) sobre la muestra."""
-        b1 = bou = pov = 0.0
-        for mat, ll, lv, real, ov in base:
-            adj = _ajustar_matriz(mat, ll, lv, pi, rho)
-            x1, xo = _brier_conjunto(adj, real, ov)
+    def score(gamma: float, frac3: float):
+        """(joint, brier_1x2, brier_ou, P00, P11, Pemp, Pover) sobre la muestra."""
+        b1 = bou = p00 = p11 = pemp = pov = 0.0
+        for ll, lv, real, ov in lams:
+            M = _matriz_kn(gamma * ll, gamma * lv, frac3)
+            x1, xo = _brier_conjunto(M, real, ov)
             b1 += x1; bou += xo
-            pov += float(adj[0, 0] + adj[0, 1] + adj[0, 2] + adj[1, 0] + adj[1, 1] + adj[2, 0])
-        return (b1 + bou) / n, b1 / n, bou / n, 1.0 - pov / n
+            p00 += M[0, 0]; p11 += M[1, 1]; pemp += float(np.trace(M))
+            pov += 1.0 - float(M[0, 0] + M[0, 1] + M[0, 2] + M[1, 0] + M[1, 1] + M[2, 0])
+        return (b1 + bou) / n, b1 / n, bou / n, p00 / n, p11 / n, pemp / n, pov / n
 
     # Tensor de Brier conjunto para grid + LOO
-    B = np.empty((n, len(PI_GRID), len(RHO_GRID)))
-    for i, (mat, ll, lv, real, ov) in enumerate(base):
-        for j, pi in enumerate(PI_GRID):
-            for k, rho in enumerate(RHO_GRID):
-                x1, xo = _brier_conjunto(_ajustar_matriz(mat, ll, lv, pi, rho), real, ov)
+    B = np.empty((n, len(GAMMA_GRID), len(FRAC3_GRID)))
+    for i, (ll, lv, real, ov) in enumerate(lams):
+        for j, gamma in enumerate(GAMMA_GRID):
+            for k, f3 in enumerate(FRAC3_GRID):
+                x1, xo = _brier_conjunto(_matriz_kn(gamma * ll, gamma * lv, f3), real, ov)
                 B[i, j, k] = x1 + xo
 
     media = B.mean(axis=0)
     jstar, kstar = np.unravel_index(int(np.argmin(media)), media.shape)
-    pi_opt, rho_opt = PI_GRID[jstar], RHO_GRID[kstar]
+    g_opt, f3_opt = GAMMA_GRID[jstar], FRAC3_GRID[kstar]
 
-    base_j, base_1, base_ou, base_pov = score(0.0, 0.0)
-    cur_j, cur_1, cur_ou, cur_pov = score(config.PI_ZIP_SELECCIONES, config.RHO_DIXON_COLES)
-    opt_j, opt_1, opt_ou, opt_pov = score(pi_opt, rho_opt)
-    over_real = float(np.mean([b[4] for b in base]))  # tasa de Over 2.5 real en la muestra
-
-    # LOO (fuera de muestra): para cada partido, el (pi,rho) optimo de los OTROS, evaluado en el.
+    # LOO (fuera de muestra): para cada partido, el (gamma,frac3) optimo de los OTROS.
     col = B.sum(axis=0)
     loo = float(np.mean([B[i].flatten()[int(np.argmin((col - B[i]).flatten()))] for i in range(n)]))
 
-    print("=" * 66)
-    print(f"  TUNEO DE PRIORS (ZIP pi x Dixon-Coles rho)  |  n={n} partidos StatsBomb")
+    print("=" * 78)
+    print(f"  TUNEO DE PRIORS (gamma deflactor x frac3 bivariate Poisson)  |  n={n}")
     print(f"  ({'solo 2024' if solo_2024 else '2024 + AFCON23'}, period-correct; w={w} produccion)")
-    print(f"  Objetivo: Brier CONJUNTO (1X2 3-way + O/U 2.5), ambos en escala 0-2")
-    print("=" * 66)
+    print(f"  Objetivo: Brier conjunto (1X2 + O/U 2.5) + CALIBRACION de marcadores")
+    print("=" * 78)
 
-    print(f"\n  Grid del Brier conjunto (filas pi, columnas rho):")
-    print("        " + "".join(f"{r:>8.2f}" for r in RHO_GRID))
-    for j, pi in enumerate(PI_GRID):
+    print(f"\n  Grid del Brier conjunto (filas gamma, columnas frac3):")
+    print("        " + "".join(f"{f:>8.2f}" for f in FRAC3_GRID))
+    for j, gamma in enumerate(GAMMA_GRID):
         celdas = "".join(
             (f"{media[j,k]:>8.4f}" if (j, k) != (jstar, kstar) else f"{media[j,k]:>7.4f}*")
-            for k in range(len(RHO_GRID)))
-        print(f"  {pi:>5.3f} {celdas}")
-    print("  (* = optimo)")
+            for k in range(len(FRAC3_GRID)))
+        print(f"  {gamma:>5.2f} {celdas}")
+    print("  (* = optimo por Brier; con superficie plana decide la CALIBRACION de abajo)")
 
-    print(f"\n  {'config':<26}{'joint':>9}{'1X2':>9}{'O/U':>9}{'P(over)':>9}")
-    print(f"  {'baseline (0, 0)':<26}{base_j:>9.4f}{base_1:>9.4f}{base_ou:>9.4f}{base_pov*100:>8.0f}%")
-    print(f"  {'actual (%.3f, %.2f)' % (config.PI_ZIP_SELECCIONES, config.RHO_DIXON_COLES):<26}"
-          f"{cur_j:>9.4f}{cur_1:>9.4f}{cur_ou:>9.4f}{cur_pov*100:>8.0f}%")
-    print(f"  {'OPTIMO (%.3f, %.2f)' % (pi_opt, rho_opt):<26}"
-          f"{opt_j:>9.4f}{opt_1:>9.4f}{opt_ou:>9.4f}{opt_pov*100:>8.0f}%")
-    print(f"  {'(over REAL en la muestra)':<26}{'':>27}{over_real*100:>8.0f}%")
+    print(f"\n  {'config':<24}{'joint':>8}{'1X2':>8}{'O/U':>8} | {'0-0':>6}{'1-1':>6}{'emp':>7}{'over':>7}")
+    filas = [("sin correccion (1,0)", 1.0, 0.0),
+             ("PRODUCCION (%.2f, %.2f)" % (config.GAMMA_GOLES_SELECCIONES, config.FRAC3_GOLES_COMUNES),
+              config.GAMMA_GOLES_SELECCIONES, config.FRAC3_GOLES_COMUNES),
+             ("optimo grid (%.2f, %.2f)" % (g_opt, f3_opt), g_opt, f3_opt)]
+    for nom, gamma, f3 in filas:
+        j, b1, bo, p00, p11, pemp, pov = score(gamma, f3)
+        print(f"  {nom:<24}{j:>8.4f}{b1:>8.4f}{bo:>8.4f} | {p00*100:>5.1f}%{p11*100:>5.1f}%"
+              f"{pemp*100:>6.1f}%{pov*100:>6.1f}%")
+    print(f"  {'REAL (empirico)':<24}{'':>24} | {real_00*100:>5.1f}%{real_11*100:>5.1f}%"
+          f"{real_emp*100:>6.1f}%{over_real*100:>6.1f}%")
 
-    red = (1 - opt_j / base_j) * 100 if base_j > 0 else 0
-    print(f"\n  Reduccion del Brier conjunto (optimo vs baseline): {red:+.2f}%")
-    print(f"  LOO (optimo fuera de muestra): {loo:.4f}  -> "
-          f"{'GENERALIZA (mejor que baseline)' if loo < base_j else 'NO generaliza (ruido)'}")
-    en_borde = pi_opt in (PI_GRID[0], PI_GRID[-1]) or rho_opt in (RHO_GRID[0], RHO_GRID[-1])
+    print(f"\n  LOO (optimo fuera de muestra): {loo:.4f}")
+    en_borde = g_opt in (GAMMA_GRID[0], GAMMA_GRID[-1]) or f3_opt in (FRAC3_GRID[0], FRAC3_GRID[-1])
     if en_borde:
-        print(f"  [!] El optimo cae en el BORDE del grid -> el verdadero optimo puede estar mas alla.")
-    print(f"\n  ALPHA_ANCLA_PINNACLE: NO tuneable aca (StatsBomb sin cuotas). Se mantiene 0.35;")
-    print(f"  tunear forward con predicciones_log (pin_*/cierre_*) cuando haya muestra de WC.")
-    print(f"\n  GANADORES -> PI_ZIP_SELECCIONES={pi_opt}  RHO_DIXON_COLES={rho_opt}")
-    print(f"  (n={n}: muestra seria. pi/rho son CALIBRACION 1-D c/u -> bajo riesgo de overfit.)")
+        print("  [!] Optimo en el BORDE del grid: puede haber mas alla (o la muestra empuja).")
+    print("  OJO: la muestra 2024 es hiper-empatadora (Euro/AFCON grupos); un Mundial es mas")
+    print("  abierto (WC22: emp 23%, over 47%). No sobre-ajustar frac3/gamma solo a esta muestra;")
+    print("  produccion usa el punto medio multi-torneo. alpha se tunea FORWARD (predicciones_log).")
 
 
 def main() -> None:

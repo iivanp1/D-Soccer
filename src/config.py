@@ -29,7 +29,8 @@ LIGAS = {
 # --- Temporadas a descargar ---
 # Mas temporadas = mas historia, pero la forma reciente pesa mas (ver decaimiento
 # temporal en dixon_coles.py). 3-4 temporadas suele ser un buen balance.
-TEMPORADAS = ["2223", "2324", "2425"]
+# 2526 agregada (jul 2026) para cruzar tiros/corners con el xG de Understat (clubes 2026-27).
+TEMPORADAS = ["2223", "2324", "2425", "2526"]
 
 # --- Columnas que nos interesan y su nombre limpio ---
 # (las dejamos en ingles corto porque son estandar en football-data.co.uk)
@@ -263,3 +264,13 @@ GAMMA_GOLES_SELECCIONES = 0.92
 # vs 11.9 del modelo pre-escala -> 1.17). La global 1.21 quedo calibrada al mix de torneos
 # 2023-24 (AFCON/Copa America inflan; Euro baja). mundial_engine usa ESTA para el WC.
 ESCALA_FALTAS_WC = 1.17
+
+# =========================================================================== #
+#  CLUBES 2026-27: ingesta de xG/xPts desde Understat (src/ingest_xg.py)
+# =========================================================================== #
+# Codigos de liga de soccerdata para Understat (las 4 grandes del plan de clubes).
+# Understat NO cubre Champions (esa ira via FBref read_schedule cuando arranque).
+LIGAS_UNDERSTAT = ["ESP-La Liga", "ENG-Premier League", "GER-Bundesliga", "ITA-Serie A"]
+# 2526 = temporada pasada (base de analisis); 2627 = la nueva (vacia hasta ~15 de agosto,
+# la ingesta la saltea con gracia y el cron semanal del server la ira llenando).
+TEMPORADAS_XG = ["2526", "2627"]
