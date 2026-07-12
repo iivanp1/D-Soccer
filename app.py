@@ -25,17 +25,43 @@ st.markdown("""
   #MainMenu, footer { visibility: hidden; }
   header { background: transparent !important; }
   header [data-testid="stToolbar"] { visibility: hidden; }
-  .block-container { padding-top: 2rem; max-width: 1150px; }
+  [data-testid="stSidebar"] { display: none; }
+  .block-container { padding-top: 1rem; max-width: 1150px; }
   [data-testid="stMetricValue"] { font-size: 2.2rem; font-weight: 800; }
   [data-testid="stMetricLabel"] { color: #8b95a7; letter-spacing: .06em;
                                    text-transform: uppercase; font-size: .75rem; }
   h1 { font-weight: 800; letter-spacing: -.02em; }
   .stCaption, .caption { color: #66707f; }
+
+  /* --- Navbar (prototipo) --- */
+  .navbar-brand {
+    font-size: 1.3rem; font-weight: 800; letter-spacing: -.02em;
+    color: #38bdf8; padding: .4rem 0 1rem 0;
+  }
+  div[data-testid="stPageLink"] {
+    background: transparent; border-radius: 8px; padding: 2px 4px;
+  }
+  div[data-testid="stPageLink"] p {
+    font-weight: 600; font-size: .95rem;
+  }
 </style>
 """, unsafe_allow_html=True)
 
-pg = st.navigation([
+paginas = [
     st.Page("paginas/dashboard.py", title="Partidos", icon="⚽", default=True),
     st.Page("paginas/perfil_equipo.py", title="Perfil de equipo", icon="📊"),
-])
+]
+
+# --- Navbar horizontal (prototipo, a mejorar despues con frontend propio) --- #
+nav_col_brand, nav_col1, nav_col2, nav_col_spacer = st.columns([2, 1, 1.4, 4])
+with nav_col_brand:
+    st.markdown('<div class="navbar-brand">⚽ D-Soccer</div>', unsafe_allow_html=True)
+with nav_col1:
+    st.page_link(paginas[0], label="Partidos", icon="⚽")
+with nav_col2:
+    st.page_link(paginas[1], label="Perfil de equipo", icon="📊")
+
+st.divider()
+
+pg = st.navigation(paginas, position="hidden")
 pg.run()
