@@ -22,7 +22,9 @@ st.markdown("""
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap');
   html, body, [class*="css"] { font-family: 'Inter', system-ui, sans-serif; }
-  #MainMenu, footer, header { visibility: hidden; }
+  #MainMenu, footer { visibility: hidden; }
+  header { background: transparent !important; }
+  header [data-testid="stToolbar"] { visibility: hidden; }
   .block-container { padding-top: 2rem; max-width: 1150px; }
   [data-testid="stMetricValue"] { font-size: 2.2rem; font-weight: 800; }
   [data-testid="stMetricLabel"] { color: #8b95a7; letter-spacing: .06em;
